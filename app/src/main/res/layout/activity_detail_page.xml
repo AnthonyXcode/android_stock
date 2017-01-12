@@ -15,11 +15,11 @@
 
     <ListView
         android:layout_width="wrap_content"
-        android:layout_height="150dp"
         android:id="@+id/inhourListView"
         android:layout_below="@+id/textView3"
         android:layout_alignLeft="@+id/textView3"
-        android:layout_alignStart="@+id/textView3" />
+        android:layout_alignStart="@+id/textView3"
+        android:layout_height="100dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -32,11 +32,11 @@
 
     <ListView
         android:layout_width="wrap_content"
-        android:layout_height="150dp"
         android:id="@+id/dateListView"
         android:layout_below="@+id/textView2"
         android:layout_alignLeft="@+id/inhourListView"
-        android:layout_alignStart="@+id/inhourListView" />
+        android:layout_alignStart="@+id/inhourListView"
+        android:layout_height="100dp" />
 
     <TextView
         android:layout_width="90dp"
@@ -124,4 +124,404 @@
         android:layout_alignTop="@+id/textView9"
         android:layout_toRightOf="@+id/textView9"
         android:layout_toEndOf="@+id/textView9" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/textView9"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:text="Avarge: "
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/Average"
+                android:background="#ffffff"
+                android:textColor="#000000"
+                android:layout_toRightOf="@+id/sixtyPercentBetweenTxt"
+                android:layout_alignTop="@+id/sixtyPercentBetweenTxt"
+                android:layout_marginLeft="10dp" />
+
+            <TextView
+                android:text="avarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/avargeTxt"
+                android:layout_alignTop="@+id/Average"
+                android:layout_toRightOf="@+id/Average" />
+
+            <TextView
+                android:text="60% between: "
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView16"
+                android:layout_alignLeft="@+id/textView10"
+                android:layout_below="@+id/textView10"
+                android:textColor="#000000"
+                android:background="#ffffff" />
+
+            <TextView
+                android:text="High Dif: "
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView10"
+                android:background="#ffffff"
+                android:textColor="#000000"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp" />
+
+            <TextView
+                android:text="TextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="false"
+                android:id="@+id/highDifValueTxt"
+                android:layout_toRightOf="@+id/textView10"
+                android:allowUndo="true"
+                android:layout_alignTop="@+id/textView10" />
+
+            <TextView
+                android:text="TextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/difValueDateTxt"
+                android:layout_alignParentBottom="false"
+                android:layout_toRightOf="@+id/highDifValueTxt"
+                android:layout_marginLeft="10dp"
+                android:layout_alignTop="@+id/highDifValueTxt" />
+
+            <TextView
+                android:text="belowValueTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/highDifValueTxt"
+                android:layout_toRightOf="@+id/textView16"
+                android:layout_toEndOf="@+id/textView16"
+                android:id="@+id/sixtyPercentBetweenTxt" />
+
+            <TextView
+                android:text="Valid Data"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView12"
+                android:layout_below="@+id/sixtyPercentBetweenTxt"
+                android:layout_centerHorizontal="true" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_below="@+id/winLostLL">
+
+                <TextView
+                    android:text="Win Value: "
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/WinValue "
+                    android:background="#000000" />
+
+                <TextView
+                    android:text="TextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/winValueTxt" />
+
+                <TextView
+                    android:text="Lost Value: "
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textView31"
+                    android:layout_marginLeft="10dp"
+                    android:background="#000000" />
+
+                <TextView
+                    android:text="TextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/lostValueTxt" />
+
+                <TextView
+                    android:text="Force Value: "
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textView33"
+                    android:background="#000000" />
+
+                <TextView
+                    android:text="TextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/forceSellValueTxt" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:id="@+id/winLostLL"
+                android:layout_below="@+id/buySellTotalLL"
+                android:weightSum="4">
+
+                <TextView
+                    android:text="Win no.:"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textView23"
+                    android:background="#000000" />
+
+                <TextView
+                    android:text="TextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/winNumberTxt" />
+
+                <TextView
+                    android:text="Lost no.: "
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textView25"
+                    android:layout_marginLeft="10dp"
+                    android:background="#000000" />
+
+                <TextView
+                    android:text="TextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/lostNumberTxt" />
+
+                <TextView
+                    android:text="force no.:"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textView27"
+                    android:layout_marginLeft="10dp"
+                    android:background="#000000" />
+
+                <TextView
+                    android:text="TextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/forceSellNumberTxt"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:id="@+id/buySellTotalLL"
+                android:layout_below="@+id/targetAndCutLost"
+                android:weightSum="4">
+
+                <TextView
+                    android:text="Buy Number:"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textView17"
+                    android:background="#000000" />
+
+                <TextView
+                    android:text="TextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/buyNumberTxt"
+                    android:elevation="7dp" />
+
+                <TextView
+                    android:text="Sell Number:"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textView21"
+                    android:layout_marginLeft="10dp"
+                    android:background="#000000" />
+
+                <TextView
+                    android:text="TextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/sellNumberTxt"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:id="@+id/targetAndCutLost"
+                android:layout_below="@+id/buyOrSellLL"
+                android:weightSum="4">
+
+                <TextView
+                    android:text="Target"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textView15"
+                    android:background="#000000" />
+
+                <TextView
+                    android:text="Target"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/targetTxt" />
+
+                <TextView
+                    android:text="Cut Lost"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textView18"
+                    android:background="#000000"
+                    android:layout_marginLeft="10dp" />
+
+                <TextView
+                    android:text="cut lost"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/cutLostTxt"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:id="@+id/buyOrSellLL"
+                android:layout_below="@+id/valueLL2"
+                android:weightSum="4">
+
+                <TextView
+                    android:text="Buy Or Sell: "
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textView15"
+                    android:background="#000000" />
+
+                <TextView
+                    android:text="buyOrSellTxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/buyOrSellTxt" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:id="@+id/valueLL2"
+                android:layout_below="@+id/valueLL"
+                android:weightSum="4"
+                android:layout_weight="1">
+
+                <TextView
+                    android:text="TextView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/validDateTxt2"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:text="TextView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/validhighTxt2"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:text="TextView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/validLowTxt2"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:text="TextView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/validTrigerValueTxt2"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:id="@+id/valueLL"
+                android:layout_below="@+id/titleLL"
+                android:weightSum="4">
+
+                <TextView
+                    android:text="TextView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/validDateTxt"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:text="TextView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/validhighTxt"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:text="TextView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/validLowTxt"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:text="TextView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/validTrigerValueTxt"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_below="@+id/textView12"
+                android:id="@+id/titleLL"
+                android:weightSum="4">
+
+                <TextView
+                    android:text="Date"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textView11"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:text="High"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textView13"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:text="Low"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textView14"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:text="Triger Value"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textView19"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+        </RelativeLayout>
+    </ScrollView>
+
 </RelativeLayout>

@@ -13,6 +13,7 @@ import java.util.Date;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import io.realm.RealmResults;
 
 /**
  * Created by Anthony on 9/11/16.
@@ -38,33 +39,37 @@ public class SaveDataToRealm {
         @Override
         public void onHandleIntent(Intent intent) {
             Realm realm = Realm.getDefaultInstance();
-            realm.beginTransaction();
             try {
                 final int date = jsonObject.getInt("Date");
-                final int close = jsonObject.getInt("close");
-                final int high = jsonObject.getInt("high");
-                final int low = jsonObject.getInt("low");
-                final int open = jsonObject.getInt("open");
-                final int volume = jsonObject.getInt("volume");
-                DateData dateData = new DateData();
-                dateData.setDate(date);
-                dateData.setClose(close);
-                dateData.setHigh(high);
-                dateData.setLow(low);
-                dateData.setOpen(open);
-                dateData.setVolume(volume);
-                String stringDate = String.valueOf(date) + " GMT+08:00";
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd z");
-                try {
-                    Date newDate = sdf.parse(stringDate);
-                    String dateAsText = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss z").format(newDate);
-                    Log.i("TAG new date", dateAsText);
-                    dateData.setStrDate(dateAsText);
-                    realm.copyToRealmOrUpdate(dateData);
-                } catch (ParseException e) {
-                    e.printStackTrace();
+
+                DateData result = realm.where(DateData.class).equalTo("Date", date).findFirst();
+                if (result == null) {
+                    final int close = jsonObject.getInt("close");
+                    final int high = jsonObject.getInt("high");
+                    final int low = jsonObject.getInt("low");
+                    final int open = jsonObject.getInt("open");
+                    final int volume = jsonObject.getInt("volume");
+                    realm.beginTransaction();
+                    DateData dateData = new DateData();
+                    dateData.setDate(date);
+                    dateData.setClose(close);
+                    dateData.setHigh(high);
+                    dateData.setLow(low);
+                    dateData.setOpen(open);
+                    dateData.setVolume(volume);
+                    String stringDate = String.valueOf(date) + " GMT+08:00";
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd z");
+                    try {
+                        Date newDate = sdf.parse(stringDate);
+                        String dateAsText = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss z").format(newDate);
+                        Log.i("TAG new date", dateAsText);
+                        dateData.setStrDate(dateAsText);
+                        realm.copyToRealmOrUpdate(dateData);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    realm.commitTransaction();
                 }
-                realm.commitTransaction();
 
 //                realm.executeTransaction(new Realm.Transaction() {
 //                    @Override
@@ -113,25 +118,30 @@ public class SaveDataToRealm {
 
             try {
                 final int timestamp = jsonObject.getInt("Timestamp");
-                final int close = jsonObject.getInt("close");
-                final int high = jsonObject.getInt("high");
-                final int low = jsonObject.getInt("low");
-                final int open = jsonObject.getInt("open");
 
-                realm.executeTransaction(new Realm.Transaction() {
-                    @Override
-                    public void execute(Realm realm) {
-                        HourData hourData = new HourData();
-                        hourData.setTimestamp(timestamp);
-                        hourData.setClose(close);
-                        hourData.setHigh(high);
-                        hourData.setLow(low);
-                        hourData.setOpen(open);
-                        String dateAsText = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss z").format(new Date(timestamp * 1000L));
-                        hourData.setDate(dateAsText);
-                        realm.copyToRealmOrUpdate(hourData);
-                    }
-                });
+                HourData result = realm.where(HourData.class).equalTo("Timestamp", timestamp).findFirst();
+
+                if (result == null) {
+                    final int close = jsonObject.getInt("close");
+                    final int high = jsonObject.getInt("high");
+                    final int low = jsonObject.getInt("low");
+                    final int open = jsonObject.getInt("open");
+
+                    realm.executeTransaction(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            HourData hourData = new HourData();
+                            hourData.setTimestamp(timestamp);
+                            hourData.setClose(close);
+                            hourData.setHigh(high);
+                            hourData.setLow(low);
+                            hourData.setOpen(open);
+                            String dateAsText = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss z").format(new Date(timestamp * 1000L));
+                            hourData.setDate(dateAsText);
+                            realm.copyToRealmOrUpdate(hourData);
+                        }
+                    });
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }

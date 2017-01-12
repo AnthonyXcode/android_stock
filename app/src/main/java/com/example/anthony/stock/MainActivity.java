@@ -1,212 +1,99 @@
 package com.example.anthony.stock;
 
+import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.example.anthony.stock.realmclasses.DateData;
-import com.example.anthony.stock.realmclasses.HourData;
-import com.example.anthony.stock.realmclasses.SaveDataToRealm;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import io.realm.Realm;
-import io.realm.RealmConfiguration;
-import io.realm.RealmResults;
+import com.example.anthony.stock.Bolling.BollingActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    TextView showMsgTxt;
-    Realm realm;
-    SharedPreferences sharedPreferences;
-    SharedPreferences.Editor editor;
-    private Button gotoDetailPageBtn;
+    ListView mainListView;
+    ListViewAdapter listViewAdapter;
+    String[] items = {"All", "MACD", "RSI", "Bolling"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setupLayout();
+        setupClick();
+    }
 
-        RealmConfiguration config = new RealmConfiguration.Builder(this)
-                .deleteRealmIfMigrationNeeded()
-                .build();
-        Realm.setDefaultConfiguration(config);
-        realm = Realm.getDefaultInstance();
-        RealmResults<HourData> results = realm.where(HourData.class).findAll();
-        getHourData();
-        getMonthData();
-        showMsgTxt = (TextView)findViewById(R.id.showMsgTxt);
-        gotoDetailPageBtn = (Button)findViewById(R.id.gotoDetailPageBtn);
-        gotoDetailPageBtn.setOnClickListener(new View.OnClickListener() {
+    private void setupLayout(){
+        mainListView = (ListView)findViewById(R.id.mainListView);
+        listViewAdapter = new ListViewAdapter(this);
+        mainListView.setAdapter(listViewAdapter);
+    }
+
+    private void setupClick(){
+        mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, DetailPageActivity.class);
-                startActivity(intent);
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                String name = items[i];
+                if (name.equals("All")){
+                    Intent intent = new Intent(MainActivity.this, DetailPageActivity.class);
+                    startActivity(intent);
+                }else if (name.equals("Bolling")){
+                    Intent intent = new Intent(MainActivity.this, BollingActivity.class);
+                    startActivity(intent);
+                }
             }
         });
     }
 
-    private void getHourData(){
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        StringRequest stringRequest = new StringRequest("http://chartapi.finance.yahoo.com/instrument/1.0/%5EHSI/chartdata;type=quote;range=15d/json",
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        response = response.replace("finance_charts_json_callback( ","");
-                        response = response.replace(" )", "");
-                        //Log.d("TAG", response);
-                        //showMsgTxt.setText(response);
-                        try {
-                            showMsgTxt.setText(response);
-                            JSONObject initialResponse = new JSONObject(response);
-                            JSONArray dataArray = initialResponse.getJSONArray("series");
-                            int p = dataArray.length();
-                            for (int i = p-1; i >= 0; i--){
-                                SaveDataToRealm.SaveHourData saveHourData = new SaveDataToRealm.SaveHourData("SaveHour", dataArray.getJSONObject(i));
-                                saveHourData.onHandleIntent(getIntent());
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("TAG", error.getMessage(), error);
-            }
-        });
-        requestQueue.add(stringRequest);
-    }
+    private class ListViewAdapter extends BaseAdapter{
 
-    private void saveHourDataToReal(JSONObject jsonObject){
-        try {
-            final int timestamp = jsonObject.getInt("Timestamp");
-            final int close = jsonObject.getInt("close");
-            final int high = jsonObject.getInt("high");
-            final int low = jsonObject.getInt("low");
-            final int open = jsonObject.getInt("open");
-
-            realm.executeTransactionAsync(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    HourData hourData = new HourData();
-                    hourData.setTimestamp(timestamp);
-                    hourData.setClose(close);
-                    hourData.setHigh(high);
-                    hourData.setLow(low);
-                    hourData.setOpen(open);
-                    String dateAsText = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss z").format(new Date(timestamp * 1000L));
-                    hourData.setDate(dateAsText);
-                    realm.copyToRealmOrUpdate(hourData);
-                }
-            }, new Realm.Transaction.OnSuccess() {
-                @Override
-                public void onSuccess() {
-
-                }
-            }, new Realm.Transaction.OnError() {
-                @Override
-                public void onError(Throwable error) {
-
-                }
-            });
-        } catch (JSONException e) {
-            e.printStackTrace();
+        LayoutInflater layoutInflater;
+        public ListViewAdapter(Context context) {
+            layoutInflater = LayoutInflater.from(context);
         }
-    }
 
+        @Override
+        public int getCount() {
+            return items.length;
+        }
 
-    private void getMonthData(){
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        StringRequest stringRequest = new StringRequest("http://chartapi.finance.yahoo.com/instrument/1.0/%5EHSI/chartdata;type=quote;range=3y/json",
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        response = response.replace("finance_charts_json_callback( ","");
-                        response = response.replace(" )", "");
-                        //Log.d("TAG", response);
-                        //showMsgTxt.setText(response);
-                        try {
-                            showMsgTxt.setText(response);
-                            JSONObject initialResponse = new JSONObject(response);
-                            JSONArray dataArray = initialResponse.getJSONArray("series");
-                            for (int i = 0, p = dataArray.length(); i<p; i++){
-                                SaveDataToRealm.SaveDateDate saveDateDate = new SaveDataToRealm.SaveDateDate("saveDate",dataArray.getJSONObject(i));
-                                saveDateDate.onHandleIntent(getIntent());
-                                //saveDateDataToReal(dataArray.getJSONObject(i));
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("TAG", error.getMessage(), error);
+        @Override
+        public Object getItem(int i) {
+            return items[i];
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return i;
+        }
+
+        @Override
+        public View getView(int i, View view, ViewGroup viewGroup) {
+            ViewHolder viewHolder;
+            if (view == null){
+                viewHolder = new ViewHolder();
+                view = layoutInflater.inflate(R.layout.layout_main, null);
+                initView(viewHolder, view);
+                view.setTag(viewHolder);
+            }else {
+                viewHolder = (ViewHolder) view.getTag();
             }
-        });
-        requestQueue.add(stringRequest);
-    }
+            String name = items[i];
+            viewHolder.mainItemTxt.setText(name);
+            return view;
+        }
 
-    private void saveDateDataToReal(JSONObject jsonObject){
-        try {
-            final int date = jsonObject.getInt("Date");
-            final int close = jsonObject.getInt("close");
-            final int high = jsonObject.getInt("high");
-            final int low = jsonObject.getInt("low");
-            final int open = jsonObject.getInt("open");
-            final int volume = jsonObject.getInt("volume");
+        private void initView(ViewHolder holder, View view){
+            holder.mainItemTxt = (TextView)view.findViewById(R.id.mainItemTxt);
+        }
 
-            realm.executeTransactionAsync(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    DateData dateData = new DateData();
-                    dateData.setDate(date);
-                    dateData.setClose(close);
-                    dateData.setHigh(high);
-                    dateData.setLow(low);
-                    dateData.setOpen(open);
-                    dateData.setVolume(volume);
-                    String stringDate = String.valueOf(date)+" GMT+08:00";
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd z");
-                    try {
-                        Date newDate = sdf.parse(stringDate);
-                        Log.i("TAG new date", String.valueOf(newDate));
-                        dateData.setStrDate(String.valueOf(newDate));
-                        realm.copyToRealmOrUpdate(dateData);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }, new Realm.Transaction.OnSuccess() {
-                @Override
-                public void onSuccess() {
-
-                }
-            }, new Realm.Transaction.OnError() {
-                @Override
-                public void onError(Throwable error) {
-
-                }
-            });
-        } catch (JSONException e) {
-            e.printStackTrace();
+        private class ViewHolder{
+            TextView mainItemTxt;
         }
     }
 }
