@@ -132,6 +132,7 @@ public class BollingActivity extends AppCompatActivity {
             bItem.setUpper(upperDev);
             bItem.setLower5Percent((int) ((upperDev -lowerDev) * 0.05 + lowerDev));
             bItem.setUpper5Percent((int) (upperDev - (upperDev - lowerDev) * 0.05));
+            Log.i(TAG, "handleResult: "+ String.valueOf((upperDev - lowerDev) * 0.05));
             bItem.setMA20(MA20);
             bItem.setTypicalC(typicalC.get(19));
             bItem.setOpen(data.getOpen());
@@ -165,14 +166,18 @@ public class BollingActivity extends AppCompatActivity {
         for (int i = 0; i < bollingItems.size() - validDays; i++){
             BollingItem itemN = bollingItems.get(i);
             BollingItem itemN1 = bollingItems.get(i+1);
-            if (itemN.getTypicalC() < itemN.getLower5Percent()){
+            if (itemN.getTypicalC() < itemN.getLower() + 80
+                    && Math.abs(itemN.getUpper() - itemN.getLower()) > 1300
+                    && itemN1.getOpen() > itemN.getLower()){
                 if (itemN.getClose() > itemN.getOpen()){
                     buy = true;
                     itemN1.setBuy(true);
                     bollingItems.set(i + 1, itemN1);
                 }
-            }else if (itemN.getTypicalC() > itemN.getUpper5Percent()){
-                if (itemN.getOpen() > itemN.getClose()){
+            }else if (itemN.getTypicalC() > itemN.getUpper() - 80
+                    && Math.abs(itemN.getUpper() - itemN.getLower()) > 1300
+                    && itemN1.getOpen() > itemN.getUpper()){
+                if (itemN.getOpen() < itemN.getUpper()){
                     sell = true;
                     itemN1.setSell(true);
                     bollingItems.set(i+1, itemN1);
@@ -341,24 +346,21 @@ public class BollingActivity extends AppCompatActivity {
                     if (itemN1.getClose() > itemN1.getOpen()){
                         buyTxt.setBackgroundColor(Color.RED);
                         sellTxt.setBackgroundColor(Color.GRAY);
-                        cutForeTxt.setText(String.valueOf(itemN1.getLower()));
-                        tarForeTxt.setText(String.valueOf(itemN1.getMA20()));
                     }
                 }else if (itemN1.getTypicalC() > itemN1.getUpper5Percent()){
                     if (itemN1.getOpen() > itemN1.getClose()){
                         sellTxt.setBackgroundColor(Color.RED);
                         buyTxt.setBackgroundColor(Color.GRAY);
-                        cutForeTxt.setText(String.valueOf(itemN1.getUpper()));
-                        tarForeTxt.setText(String.valueOf(itemN1.getMA20()));
                     }
                 }else {
                     sellTxt.setBackgroundColor(Color.GRAY);
                     buyTxt.setBackgroundColor(Color.GRAY);
-                    cutForeTxt.setText("");
-                    tarForeTxt.setText("");
                 }
+                cutForeTxt.setText(String.valueOf(itemN1.getUpper()));
+                tarForeTxt.setText(String.valueOf(itemN1.getMA20()));
             }
         }
+        adapter.notifyDataSetChanged();
     }
 
     private void printOutResult(){
