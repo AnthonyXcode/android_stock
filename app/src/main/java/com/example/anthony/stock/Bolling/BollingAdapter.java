@@ -73,12 +73,18 @@ public class BollingAdapter extends BaseAdapter {
     }
 
     private void setColor(ViewHolder holder, BollingItem item){
+        holder.openItemViewTxt.setTextColor(Color.DKGRAY);
+
         if (item.isBuy()){
-            holder.openItemViewTxt.setTextColor(Color.GREEN);
+            holder.closeItemViewTxt.setTextColor(Color.GREEN);
         }else if (item.isSell()){
-            holder.openItemViewTxt.setTextColor(Color.GREEN);
+            holder.closeItemViewTxt.setTextColor(Color.GREEN);
+        }else if (item.isNormalBuy()){
+            holder.closeItemViewTxt.setTextColor(Color.YELLOW);
+        } else if (item.isNormalSell()){
+            holder.closeItemViewTxt.setTextColor(Color.YELLOW);
         }else {
-            holder.openItemViewTxt.setTextColor(Color.DKGRAY);
+            holder.closeItemViewTxt.setTextColor(Color.DKGRAY);
         }
 
         if (item.isCutLostSell()){
@@ -97,13 +103,13 @@ public class BollingAdapter extends BaseAdapter {
             holder.MA20ItemViewTxt.setTextColor(Color.DKGRAY);
         }
 
-        if (item.isNormalBuy()){
-            holder.closeItemViewTxt.setTextColor(Color.YELLOW);
-        }else if (item.isNormalSell()){
-            holder.closeItemViewTxt.setTextColor(Color.YELLOW);
-        }else {
-            holder.closeItemViewTxt.setTextColor(Color.DKGRAY);
-        }
+//        if (item.isNormalBuy()){
+//            holder.closeItemViewTxt.setTextColor(Color.YELLOW);
+//        }else if (item.isNormalSell()){
+//            holder.closeItemViewTxt.setTextColor(Color.YELLOW);
+//        }else {
+//            holder.closeItemViewTxt.setTextColor(Color.DKGRAY);
+//        }
     }
 
     private void initView(ViewHolder holder, View view){

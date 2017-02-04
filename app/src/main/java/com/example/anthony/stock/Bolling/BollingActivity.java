@@ -104,6 +104,7 @@ public class BollingActivity extends AppCompatActivity {
                 validDays = Integer.parseInt(validDaysEditTxt.getText().toString());
                 cutPercentage = Double.parseDouble(cutPercentageEditText.getText().toString());
                 analysize(validDays);
+                setupForecast();
             }
         });
     }
@@ -166,18 +167,14 @@ public class BollingActivity extends AppCompatActivity {
         for (int i = 0; i < bollingItems.size() - validDays; i++){
             BollingItem itemN = bollingItems.get(i);
             BollingItem itemN1 = bollingItems.get(i+1);
-            if (itemN.getTypicalC() < itemN.getLower() + 80
-                    && Math.abs(itemN.getUpper() - itemN.getLower()) > 1300
-                    && itemN1.getOpen() > itemN.getLower()){
-                if (itemN.getClose() > itemN.getOpen()){
+            if (itemN.getTypicalC() < itemN.getLower5Percent()){
+                if (itemN1.getClose() > itemN1.getOpen()){
                     buy = true;
                     itemN1.setBuy(true);
                     bollingItems.set(i + 1, itemN1);
                 }
-            }else if (itemN.getTypicalC() > itemN.getUpper() - 80
-                    && Math.abs(itemN.getUpper() - itemN.getLower()) > 1300
-                    && itemN1.getOpen() > itemN.getUpper()){
-                if (itemN.getOpen() < itemN.getUpper()){
+            }else if (itemN.getTypicalC() > itemN.getUpper5Percent()){
+                if (itemN1.getOpen() > itemN1.getClose()){
                     sell = true;
                     itemN1.setSell(true);
                     bollingItems.set(i+1, itemN1);
@@ -203,25 +200,25 @@ public class BollingActivity extends AppCompatActivity {
 
                 double SD = (previousItem.getUpper() - previousItem.getMA20()) / 2;
                 cutlostNumber += 1;
-                cutlostValue += previousItem.getLower() - SD * cutPercentage  - itemN1.getOpen();
+                cutlostValue += previousItem.getLower()  - itemN1.getClose();
 
                 totalWinNumber -= 1;
-                totalwinValue += previousItem.getLower() - SD * cutPercentage - itemN1.getOpen();
+                totalwinValue += previousItem.getLower()  - itemN1.getClose();
 
                 movingItem.setCutLostBuy(true);
                 movingItem.setTotalWin(totalwinValue);
+                movingItem.setCutlostValue(previousItem.getLower());
                 bollingItems.set(j, movingItem);
-                movingItem.setCutlostValue((int) (previousItem.getLower() - SD * cutPercentage));
                 return;
             }
 
             if (movingItem.getDayHigh() > previousItem.getMA20()){
                 buy = false;
                 meetTargetNumber += 1;
-                meetTargetValue += previousItem.getMA20() - itemN1.getOpen();
+                meetTargetValue += previousItem.getMA20() - itemN1.getClose();
 
                 totalWinNumber += 1;
-                totalwinValue += previousItem.getMA20() - itemN1.getOpen();
+                totalwinValue += previousItem.getMA20() - itemN1.getClose();
                 movingItem.setCompensateBuy(true);
                 movingItem.setTotalWin(totalwinValue);
                 bollingItems.set(j, movingItem);
@@ -230,16 +227,16 @@ public class BollingActivity extends AppCompatActivity {
 
             if (j == i + validDays - 1){
                 buy = false;
-                if (movingItem.getClose() > itemN1.getOpen()){
+                if (movingItem.getClose() > itemN1.getClose()){
                     winNumber += 1;
                     totalWinNumber += 1;
-                    winValue += movingItem.getClose() - itemN1.getOpen();
+                    winValue += movingItem.getClose() - itemN1.getClose();
                 }else {
                     lostNumber += 1;
                     totalWinNumber -= 1;
-                    lostValue += itemN1.getOpen() - movingItem.getClose();
+                    lostValue += itemN1.getClose() - movingItem.getClose();
                 }
-                totalwinValue += movingItem.getClose() - itemN1.getOpen();
+                totalwinValue += movingItem.getClose() - itemN1.getClose();
                 movingItem.setNormalBuy(true);
                 movingItem.setTotalWin(totalwinValue);
                 bollingItems.set(j, movingItem);
@@ -257,10 +254,10 @@ public class BollingActivity extends AppCompatActivity {
                 int SD = (previousItem.getUpper() - previousItem.getMA20()) / 2;
 
                 cutlostNumber += 1;
-                cutlostValue += (int) (itemN1.getOpen() - (previousItem.getUpper() + SD * cutPercentage));
+                cutlostValue += (int) (itemN1.getClose() - (previousItem.getUpper() + SD * cutPercentage));
 
                 totalWinNumber -= 1;
-                totalwinValue += (int) (itemN1.getOpen() - (previousItem.getUpper() + SD * cutPercentage));
+                totalwinValue += (int) (itemN1.getClose() - (previousItem.getUpper() + SD * cutPercentage));
 
                 movingItem.setCutLostSell(true);
                 movingItem.setTotalWin(totalwinValue);
@@ -272,10 +269,10 @@ public class BollingActivity extends AppCompatActivity {
             if (movingItem.getDayHigh() < previousItem.getMA20()){
                 sell = false;
                 meetTargetNumber += 1;
-                meetTargetValue += itemN1.getOpen() - previousItem.getMA20();
+                meetTargetValue += itemN1.getClose() - previousItem.getMA20();
 
                 totalWinNumber += 1;
-                totalwinValue += itemN1.getOpen() - previousItem.getMA20();
+                totalwinValue += itemN1.getClose() - previousItem.getMA20();
 
                 movingItem.setCompensateSell(true);
                 movingItem.setTotalWin(totalwinValue);
@@ -284,17 +281,17 @@ public class BollingActivity extends AppCompatActivity {
             }
 
             if (j == i + validDays - 1){
-                if (itemN1.getOpen() > movingItem.getClose()){
+                if (itemN1.getClose() > movingItem.getClose()){
                     winNumber += 1;
                     totalWinNumber += 1;
-                    winValue += itemN1.getOpen() - movingItem.getClose();
+                    winValue += itemN1.getClose() - movingItem.getClose();
                 }else {
                     lostNumber += 1;
                     totalWinNumber -= 1;
-                    lostValue += movingItem.getClose() - itemN1.getOpen();
+                    lostValue += movingItem.getClose() - itemN1.getClose();
                 }
 
-                totalwinValue += itemN1.getOpen() - movingItem.getClose();
+                totalwinValue += itemN1.getClose() - movingItem.getClose();
 
                 movingItem.setNormalSell(true);
                 movingItem.setTotalWin(totalwinValue);
@@ -326,37 +323,42 @@ public class BollingActivity extends AppCompatActivity {
     }
 
     private void setupForecast(){
+        int isbuy = 0;
         for(int i = 0; i <  validDays; i++){
             if (i != validDays - 1) {
-                BollingItem itemN = bollingItems.get(bollingItems.size() - validDays + i - 1);
-                if (itemN.getTypicalC() < itemN.getLower5Percent()) {
-                    if (itemN.getClose() > itemN.getOpen()) {
-                        itemN.setBuy(true);
-                        bollingItems.set(bollingItems.size() - validDays + i - 1, itemN);
+                BollingItem itemN = bollingItems.get(bollingItems.size() - validDays + i -1);
+                BollingItem itemN1 = bollingItems.get(bollingItems.size() - validDays + i);
+                if (itemN.getTypicalC() < itemN.getLower5Percent()){
+                    if (itemN1.getClose() > itemN1.getOpen()){
+                        buy = true;
+                        itemN1.setBuy(true);
+                        bollingItems.set(bollingItems.size() - validDays + i, itemN1);
+                        isbuy = 1;
                     }
-                } else if (itemN.getTypicalC() > itemN.getUpper5Percent()) {
-                    if (itemN.getOpen() > itemN.getClose()) {
-                        itemN.setSell(true);
-                        bollingItems.set(bollingItems.size() - validDays + i - 1, itemN);
+                }else if (itemN.getTypicalC() > itemN.getUpper5Percent()){
+                    if (itemN1.getOpen() > itemN1.getClose()){
+                        sell = true;
+                        itemN1.setSell(true);
+                        bollingItems.set(bollingItems.size() - validDays + i, itemN1);
+                        isbuy = 2;
                     }
                 }
             }else if (i == validDays - 1){
                 BollingItem itemN1 = bollingItems.get(bollingItems.size() - validDays + i);
-                if (itemN1.getTypicalC() < itemN1.getLower5Percent()){
-                    if (itemN1.getClose() > itemN1.getOpen()){
-                        buyTxt.setBackgroundColor(Color.RED);
-                        sellTxt.setBackgroundColor(Color.GRAY);
-                    }
-                }else if (itemN1.getTypicalC() > itemN1.getUpper5Percent()){
-                    if (itemN1.getOpen() > itemN1.getClose()){
-                        sellTxt.setBackgroundColor(Color.RED);
-                        buyTxt.setBackgroundColor(Color.GRAY);
-                    }
-                }else {
+                if (isbuy == 0){
                     sellTxt.setBackgroundColor(Color.GRAY);
                     buyTxt.setBackgroundColor(Color.GRAY);
+                    cutForeTxt.setText("");
+                }else if (isbuy == 1){
+                    buyTxt.setBackgroundColor(Color.RED);
+                    sellTxt.setBackgroundColor(Color.GRAY);
+                    cutForeTxt.setText(String.valueOf(itemN1.getLower()));
+                }else if (isbuy == 2){
+                    buyTxt.setBackgroundColor(Color.GRAY);
+                    sellTxt.setBackgroundColor(Color.RED);
+                    cutForeTxt.setText(String.valueOf(itemN1.getUpper()));
                 }
-                cutForeTxt.setText(String.valueOf(itemN1.getUpper()));
+
                 tarForeTxt.setText(String.valueOf(itemN1.getMA20()));
             }
         }
