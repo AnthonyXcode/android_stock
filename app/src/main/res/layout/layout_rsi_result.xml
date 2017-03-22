@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:text="RSI day: "
+            android:gravity="right|center_vertical"
+            android:textSize="18sp" />
+        <EditText
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:hint="RSI day"
+            android:id="@+id/rsiDayEditTxt"
+            android:inputType="number"
+            android:text="11"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:text="Valid Days: "
+            android:gravity="right|center_vertical"
+            android:textSize="18sp" />
+        <EditText
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:hint="Valid Days"
+            android:id="@+id/validDayEditTxt"
+            android:inputType="number"
+            android:text="8"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:text="Target Value: "
+            android:gravity="right|center_vertical"
+            android:textSize="18sp" />
+        <EditText
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:hint="Valid Days"
+            android:id="@+id/targetValueEditTxt"
+            android:inputType="number"
+            android:text="250"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:text="Valid RSI: "
+            android:gravity="right|center_vertical"
+            android:textSize="18sp" />
+        <EditText
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:hint="Valid RSI"
+            android:id="@+id/validRsiTxt"
+            android:inputType="number"
+            android:text="30"/>
+        <Button
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:id="@+id/rsiDayBtn"
+            android:text="OK" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:text="Cut Lost Price: "
+            android:gravity="right|center_vertical"
+            android:textSize="18sp" />
+        <EditText
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:id="@+id/priceEditTxt"
+            android:inputType="number"
+            android:text=""/>
+        <Button
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:id="@+id/priceOKBtn"
+            android:text="OK" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="RSI"
+            android:gravity="center"
+            android:id="@+id/cutLostRsiTxt"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:text=""
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/rsiResultTxt" />
+    </LinearLayout>
+</LinearLayout>

@@ -13,6 +13,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.anthony.stock.Bolling.BollingActivity;
+import com.example.anthony.stock.RSI.RSIActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -44,6 +45,9 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intent);
                 }else if (name.equals("Bolling")){
                     Intent intent = new Intent(MainActivity.this, BollingActivity.class);
+                    startActivity(intent);
+                }else if (name.equals("RSI")){
+                    Intent intent = new Intent(MainActivity.this, RSIActivity.class);
                     startActivity(intent);
                 }
             }

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/content_rsi"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:id="@+id/RSITitleLL"
+        android:layout_height="30dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:text="Date"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/Date" />
+
+        <TextView
+            android:text="RSI"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView26" />
+
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="Buy"/>
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="Sell"/>
+    </LinearLayout>
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/RSITitleLL"
+        android:id="@+id/RSIListview"
+        android:layout_height="200dp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/RSIListview">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+            <include layout="@layout/layout_rsi_result"/>
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

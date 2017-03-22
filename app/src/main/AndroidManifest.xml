@@ -19,7 +19,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Bolling.BollingActivity"></activity>
+        <activity android:name=".Bolling.BollingActivity" />
+        <activity
+            android:name=".RSI.RSIActivity"
+            android:label="@string/title_activity_rsi"
+            android:theme="@style/NewAppTheme"></activity>
     </application>
 
 </manifest>

@@ -68,6 +68,6 @@
             android:layout_below="@+id/bollingLL"
             android:layout_height="300dp" />
 
-        <include layout="@layout/layout_result"></include>
+        <include layout="@layout/layout_bolling_result"></include>
     </LinearLayout>
 </RelativeLayout>

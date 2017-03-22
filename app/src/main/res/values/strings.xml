@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Stock</string>
+    <string name="title_activity_rsi">RSIActivity</string>
 </resources>
