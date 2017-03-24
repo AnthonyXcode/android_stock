@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
-public class DetailPageActivity extends AppCompatActivity {
+public class DetailPageActivity extends BaseApplication {
 
     ListView inhourListView;
     ListView dateListView;

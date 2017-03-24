@@ -2,6 +2,7 @@ package com.example.anthony.stock.RSI;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,11 +22,13 @@ import java.util.ArrayList;
 public class RSIAdapter extends BaseAdapter {
     ArrayList<RSIItem> items;
     LayoutInflater inflater;
+    Context context;
     int validRsi = 30;
 
     public RSIAdapter(Context context) {
         this.items = new ArrayList<>();
         inflater = LayoutInflater.from(context);
+        this.context = context;
     }
 
     @Override
@@ -63,11 +66,11 @@ public class RSIAdapter extends BaseAdapter {
         holder.RsiDateTxt.setText(item.getDay().substring(0, 10));
         holder.RsiTxt.setText(String.valueOf((int) item.getRsi()));
         if (item.getRsi() > 100 - validRsi){
-            holder.RsiTxt.setBackgroundColor(Color.RED);
+            holder.RsiTxt.setBackgroundColor(ContextCompat.getColor(context, R.color.readySellBlue));
         }else if (item.getRsi() < validRsi){
-            holder.RsiTxt.setBackgroundColor(Color.GREEN);
+            holder.RsiTxt.setBackgroundColor(ContextCompat.getColor(context, R.color.readyBuyRed));
         }else {
-            holder.RsiTxt.setBackgroundColor(Color.DKGRAY);
+            holder.RsiTxt.setBackgroundColor(Color.LTGRAY);
         }
 
         holder.RsiBuyTxt.setText(String.valueOf(item.getBuyPrice()));

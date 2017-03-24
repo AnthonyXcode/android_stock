@@ -19,7 +19,7 @@ import org.json.JSONObject;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
-public class Splash extends AppCompatActivity {
+public class Splash extends BaseApplication {
 
     Realm realm;
     private String TAG = "Splash";

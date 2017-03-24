@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.example.anthony.stock.Bolling.BollingActivity;
 import com.example.anthony.stock.RSI.RSIActivity;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseApplication {
 
     ListView mainListView;
     ListViewAdapter listViewAdapter;

@@ -11,11 +11,13 @@ import android.widget.TextView;
 
 import com.example.anthony.stock.R;
 import com.example.anthony.stock.realmclasses.DateData;
+import com.example.anthony.stock.realmclasses.HourData;
 
 import java.util.ArrayList;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 public class RSIActivity extends AppCompatActivity {
     private int rsiDays = 11;
@@ -25,6 +27,7 @@ public class RSIActivity extends AppCompatActivity {
     private ListView RSIListview;
     private Realm realm;
     private RealmResults<DateData> allDayRealmDatas;
+    private RealmResults<HourData> hourDatas;
     private ArrayList<RSIItem> allItems;
     private RSIAdapter adapter;
     private TextView rsiResultTxt;
@@ -37,7 +40,6 @@ public class RSIActivity extends AppCompatActivity {
     private Button priceOKBtn;
     private TextView cutLostRsiTxt;
     private int target = 250;
-
     private int totalWin = 0;
     private int totalTray = 0;
     private int winNumber = 0;
@@ -119,6 +121,7 @@ public class RSIActivity extends AppCompatActivity {
     private void setupTools(){
         realm = Realm.getDefaultInstance();
         allDayRealmDatas = realm.where(DateData.class).findAll().sort("Date");
+        hourDatas = realm.where(HourData.class).findAll().sort("Timestamp", Sort.DESCENDING);
         allItems = new ArrayList<>();
         adapter = new RSIAdapter(this);
         RSIListview.setAdapter(adapter);
@@ -138,12 +141,7 @@ public class RSIActivity extends AppCompatActivity {
         allItems.clear();
         for(DateData realmItem:allDayRealmDatas){
             Log.i(TAG, "setupItems: " + realmItem.getStrDate());
-            RSIItem item = new RSIItem();
-            item.setDay(realmItem.getStrDate());
-            item.setDayOpen(realmItem.getOpen());
-            item.setDayClose(realmItem.getClose());
-            item.setDayLow(realmItem.getLow());
-            item.setDayHigh(realmItem.getHigh());
+            RSIItem item = initItme(realmItem.getStrDate(), realmItem.getOpen(), realmItem.getClose(), realmItem.getLow(), realmItem.getHigh());
             if (allItems.size() < rsiDays){
                 allItems.add(item);
                 continue;
@@ -170,25 +168,62 @@ public class RSIActivity extends AppCompatActivity {
                 item.setDropAverage(((double) totalDrop)/rsiDays);
                 item.setRsi(countRSI(totalRaise, totalDrop));
             }else {
-                RSIItem previousItme = allItems.get(allItems.size() - 1);
-                double different = item.getDayClose() - previousItme.getDayClose();
-                double raiseAverage;
-                double dropAverage;
-                if (different > 0){
-                    raiseAverage = ((previousItme.getRaiseAverage() * (rsiDays - 1)) + different)/rsiDays;
-                    dropAverage = previousItme.getDropAverage() * (rsiDays - 1) / rsiDays;
-                }else {
-                    raiseAverage = previousItme.getRaiseAverage() * (rsiDays - 1)/rsiDays;
-                    dropAverage = (previousItme.getDropAverage() * (rsiDays -1) + Math.abs(different)) / rsiDays;
-                }
-
-                double rsi = (raiseAverage / (raiseAverage + dropAverage))*100;
-                item.setRaiseAverage(raiseAverage);
-                item.setDropAverage(dropAverage);
-                item.setRsi(rsi);
+                item = modifyItem(item);
             }
             allItems.add(item);
         }
+
+        String date = hourDatas.get(0).getDate();
+        int open = 0;
+        int close = hourDatas.get(0).getClose();
+        int low = hourDatas.get(0).getLow();
+        int high = hourDatas.get(0).getHigh();
+        for (HourData hourData:hourDatas){
+            if (hourData.getDate().contains(date)){
+                open = hourData.getOpen();
+                if (low > hourData.getLow()){
+                    low = hourData.getLow();
+                }
+                if (high < hourData.getHigh()){
+                    high = hourData.getHigh();
+                }
+            }else {
+                break;
+            }
+        }
+        RSIItem item = initItme(date, open, close, low, high);
+        Log.i(TAG, "setupItems: " + item.getDay());
+        item = modifyItem(item);
+        allItems.add(item);
+    }
+
+    private RSIItem initItme (String day, int dayOpen, int dayClose, int dayLow, int dayHigh){
+        RSIItem item = new RSIItem();
+        item.setDay(day);
+        item.setDayOpen(dayOpen);
+        item.setDayClose(dayClose);
+        item.setDayLow(dayLow);
+        item.setDayHigh(dayHigh);
+        return item;
+    }
+
+    private RSIItem modifyItem(RSIItem item){
+        RSIItem previousItme = allItems.get(allItems.size() - 1);
+        double different = item.getDayClose() - previousItme.getDayClose();
+        double raiseAverage;
+        double dropAverage;
+        if (different > 0){
+            raiseAverage = ((previousItme.getRaiseAverage() * (rsiDays - 1)) + different)/rsiDays;
+            dropAverage = previousItme.getDropAverage() * (rsiDays - 1) / rsiDays;
+        }else {
+            raiseAverage = previousItme.getRaiseAverage() * (rsiDays - 1)/rsiDays;
+            dropAverage = (previousItme.getDropAverage() * (rsiDays -1) + Math.abs(different)) / rsiDays;
+        }
+        double rsi = (raiseAverage / (raiseAverage + dropAverage))*100;
+        item.setRaiseAverage(raiseAverage);
+        item.setDropAverage(dropAverage);
+        item.setRsi(rsi);
+        return item;
     }
 
     private int countRSI(double totalRaise, double totalDrop){
