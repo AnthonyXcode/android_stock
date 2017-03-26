@@ -20,8 +20,8 @@ import io.realm.RealmResults;
 import io.realm.Sort;
 
 public class RSIActivity extends AppCompatActivity {
-    private int rsiDays = 11;
-    private int validDays = 8;
+    private int rsiDays = 13;
+    private int validDays = 6;
     private double validRSI = 30;
     private String TAG = "RSIActivity";
     private ListView RSIListview;
@@ -39,7 +39,7 @@ public class RSIActivity extends AppCompatActivity {
     private EditText priceEditTxt;
     private Button priceOKBtn;
     private TextView cutLostRsiTxt;
-    private int target = 250;
+    private int target = 800;
     private int totalWin = 0;
     private int totalTray = 0;
     private int winNumber = 0;
@@ -57,7 +57,6 @@ public class RSIActivity extends AppCompatActivity {
         setupClick();
         analysis();
         printResult();
-        Log.i(TAG, "onCreate: " + rsiDays + " " + validRSI + " " + validDays + " " + target);
         predictPrice();
     }
 
@@ -72,6 +71,10 @@ public class RSIActivity extends AppCompatActivity {
         priceEditTxt = (EditText)findViewById(R.id.priceEditTxt);
         priceOKBtn = (Button)findViewById(R.id.priceOKBtn);
         cutLostRsiTxt = (TextView)findViewById(R.id.cutLostRsiTxt);
+        rsiDayEditTxt.setText(String.valueOf(rsiDays));
+        validRsiTxt.setText(String.valueOf((int) validRSI));
+        validDayEditTxt.setText(String.valueOf(validDays));
+        targetValueEditTxt.setText(String.valueOf(target));
     }
 
     private void setupClick(){
@@ -239,89 +242,92 @@ public class RSIActivity extends AppCompatActivity {
                 secondItem.setSell(true);
                 countWinAndLostForSell(i + 1);
                 totalTray += 1;
-            }else {
-                secondItem.setSell(false);
-            }
-
-            if (firstItem.getRsi() < validRSI && secondItem.getRsi() > validRSI){
+            }else if (firstItem.getRsi() < validRSI && secondItem.getRsi() > validRSI){
                 secondItem.setBuy(true);
                 countWinAndLostForBuy(i + 1);
                 totalTray += 1;
-            }else {
+            } else {
                 secondItem.setBuy(false);
-            }
-            allItems.set(i + 1, secondItem);
-        }
-    }
-    private void countWinAndLostForBuy(int position){
-        if (position > allItems.size() - validDays) return;
-        RSIItem buyItem = allItems.get(position + 1);
-        buyItem.setBuyPrice(buyItem.getDayOpen());
-        allItems.set(position + 1, buyItem);
-        for (int i = 2; i < validDays; i++){
-            RSIItem movingItem = allItems.get(position + i);
-            if (movingItem.getDayHigh() - buyItem.getDayOpen() > target){
-                totalWin += target;
-                meetTarget += 1;
-                movingItem.setSellPrice(buyItem.getDayOpen() + target);
-                allItems.set(position + i, movingItem);
-                break;
-            }
-
-            if (movingItem.getRsi() < validRSI){
-                totalWin -= movingItem.getDayClose() - buyItem.getDayOpen();
-                cutLost += 1;
-                movingItem.setSellPrice(movingItem.getDayClose());
-                allItems.set(position + i, movingItem);
-                break;
-            }
-
-            if (i == validDays - 1){
-                totalWin += movingItem.getDayClose() - buyItem.getDayOpen();
-                if (movingItem.getDayClose() > buyItem.getDayOpen()){
-                    winNumber += 1;
-                }else {
-                    lostNumber += 1;
-                }
-                movingItem.setSellPrice(movingItem.getDayClose());
-                allItems.set(position + 1, movingItem);
-                break;
+                secondItem.setSell(false);
             }
         }
         adapter.addAll(allItems, (int) validRSI);
         RSIListview.setSelection(RSIListview.getCount());
     }
+    private void countWinAndLostForBuy(int position){
+        RSIItem buyItem = allItems.get(position);
+        buyItem.setBuyPrice(buyItem.getDayClose());
 
-    private void countWinAndLostForSell(int position){
-        if (position > allItems.size() - validDays) return;
-        RSIItem sellItem = allItems.get(position + 1);
-        sellItem.setSellPrice(sellItem.getDayOpen());
-        allItems.set(position + 1, sellItem);
-        for (int i = 2; i < validDays ; i++){
-            RSIItem movingItem = allItems.get(position + i);
-            if (sellItem.getDayOpen() - movingItem.getDayLow() > target){
+        loop:for (int i = 1; i < validDays; i++){
+            RSIItem movingItem;
+            try {
+                movingItem = allItems.get(position + i);
+            }catch (Exception ex){
+                break loop;
+            }
+            if (movingItem.getDayHigh() - buyItem.getDayClose() > target){
                 totalWin += target;
                 meetTarget += 1;
-                movingItem.setBuyPrice(sellItem.getDayOpen() - target);
-                break;
+                movingItem.setSellPrice(buyItem.getDayClose() + target);
+                break loop;
             }
 
-            if (movingItem.getRsi() > 100 - validRSI){
-                totalWin -= sellItem.getDayOpen() - movingItem.getDayClose();
-                cutLost += 1;
-                movingItem.setBuyPrice(movingItem.getDayClose());
-                break;
-            }
+//            if (movingItem.getRsi() < validRSI){
+//                totalWin += movingItem.getDayClose() - buyItem.getDayClose();
+//                cutLost += 1;
+//                movingItem.setSellPrice(movingItem.getDayClose());
+//                break loop;
+//            }
 
             if (i == validDays - 1){
-                totalWin += sellItem.getDayOpen() - movingItem.getDayClose();
-                if (sellItem.getDayOpen() > sellItem.getDayClose()){
+                totalWin += movingItem.getDayClose() - buyItem.getDayClose();
+                if (movingItem.getDayClose() >= buyItem.getDayClose()){
+                    winNumber += 1;
+                }else {
+                    lostNumber += 1;
+                }
+                movingItem.setSellPrice(movingItem.getDayClose());
+                break loop;
+            }
+        }
+    }
+
+    private void countWinAndLostForSell(int position){
+        RSIItem sellItem = allItems.get(position);
+        sellItem.setSellPrice(sellItem.getDayClose());
+
+        loop:for (int i = 1; i < validDays ; i++){
+            RSIItem movingItem;
+            try {
+                movingItem = allItems.get(position + i);
+            }catch (Exception ex){
+                break loop;
+            }
+            if (sellItem.getDayClose() - movingItem.getDayLow() > target){
+                int different = sellItem.getDayClose() - movingItem.getDayOpen();
+                if (different > target) totalWin += different;
+                else totalWin += target;
+                meetTarget += 1;
+                movingItem.setBuyPrice(sellItem.getDayClose() - target);
+                break loop;
+            }
+
+//            if (movingItem.getRsi() > 100 - validRSI){
+//                totalWin += sellItem.getDayClose() - movingItem.getDayClose();
+//                cutLost += 1;
+//                movingItem.setBuyPrice(movingItem.getDayClose());
+//                break loop;
+//            }
+
+            if (i == validDays - 1){
+                totalWin += sellItem.getDayClose() - movingItem.getDayClose();
+                if (sellItem.getDayClose() > movingItem.getDayClose()){
                     winNumber += 1;
                 }else {
                     lostNumber += 1;
                 }
                 movingItem.setBuyPrice(movingItem.getDayClose());
-                break;
+                break loop;
             }
         }
     }

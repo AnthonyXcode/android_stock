@@ -13,13 +13,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.anthony.stock.Bolling.BollingActivity;
+import com.example.anthony.stock.Moving.MovingActivity;
 import com.example.anthony.stock.RSI.RSIActivity;
 
 public class MainActivity extends BaseApplication {
 
     ListView mainListView;
     ListViewAdapter listViewAdapter;
-    String[] items = {"All", "MACD", "RSI", "Bolling"};
+    String[] items = {"All", "MACD", "RSI", "Bolling", "Moving"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +49,9 @@ public class MainActivity extends BaseApplication {
                     startActivity(intent);
                 }else if (name.equals("RSI")){
                     Intent intent = new Intent(MainActivity.this, RSIActivity.class);
+                    startActivity(intent);
+                }else if (name.equals("Moving")){
+                    Intent intent = new Intent(MainActivity.this, MovingActivity.class);
                     startActivity(intent);
                 }
             }

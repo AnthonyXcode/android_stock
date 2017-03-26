@@ -25,6 +25,7 @@
             android:name=".RSI.RSIActivity"
             android:label="@string/title_activity_rsi"
             android:theme="@style/NewAppTheme" />
+        <activity android:name=".Moving.MovingActivity"></activity>
     </application>
 
 </manifest>
