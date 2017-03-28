@@ -14,36 +14,41 @@
             android:id="@+id/crossRsiDateTxt"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1.2"
+            android:layout_weight="1.7"
             android:text="Date" />
 
         <TextView
             android:id="@+id/crossRsiLongTxt"
-            android:layout_width="0dp"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Long RSI" />
+            android:text="RSI-L" />
 
         <TextView
             android:id="@+id/crossRsiShortTxt"
-            android:layout_width="0dp"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Short Rsi" />
+            android:text="RSI-S" />
 
         <TextView
             android:id="@+id/crossRsiBuyTxt"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="1.2"
             android:text="Buy price" />
 
         <TextView
             android:id="@+id/crossRsiSellTxt"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="1.2"
             android:text="Sell Price" />
+
+        <TextView
+            android:id="@+id/crossRsiWinOrLostTxt"
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:text="W/L" />
     </LinearLayout>
 
 </LinearLayout>

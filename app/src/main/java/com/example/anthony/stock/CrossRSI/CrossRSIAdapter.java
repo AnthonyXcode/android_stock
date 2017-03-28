@@ -71,6 +71,7 @@ public class CrossRSIAdapter extends BaseAdapter {
         }
         holder.crossRsiBuyTxt.setText(String.valueOf(item.getBuyPrice()));
         holder.crossRsiSellTxt.setText(String.valueOf(item.getSellPrice()));
+        holder.crossRsiWinOrLostTxt.setText(String.valueOf(item.getWinOrLost()));
     }
 
     private void initLayout(View view, Holder holder){
@@ -79,6 +80,7 @@ public class CrossRSIAdapter extends BaseAdapter {
         holder.crossRsiLongTxt = (TextView) view.findViewById(R.id.crossRsiLongTxt);
         holder.crossRsiSellTxt = (TextView) view.findViewById(R.id.crossRsiSellTxt);
         holder.crossRsiShortTxt = (TextView) view.findViewById(R.id.crossRsiShortTxt);
+        holder.crossRsiWinOrLostTxt = (TextView)view.findViewById(R.id.crossRsiWinOrLostTxt);
     }
 
     private class Holder{
@@ -87,5 +89,6 @@ public class CrossRSIAdapter extends BaseAdapter {
         TextView crossRsiShortTxt;
         TextView crossRsiLongTxt;
         TextView crossRsiDateTxt;
+        TextView crossRsiWinOrLostTxt;
     }
 }

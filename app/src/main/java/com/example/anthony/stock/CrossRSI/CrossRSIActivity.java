@@ -31,7 +31,7 @@ public class CrossRSIActivity extends AppCompatActivity {
     int shortRsi = 7;
     int longRsi = 25;
     int validRsi = 5;
-    int validDays = 6;
+    int validDays = 7;
     ArrayList<CrossRSIItem> items;
     Realm realm;
     RealmResults<DateData> dateDatas;
@@ -270,7 +270,8 @@ public class CrossRSIActivity extends AppCompatActivity {
                 }
                 totalWin += movingItem.getDayClose() - buyItem.getDayClose();
                 lostbuy += movingItem.getDayClose() - buyItem.getDayClose();
-                movingItem.setBuyPrice(movingItem.getDayClose());
+                movingItem.setSellPrice(movingItem.getDayClose());
+                movingItem.setWinOrLost(movingItem.getDayClose()-buyItem.getDayClose());
                 break;
             }
 
@@ -281,7 +282,8 @@ public class CrossRSIActivity extends AppCompatActivity {
                     winNumb += 1;
                 }
                 totalWin += movingItem.getDayClose() - buyItem.getDayClose();
-                movingItem.setBuyPrice(movingItem.getDayClose());
+                movingItem.setSellPrice(movingItem.getDayClose());
+                movingItem.setWinOrLost(movingItem.getDayClose()-buyItem.getDayClose());
                 break;
             }
         }
@@ -306,6 +308,7 @@ public class CrossRSIActivity extends AppCompatActivity {
                 totalWin += sellItem.getDayClose() - movingItem.getDayClose();
                 lostsell += sellItem.getDayClose() - movingItem.getDayClose();
                 movingItem.setBuyPrice(movingItem.getDayClose());
+                movingItem.setWinOrLost(sellItem.getDayClose() - movingItem.getDayClose());
                 break;
             }
 
@@ -317,6 +320,7 @@ public class CrossRSIActivity extends AppCompatActivity {
                 }
                 totalWin += sellItem.getDayClose() - movingItem.getDayClose();
                 movingItem.setBuyPrice(movingItem.getDayClose());
+                movingItem.setWinOrLost(sellItem.getDayClose() - movingItem.getDayClose());
                 break;
             }
         }
