@@ -13,6 +13,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.anthony.stock.Bolling.BollingActivity;
+import com.example.anthony.stock.CrossRSI.CrossRSIActivity;
+import com.example.anthony.stock.CrossRSI.CrossRSIItem;
 import com.example.anthony.stock.Moving.MovingActivity;
 import com.example.anthony.stock.RSI.RSIActivity;
 
@@ -20,7 +22,7 @@ public class MainActivity extends BaseApplication {
 
     ListView mainListView;
     ListViewAdapter listViewAdapter;
-    String[] items = {"All", "MACD", "RSI", "Bolling", "Moving"};
+    String[] items = {"All", "MACD", "RSI", "Bolling", "Moving", "Cross RSI"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +54,9 @@ public class MainActivity extends BaseApplication {
                     startActivity(intent);
                 }else if (name.equals("Moving")){
                     Intent intent = new Intent(MainActivity.this, MovingActivity.class);
+                    startActivity(intent);
+                }else if (name.equals("Cross RSI")){
+                    Intent intent = new Intent(MainActivity.this, CrossRSIActivity.class);
                     startActivity(intent);
                 }
             }

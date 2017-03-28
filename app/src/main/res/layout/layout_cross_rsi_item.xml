@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.example.anthony.stock.Moving.MovingActivity">
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,44 +11,39 @@
         android:weightSum="5.2">
 
         <TextView
-            android:id="@+id/textView42"
+            android:id="@+id/crossRsiDateTxt"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.2"
             android:text="Date" />
 
         <TextView
-            android:id="@+id/textView43"
+            android:id="@+id/crossRsiLongTxt"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Long MA" />
+            android:text="Long RSI" />
 
         <TextView
-            android:id="@+id/textView44"
+            android:id="@+id/crossRsiShortTxt"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Short MA" />
+            android:text="Short Rsi" />
 
         <TextView
-            android:id="@+id/textView45"
+            android:id="@+id/crossRsiBuyTxt"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Buy" />
+            android:text="Buy price" />
 
         <TextView
-            android:id="@+id/textView46"
+            android:id="@+id/crossRsiSellTxt"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Sell" />
+            android:text="Sell Price" />
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/movingListView"
-        android:layout_width="match_parent"
-        android:layout_height="300dp" />
-    <include layout="@layout/layout_moving_controller"/>
 </LinearLayout>

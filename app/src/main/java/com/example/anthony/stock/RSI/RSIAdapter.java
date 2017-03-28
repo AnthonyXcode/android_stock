@@ -72,7 +72,6 @@ public class RSIAdapter extends BaseAdapter {
         }else {
             holder.RsiTxt.setBackgroundColor(Color.LTGRAY);
         }
-
         holder.RsiBuyTxt.setText(String.valueOf(item.getBuyPrice()));
         holder.RsiSellTxt.setText(String.valueOf(item.getSellPrice()));
     }

@@ -3,39 +3,39 @@
     android:layout_width="match_parent"
     android:layout_height="20dp"
     android:orientation="horizontal"
-    android:weightSum="5">
+    android:weightSum="5.2">
 
     <TextView
         android:id="@+id/movingDate"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_weight="1.2"
         android:text="Date" />
 
     <TextView
         android:id="@+id/movingLongMA"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="Long MA" />
 
     <TextView
         android:id="@+id/movingShortMA"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="Short MA" />
 
     <TextView
         android:id="@+id/movingBuy"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="Buy" />
 
     <TextView
         android:id="@+id/movingSell"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="Sell" />
