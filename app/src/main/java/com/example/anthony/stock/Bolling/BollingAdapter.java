@@ -58,7 +58,7 @@ public class BollingAdapter extends BaseAdapter {
         holder.openItemViewTxt.setText(String.valueOf(item.getOpen()));
         holder.closeItemViewTxt.setText(String.valueOf(item.getClose()));
         holder.MA20ItemViewTxt.setText(String.valueOf(item.getMA20()));
-        holder.cutLostItemViewTxt.setText(String.valueOf(item.getCutlostValue()));
+        holder.cutlossItemViewTxt.setText(String.valueOf(item.getCutlossValue()));
         holder.totalWinItemViewTxt.setText(String.valueOf(item.getTotalWin()));
 
         if (item.getTypicalC() < item.getLower5Percent()){
@@ -87,12 +87,12 @@ public class BollingAdapter extends BaseAdapter {
             holder.closeItemViewTxt.setTextColor(Color.DKGRAY);
         }
 
-        if (item.isCutLostSell()){
-            holder.cutLostItemViewTxt.setTextColor(Color.YELLOW);
-        }else if (item.isCutLostBuy()){
-            holder.cutLostItemViewTxt.setTextColor(Color.YELLOW);
+        if (item.isCutlossSell()){
+            holder.cutlossItemViewTxt.setTextColor(Color.YELLOW);
+        }else if (item.isCutlossBuy()){
+            holder.cutlossItemViewTxt.setTextColor(Color.YELLOW);
         }else {
-            holder.cutLostItemViewTxt.setTextColor(Color.DKGRAY);
+            holder.cutlossItemViewTxt.setTextColor(Color.DKGRAY);
         }
 
         if (item.isCompensateBuy()){
@@ -117,7 +117,7 @@ public class BollingAdapter extends BaseAdapter {
         holder.openItemViewTxt = (TextView)view.findViewById(R.id.openItemViewTxt);
         holder.closeItemViewTxt = (TextView)view.findViewById(R.id.closeItemViewTxt);
         holder.MA20ItemViewTxt = (TextView)view.findViewById(R.id.MA20ItemViewTxt);
-        holder.cutLostItemViewTxt = (TextView)view.findViewById(R.id.cutLostItemViewTxt);
+        holder.cutlossItemViewTxt = (TextView)view.findViewById(R.id.cutlossItemViewTxt);
         holder.totalWinItemViewTxt = (TextView)view.findViewById(R.id.totalWinItemViewTxt);
 
     }
@@ -127,7 +127,7 @@ public class BollingAdapter extends BaseAdapter {
         TextView openItemViewTxt;
         TextView closeItemViewTxt;
         TextView MA20ItemViewTxt;
-        TextView cutLostItemViewTxt;
+        TextView cutlossItemViewTxt;
         TextView totalWinItemViewTxt;
     }
 }

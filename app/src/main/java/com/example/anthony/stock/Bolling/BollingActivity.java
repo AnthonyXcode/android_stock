@@ -36,10 +36,10 @@ public class BollingActivity extends BaseApplication {
     private Button okBtn;
     private TextView totalWinNumberTxt;
     private TextView totalWinValueTxt;
-    private TextView cutLostNumberTxt;
-    private TextView cutLostValueTxt;
-    private TextView lostNumbTxt;
-    private TextView lostValueTxt;
+    private TextView cutlossNumberTxt;
+    private TextView cutlossValueTxt;
+    private TextView lossNumbTxt;
+    private TextView lossValueTxt;
     private TextView winNumbTxt;
     private TextView winValueTxt;
     private TextView meetTargetNumbTxt;
@@ -71,17 +71,17 @@ public class BollingActivity extends BaseApplication {
         totalWinNumberTxt = (TextView)findViewById(R.id.totalWinNumberTxt);
         cutPercentageEditText = (EditText)findViewById(R.id.cutPercentageEditText);
         totalWinValueTxt = (TextView)findViewById(R.id.totalWinValueTxt);
-        cutLostNumberTxt = (TextView)findViewById(R.id.cutLostNumberTxt);
-        lostValueTxt = (TextView)findViewById(R.id.lostValueTxt);
+        cutlossNumberTxt = (TextView)findViewById(R.id.cutlossNumberTxt);
+        lossValueTxt = (TextView)findViewById(R.id.lossValueTxt);
         winValueTxt = (TextView)findViewById(R.id.winValueTxt);
         bollingListView = (ListView)findViewById(R.id.bollingListView);
         validDaysEditTxt = (EditText)findViewById(R.id.validDaysEditTxt);
         okBtn = (Button)findViewById(R.id.okBtn);
-        lostNumbTxt = (TextView)findViewById(R.id.lostNumbTxt);
+        lossNumbTxt = (TextView)findViewById(R.id.lossNumbTxt);
         winNumbTxt = (TextView)findViewById(R.id.winNumbTxt);
         meetTargetNumbTxt = (TextView)findViewById(R.id.meetTargetNumbTxt);
         meetTargetValueTxt = (TextView)findViewById(R.id.meetTargetValueTxt);
-        cutLostValueTxt = (TextView)findViewById(R.id.cutLostValueTxt);
+        cutlossValueTxt = (TextView)findViewById(R.id.cutlossValueTxt);
         buyTxt = (TextView)findViewById(R.id.buyTxt);
         sellTxt = (TextView)findViewById(R.id.sellTxt);
         tarForeTxt = (TextView)findViewById(R.id.tarForeTxt);
@@ -95,14 +95,14 @@ public class BollingActivity extends BaseApplication {
                 buy = false;
                 sell = false;
                 totalwinValue = 0;
-                cutlostNumber = 0;
-                lostNumber = 0;
+                cutlossNumber = 0;
+                lossNumber = 0;
                 winNumber = 0;
                 meetTargetNumber = 0;
                 meetTargetValue = 0;
-                cutlostValue = 0;
+                cutlossValue = 0;
                 totalWinNumber = 0;
-                lostValue = 0;
+                lossValue = 0;
                 winValue = 0;
                 handleResult();
                 validDays = Integer.parseInt(validDaysEditTxt.getText().toString());
@@ -195,11 +195,11 @@ public class BollingActivity extends BaseApplication {
     int totalWinNumber = 0;
     int totalwinValue = 0;
 
-    int cutlostNumber = 0;
-    int cutlostValue = 0;
+    int cutlossNumber = 0;
+    int cutlossValue = 0;
 
-    int lostNumber = 0;
-    int lostValue = 0;
+    int lossNumber = 0;
+    int lossValue = 0;
 
     int winNumber = 0;
     int winValue = 0;
@@ -238,19 +238,19 @@ public class BollingActivity extends BaseApplication {
         for (int j = i + 1; j < i + validDays; j++){
             BollingItem movingItem = bollingItems.get(j);
             BollingItem previousItem = bollingItems.get(j - 1);
-            if (cutLostBuy(movingItem, previousItem) && j != i + 1){
+            if (cutlossBuy(movingItem, previousItem) && j != i + 1){
                 buy = false;
 
                 double SD = (previousItem.getUpper() - previousItem.getMA20()) / 2;
-                cutlostNumber += 1;
-                cutlostValue += previousItem.getLower()  - itemN1.getClose();
+                cutlossNumber += 1;
+                cutlossValue += previousItem.getLower()  - itemN1.getClose();
 
                 totalWinNumber -= 1;
                 totalwinValue += previousItem.getLower()  - itemN1.getClose();
 
-                movingItem.setCutLostBuy(true);
+                movingItem.setCutlossBuy(true);
                 movingItem.setTotalWin(totalwinValue);
-                movingItem.setCutlostValue(previousItem.getLower());
+                movingItem.setCutlossValue(previousItem.getLower());
                 bollingItems.set(j, movingItem);
                 return;
             }
@@ -275,9 +275,9 @@ public class BollingActivity extends BaseApplication {
                     totalWinNumber += 1;
                     winValue += movingItem.getClose() - itemN1.getClose();
                 }else {
-                    lostNumber += 1;
+                    lossNumber += 1;
                     totalWinNumber -= 1;
-                    lostValue += itemN1.getClose() - movingItem.getClose();
+                    lossValue += itemN1.getClose() - movingItem.getClose();
                 }
                 totalwinValue += movingItem.getClose() - itemN1.getClose();
                 movingItem.setNormalBuy(true);
@@ -292,19 +292,19 @@ public class BollingActivity extends BaseApplication {
         for (int j = i + 1; j < i + validDays; j++){
             BollingItem movingItem = bollingItems.get(j);
             BollingItem previousItem = bollingItems.get(j - 1);
-            if (cutLostSell(movingItem, previousItem) && j != i+1){
+            if (cutlossSell(movingItem, previousItem) && j != i+1){
                 sell = false;
                 int SD = (previousItem.getUpper() - previousItem.getMA20()) / 2;
 
-                cutlostNumber += 1;
-                cutlostValue += (int) (itemN1.getClose() - (previousItem.getUpper() + SD * cutPercentage));
+                cutlossNumber += 1;
+                cutlossValue += (int) (itemN1.getClose() - (previousItem.getUpper() + SD * cutPercentage));
 
                 totalWinNumber -= 1;
                 totalwinValue += (int) (itemN1.getClose() - (previousItem.getUpper() + SD * cutPercentage));
 
-                movingItem.setCutLostSell(true);
+                movingItem.setCutlossSell(true);
                 movingItem.setTotalWin(totalwinValue);
-                movingItem.setCutlostValue((int) (previousItem.getUpper() + SD * cutPercentage));
+                movingItem.setCutlossValue((int) (previousItem.getUpper() + SD * cutPercentage));
                 bollingItems.set(j, movingItem);
                 return;
             }
@@ -329,9 +329,9 @@ public class BollingActivity extends BaseApplication {
                     totalWinNumber += 1;
                     winValue += itemN1.getClose() - movingItem.getClose();
                 }else {
-                    lostNumber += 1;
+                    lossNumber += 1;
                     totalWinNumber -= 1;
-                    lostValue += movingItem.getClose() - itemN1.getClose();
+                    lossValue += movingItem.getClose() - itemN1.getClose();
                 }
 
                 totalwinValue += itemN1.getClose() - movingItem.getClose();
@@ -345,20 +345,20 @@ public class BollingActivity extends BaseApplication {
         }
     }
 
-    private boolean cutLostBuy(BollingItem movingItem, BollingItem previouseItem){
+    private boolean cutlossBuy(BollingItem movingItem, BollingItem previouseItem){
         int SD = (previouseItem.getUpper()- previouseItem.getMA20()) / 2;
         if (movingItem.getDayLow() < previouseItem.getLower() - SD * cutPercentage){
-            Log.i(TAG, "cutLostBuy: " + movingItem.getDate());
+            Log.i(TAG, "cutlossBuy: " + movingItem.getDate());
             return true;
         }else {
             return false;
         }
     }
 
-    private boolean cutLostSell(BollingItem movingItem, BollingItem previousItem){
+    private boolean cutlossSell(BollingItem movingItem, BollingItem previousItem){
         int SD = (previousItem.getUpper() - previousItem.getMA20()) / 2;
         if (movingItem.getDayHigh() > previousItem.getUpper() + SD * cutPercentage){
-            Log.i(TAG, "cutLostSell: " + movingItem.getDate());
+            Log.i(TAG, "cutlossSell: " + movingItem.getDate());
             return true;
         }else {
             return false;
@@ -411,10 +411,10 @@ public class BollingActivity extends BaseApplication {
     private void printOutResult(){
         totalWinNumberTxt.setText(String.valueOf(totalWinNumber));
         totalWinValueTxt.setText(String.valueOf(totalwinValue));
-        cutLostNumberTxt.setText(String.valueOf(cutlostNumber));
-        cutLostValueTxt.setText(String.valueOf(cutlostValue));
-        lostNumbTxt.setText(String.valueOf(lostNumber));
-        lostValueTxt.setText(String.valueOf(lostValue));
+        cutlossNumberTxt.setText(String.valueOf(cutlossNumber));
+        cutlossValueTxt.setText(String.valueOf(cutlossValue));
+        lossNumbTxt.setText(String.valueOf(lossNumber));
+        lossValueTxt.setText(String.valueOf(lossValue));
         winNumbTxt.setText(String.valueOf(winNumber));
         winValueTxt.setText(String.valueOf(winValue));
         meetTargetNumbTxt.setText(String.valueOf(meetTargetNumber));

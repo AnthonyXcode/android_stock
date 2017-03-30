@@ -37,14 +37,14 @@ public class DetailPageActivity extends BaseApplication {
     private TextView validTrigerValueTxt2;
     private TextView buyOrSellTxt;
     private TextView targetTxt;
-    private TextView cutLostTxt;
+    private TextView cutlossTxt;
     private TextView buyNumberTxt;
     private TextView sellNumberTxt;
     private TextView winNumberTxt;
-    private TextView lostNumberTxt;
+    private TextView lossNumberTxt;
     private TextView forceSellNumberTxt;
     private TextView winValueTxt;
-    private TextView lostValueTxt;
+    private TextView lossValueTxt;
     private TextView forceSellValueTxt;
 
 
@@ -61,10 +61,10 @@ public class DetailPageActivity extends BaseApplication {
         buyNumberTxt = (TextView)findViewById(R.id.buyNumberTxt);
         sellNumberTxt = (TextView)findViewById(R.id.sellNumberTxt);
         winNumberTxt = (TextView)findViewById(R.id.winNumberTxt);
-        lostNumberTxt = (TextView)findViewById(R.id.lostNumberTxt);
+        lossNumberTxt = (TextView)findViewById(R.id.lossNumberTxt);
         forceSellNumberTxt = (TextView)findViewById(R.id.forceSellNumberTxt);
         winValueTxt = (TextView)findViewById(R.id.winValueTxt);
-        lostValueTxt = (TextView)findViewById(R.id.lostValueTxt);
+        lossValueTxt = (TextView)findViewById(R.id.lossValueTxt);
         forceSellValueTxt = (TextView)findViewById(R.id.forceSellValueTxt);
 
 
@@ -83,8 +83,8 @@ public class DetailPageActivity extends BaseApplication {
         numOfHour = (TextView)findViewById(R.id.numOfHour);
         numOfDate = (TextView)findViewById(R.id.numOfDate);
 
-        numOfDate.setText(String.valueOf(hourDatas.size()));
-        numOfHour.setText(String.valueOf(dateDatas.size()));
+        numOfDate.setText(String.valueOf(dateDatas.size()));
+        numOfHour.setText(String.valueOf(hourDatas.size()));
 
         highDifValueTxt = (TextView)findViewById(R.id.highDifValueTxt);
         difValueDateTxt = (TextView)findViewById(R.id.difValueDateTxt);
@@ -185,13 +185,13 @@ public class DetailPageActivity extends BaseApplication {
         }
 
         targetTxt = (TextView)findViewById(R.id.targetTxt);
-        cutLostTxt = (TextView)findViewById(R.id.cutLostTxt);
+        cutlossTxt = (TextView)findViewById(R.id.cutlossTxt);
 
         Log.i(TAG, "setUpValidData: " + String.valueOf(validValue));
         Log.i(TAG, "setUpValidData: " + String.valueOf(dateDatas.get(dataPosition1).getClose()));
 
         targetTxt.setText(String.valueOf((dateDatas.get(dataPosition1).getClose()) + validValue));
-        cutLostTxt.setText(String.valueOf(dateDatas.get(dataPosition1).getClose() - validLow));
+        cutlossTxt.setText(String.valueOf(dateDatas.get(dataPosition1).getClose() - validLow));
 
         int validPosition = -1;
         ArrayList<Integer> twentyValueLow = new ArrayList<>();
@@ -200,10 +200,10 @@ public class DetailPageActivity extends BaseApplication {
         ArrayList<Integer> finalMovingAverage = new ArrayList<>();
         int buyNumber = 0;
         int sellNumber = 0;
-        int lost = 0;
+        int loss = 0;
         int win = 0;
         int winValue = 0;
-        int lostValue = 0;
+        int lossValue = 0;
         int forceSell = 0;
         int forceSellNumber = 0;
         Log.i(TAG, "setUpValidData: size:" + String.valueOf(dateDatas.size()));
@@ -265,7 +265,7 @@ public class DetailPageActivity extends BaseApplication {
                 }
 
                 boolean isWin = false;
-                boolean isLost = false;
+                boolean isloss = false;
                 if (validPosition == i && i < dateDatas.size() - 2) {
                     DateData nextDayData = dateDatas.get(i+1);
                     DateData todayData = dateDatas.get(i);
@@ -280,12 +280,12 @@ public class DetailPageActivity extends BaseApplication {
                             }
 
                             if (nextDayData.getHigh() - nextDayData.getOpen() > range){
-                                lost = lost + 1;
-                                lostValue = lostValue + range;
-                                isLost = true;
+                                loss = loss + 1;
+                                lossValue = lossValue + range;
+                                isloss = true;
                             }
 
-                            if (isLost == false && isWin == false){
+                            if (isloss == false && isWin == false){
                                 if (nextDayData.getHigh() - nextDayData.getLow() > range) {
                                     forceSellNumber = forceSellNumber + 1;
                                     forceSell = forceSell + nextDayData.getOpen() - nextDayData.getClose();
@@ -298,12 +298,12 @@ public class DetailPageActivity extends BaseApplication {
                                     }
 
                                     if (nextDayData.getHigh() - thirdDay.getOpen() > range){
-                                        lost = lost + 1;
-                                        lostValue = lostValue + range;
-                                        isLost = true;
+                                        loss = loss + 1;
+                                        lossValue = lossValue + range;
+                                        isloss = true;
                                     }
 
-                                    if (isWin == false && isLost == false){
+                                    if (isWin == false && isloss == false){
                                         forceSellNumber = forceSellNumber + 1;
                                         forceSell = forceSell + nextDayData.getOpen() - thirdDay.getClose();
                                     }
@@ -318,12 +318,12 @@ public class DetailPageActivity extends BaseApplication {
                             }
 
                             if (nextDayData.getOpen() - nextDayData.getLow() > range){
-                                lost = lost + 1;
-                                lostValue = lostValue + range;
-                                isLost = true;
+                                loss = loss + 1;
+                                lossValue = lossValue + range;
+                                isloss = true;
                             }
 
-                            if (isLost == false && isWin == false){
+                            if (isloss == false && isWin == false){
                                 if (nextDayData.getHigh() - nextDayData.getLow() >range) {
                                     forceSellNumber = forceSellNumber + 1;
                                     forceSell = forceSell + nextDayData.getClose() - nextDayData.getOpen();
@@ -336,12 +336,12 @@ public class DetailPageActivity extends BaseApplication {
                                     }
 
                                     if (nextDayData.getOpen() - thirdDay.getLow() > range){
-                                        lost = lost + 1;
-                                        lostValue = lostValue + range;
-                                        isLost = true;
+                                        loss = loss + 1;
+                                        lossValue = lossValue + range;
+                                        isloss = true;
                                     }
 
-                                    if (isWin == false && isLost == false){
+                                    if (isWin == false && isloss == false){
                                         forceSellNumber = forceSellNumber + 1;
                                         forceSell = forceSell + thirdDay.getClose() - nextDayData.getOpen();
                                     }
@@ -358,12 +358,12 @@ public class DetailPageActivity extends BaseApplication {
                             }
 
                             if (nextDayData.getHigh() - nextDayData.getOpen() > range){
-                                lost = lost+1;
-                                lostValue = lostValue + range;
-                                isLost = true;
+                                loss = loss+1;
+                                lossValue = lossValue + range;
+                                isloss = true;
                             }
 
-                            if (isLost == false && isWin == false){
+                            if (isloss == false && isWin == false){
                                 if (nextDayData.getHigh() - nextDayData.getLow() > range) {
                                     forceSellNumber = forceSellNumber + 1;
                                     forceSell = forceSell + nextDayData.getOpen() - nextDayData.getClose();
@@ -376,12 +376,12 @@ public class DetailPageActivity extends BaseApplication {
                                     }
 
                                     if (thirdDay.getHigh() - nextDayData.getOpen() > range){
-                                        lost = lost+1;
-                                        lostValue = lostValue + range;
-                                        isLost = true;
+                                        loss = loss+1;
+                                        lossValue = lossValue + range;
+                                        isloss = true;
                                     }
 
-                                    if (isLost == false && isWin == false){
+                                    if (isloss == false && isWin == false){
                                         forceSellNumber = forceSellNumber + 1;
                                         forceSell = forceSell + nextDayData.getOpen() - thirdDay.getClose();
                                     }
@@ -395,11 +395,11 @@ public class DetailPageActivity extends BaseApplication {
                                 isWin = true;
                             }
                             if (nextDayData.getOpen() - nextDayData.getLow() > range){
-                                lost = lost+1;
-                                lostValue = lostValue + range;
-                                isLost = true;
+                                loss = loss+1;
+                                lossValue = lossValue + range;
+                                isloss = true;
                             }
-                            if (isLost == false && isWin == false){
+                            if (isloss == false && isWin == false){
                                 if (nextDayData.getHigh() - nextDayData.getLow() > range) {
                                     forceSellNumber = forceSellNumber + 1;
                                     forceSell = forceSell + nextDayData.getClose() - nextDayData.getOpen();
@@ -412,12 +412,12 @@ public class DetailPageActivity extends BaseApplication {
                                     }
 
                                     if (nextDayData.getOpen() - thirdDay.getLow() > range){
-                                        lost = lost+1;
-                                        lostValue = lostValue + range;
-                                        isLost = true;
+                                        loss = loss+1;
+                                        lossValue = lossValue + range;
+                                        isloss = true;
                                     }
 
-                                    if (isWin == false && isLost == false){
+                                    if (isWin == false && isloss == false){
                                         forceSellNumber = forceSellNumber + 1;
                                         forceSell = forceSell + thirdDay.getClose() - nextDayData.getOpen();
                                     }
@@ -434,12 +434,12 @@ public class DetailPageActivity extends BaseApplication {
 //                            isWin = true;
 //                        }
 //                        if (nextDayData.getHigh() - nextDayData.getOpen() > range){
-//                            lost = lost + 1;
-//                            lostValue = lostValue + range;
-//                            isLost = true;
+//                            loss = loss + 1;
+//                            lossValue = lossValue + range;
+//                            isloss = true;
 //                        }
 //
-//                        if (isWin == false && isLost == false){
+//                        if (isWin == false && isloss == false){
 //                            forceSell = forceSell + nextDayData.getClose() - nextDayData.getOpen();
 //                        }
 //                    }else if (nextDayData.getOpen() > todayData.getHigh()) {
@@ -451,12 +451,12 @@ public class DetailPageActivity extends BaseApplication {
 //                        }
 //
 //                        if (nextDayData.getOpen() - nextDayData.getLow() > range) {
-//                            lost = lost + 1;
-//                            lostValue = lostValue + range;
-//                            isLost = true;
+//                            loss = loss + 1;
+//                            lossValue = lossValue + range;
+//                            isloss = true;
 //                        }
 //
-//                        if (isWin == false && isLost == false){
+//                        if (isWin == false && isloss == false){
 //                            forceSell = forceSell + nextDayData.getOpen() - nextDayData.getClose();
 //                        }
 //                    }
@@ -470,12 +470,12 @@ public class DetailPageActivity extends BaseApplication {
 //                        }
 //
 //                        if (nextDayData.getHigh() - nextDayData.getOpen() > rangeLow){
-//                            lost = lost + 1;
-//                            lostValue = lostValue + rangeLow;
-//                            isLost = true;
+//                            loss = loss + 1;
+//                            lossValue = lossValue + rangeLow;
+//                            isloss = true;
 //                        }
 //
-//                        if (isLost == false && isWin == false){
+//                        if (isloss == false && isWin == false){
 //                            forceSell = forceSell + nextDayData.getClose() - nextDayData.getOpen();
 //                        }
 //                    } else if (todayData.getClose() < todayData.getOpen()){
@@ -485,12 +485,12 @@ public class DetailPageActivity extends BaseApplication {
 //                            isWin = true;
 //                        }
 //                        if (nextDayData.getHigh() - nextDayData.getOpen() > rangeLow){
-//                            lost = lost + 1;
-//                            lostValue = lostValue + rangeLow;
-//                            isLost = true;
+//                            loss = loss + 1;
+//                            lossValue = lossValue + rangeLow;
+//                            isloss = true;
 //                        }
 //
-//                        if (isLost == false && isWin == false){
+//                        if (isloss == false && isWin == false){
 //                            forceSell = forceSell + nextDayData.getClose() - nextDayData.getOpen();
 //                        }
 //                    }
@@ -504,12 +504,12 @@ public class DetailPageActivity extends BaseApplication {
 //                        }
 //
 //                        if (todayData.getClose() - nextDayData.getLow() > range){
-//                            lost = lost + 1;
-//                            lostValue = lostValue + range;
-//                            isLost = true;
+//                            loss = loss + 1;
+//                            lossValue = lossValue + range;
+//                            isloss = true;
 //                        }
 //
-//                        if (isLost == false && isWin == false){
+//                        if (isloss == false && isWin == false){
 //                            forceSell = forceSell + nextDayData.getClose() - nextDayData.getClose();
 //                        }
 //                    }else {
@@ -519,12 +519,12 @@ public class DetailPageActivity extends BaseApplication {
 //                            isWin = true;
 //                        }
 //                        if (todayData.getClose() - nextDayData.getHigh() > range){
-//                            lost = lost + 1;
-//                            lostValue = lostValue + range;
-//                            isLost = true;
+//                            loss = loss + 1;
+//                            lossValue = lossValue + range;
+//                            isloss = true;
 //                        }
 //
-//                        if (isLost == false && isWin == false){
+//                        if (isloss == false && isWin == false){
 //                            forceSell = forceSell + todayData.getClose() - nextDayData.getClose();
 //                        }
 //                    }
@@ -541,12 +541,12 @@ public class DetailPageActivity extends BaseApplication {
 //                            }
 //
 //                            if (dateDatas.get(i).getClose() - dateDatas. (i+1).getLow() > rangeLow){
-//                                lost = lost + 1;
-//                                lostValue = lostValue + rangeLow;
-//                                isLost = true;
+//                                loss = loss + 1;
+//                                lossValue = lossValue + rangeLow;
+//                                isloss = true;
 //                            }
 //
-//                            if (isWin == false && isLost == false){
+//                            if (isWin == false && isloss == false){
 //                                forceSell = forceSell + (dateDatas.get(i).getOpen() - dateDatas.get(i + 1).getClose());
 //                            }
 //                        }else if (dateDatas.get(i).getLow()){
@@ -564,11 +564,11 @@ public class DetailPageActivity extends BaseApplication {
 //                                isWin = true;
 //                            }
 //                            if (dateDatas.get(i).getClose() - dateDatas.get(i+1).getLow() > rangeLow){
-//                                lost = lost + 1;
-//                                lostValue = lostValue + rangeLow;
-//                                isLost = true;
+//                                loss = loss + 1;
+//                                lossValue = lossValue + rangeLow;
+//                                isloss = true;
 //                            }
-//                            if (isWin == false && isLost == false) {
+//                            if (isWin == false && isloss == false) {
 //                                forceSell = forceSell + (dateDatas.get(i + 1).getClose()) - (dateDatas.get(i).getClose());
 //                            }
 //                        } else if (dateDatas.get(i + 1).getLow() < dateDatas.get(i).getOpen()) {
@@ -579,11 +579,11 @@ public class DetailPageActivity extends BaseApplication {
 //                                isWin = true;
 //                            }
 //                            if (dateDatas.get(i+1).getHigh() - dateDatas.get(i).getOpen() > rangeLow){
-//                                lost = lost + 1;
-//                                lostValue = lostValue + rangeLow;
-//                                isLost = true;
+//                                loss = loss + 1;
+//                                lossValue = lossValue + rangeLow;
+//                                isloss = true;
 //                            }
-//                            if (isWin == false && isLost == false){
+//                            if (isWin == false && isloss == false){
 //                                forceSell = forceSell + (dateDatas.get(i).getOpen() - dateDatas.get(i + 1).getClose());
 //                            }
 //                        }
@@ -594,10 +594,10 @@ public class DetailPageActivity extends BaseApplication {
 
         Log.i(TAG, "setUpValidData: buyNumber: " + String.valueOf(buyNumber));
         Log.i(TAG, "setUpValidData: sellNumber" + String.valueOf(sellNumber));
-        Log.i(TAG, "setUpValidData: lost"  + String.valueOf(lost));
+        Log.i(TAG, "setUpValidData: loss"  + String.valueOf(loss));
         Log.i(TAG, "setUpValidData: win"  + String.valueOf(win));
         Log.i(TAG, "setUpValidData: winValue"  + String.valueOf(winValue));
-        Log.i(TAG, "setUpValidData: lostValue"  + String.valueOf(lostValue));
+        Log.i(TAG, "setUpValidData: lossValue"  + String.valueOf(lossValue));
         Log.i(TAG, "setUpValidData: forceSell" + String.valueOf(forceSell));
         Log.i(TAG, "setUpValidData: forceSellNumber"+String.valueOf(forceSellNumber));
         Log.i(TAG, "setUpValidData: total" + String.valueOf(buyNumber + sellNumber) );
@@ -605,18 +605,18 @@ public class DetailPageActivity extends BaseApplication {
         buyNumberTxt.setText(String.valueOf(buyNumber));
         sellNumberTxt.setText(String.valueOf(sellNumber));
         winNumberTxt.setText(String.valueOf(win));
-        lostNumberTxt.setText(String.valueOf(lost));
+        lossNumberTxt.setText(String.valueOf(loss));
         forceSellNumberTxt.setText(String.valueOf(forceSellNumber));
         winValueTxt.setText(String.valueOf(winValue));
-        lostValueTxt.setText(String.valueOf(lostValue));
+        lossValueTxt.setText(String.valueOf(lossValue));
         forceSellValueTxt.setText(String.valueOf(forceSell));
 
 //        int buyNumber = 0;
 //        int sellNumber = 0;
-//        int lost = 0;
+//        int loss = 0;
 //        int win = 0;
 //        int winValue = 0;
-//        int lostValue = 0;
+//        int lossValue = 0;
 //        int forceSell = 0;
     }
 }

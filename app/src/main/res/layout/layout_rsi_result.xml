@@ -94,7 +94,7 @@
         <TextView
             android:layout_width="100dp"
             android:layout_height="match_parent"
-            android:text="Cut Lost Price: "
+            android:text="Cut loss Price: "
             android:gravity="right|center_vertical"
             android:textSize="18sp" />
         <EditText
@@ -114,7 +114,7 @@
             android:layout_height="match_parent"
             android:text="RSI"
             android:gravity="center"
-            android:id="@+id/cutLostRsiTxt"/>
+            android:id="@+id/cutlossRsiTxt"/>
     </LinearLayout>
 
     <LinearLayout

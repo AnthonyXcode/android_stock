@@ -41,7 +41,7 @@
                 android:layout_height="match_parent">
 
                 <TextView
-                    android:text="Cut Lost Percentage: "
+                    android:text="Cut Loss Percentage: "
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
@@ -118,21 +118,21 @@
                 android:layout_height="match_parent">
 
                 <TextView
-                    android:text="Cut Lost: "
+                    android:text="Cut Loss: "
                     android:layout_width="140dp"
                     android:layout_height="wrap_content" />
 
                 <TextView
                     android:text="TextView"
                     android:layout_height="wrap_content"
-                    android:id="@+id/cutLostNumberTxt"
+                    android:id="@+id/cutlossNumberTxt"
                     android:layout_width="100dp" />
 
                 <TextView
                     android:text="TextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/cutLostValueTxt"
+                    android:id="@+id/cutlossValueTxt"
                     android:layout_weight="1" />
             </LinearLayout>
 
@@ -142,21 +142,21 @@
                 android:layout_height="match_parent">
 
                 <TextView
-                    android:text="Lost: "
+                    android:text="Loss: "
                     android:layout_height="wrap_content"
                     android:layout_width="140dp" />
 
                 <TextView
                     android:text="TextView"
                     android:layout_height="wrap_content"
-                    android:id="@+id/lostNumbTxt"
+                    android:id="@+id/lossNumbTxt"
                     android:layout_width="100dp" />
 
                 <TextView
                     android:text="TextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/lostValueTxt"
+                    android:id="@+id/lossValueTxt"
                     android:layout_weight="1" />
             </LinearLayout>
 
@@ -247,7 +247,7 @@
                     android:layout_marginTop="5dp" />
 
                 <TextView
-                    android:text="Cut Lost: "
+                    android:text="Cut Loss: "
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/textView38"

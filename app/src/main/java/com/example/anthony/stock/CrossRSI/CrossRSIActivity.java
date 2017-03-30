@@ -213,18 +213,18 @@ public class CrossRSIActivity extends AppCompatActivity {
 
     int totalWin;
     int winNumb;
-    int lostNumb;
+    int lossNumb;
     int cutlose;
-    int lostbuy;
-    int lostsell;
+    int lossbuy;
+    int losssell;
     int totalTrade;
     private void analyseResult(){
         totalWin = 0;
         winNumb = 0;
-        lostNumb = 0;
+        lossNumb = 0;
         cutlose = 0;
-        lostbuy = 0;
-        lostsell = 0;
+        lossbuy = 0;
+        losssell = 0;
         totalTrade = 0;
 
         for(int i = 0; i < items.size(); i++) {
@@ -264,26 +264,26 @@ public class CrossRSIActivity extends AppCompatActivity {
             if (movingItem.getLongRsi() > movingItem.getShortRsi() || buyItem.getDayClose() - movingItem.getDayClose() > 150){
                 cutlose += 1;
                 if (movingItem.getDayClose() < buyItem.getDayClose()){
-                    lostNumb += 1;
+                    lossNumb += 1;
                 }else {
                     winNumb += 1;
                 }
                 totalWin += movingItem.getDayClose() - buyItem.getDayClose();
-                lostbuy += movingItem.getDayClose() - buyItem.getDayClose();
+                lossbuy += movingItem.getDayClose() - buyItem.getDayClose();
                 movingItem.setSellPrice(movingItem.getDayClose());
-                movingItem.setWinOrLost(movingItem.getDayClose()-buyItem.getDayClose());
+                movingItem.setWinOrloss(movingItem.getDayClose()-buyItem.getDayClose());
                 break;
             }
 
             if (i == position + validDays - 1){
                 if (movingItem.getDayClose() < buyItem.getDayClose()){
-                    lostNumb += 1;
+                    lossNumb += 1;
                 }else {
                     winNumb += 1;
                 }
                 totalWin += movingItem.getDayClose() - buyItem.getDayClose();
                 movingItem.setSellPrice(movingItem.getDayClose());
-                movingItem.setWinOrLost(movingItem.getDayClose()-buyItem.getDayClose());
+                movingItem.setWinOrloss(movingItem.getDayClose()-buyItem.getDayClose());
                 break;
             }
         }
@@ -301,26 +301,26 @@ public class CrossRSIActivity extends AppCompatActivity {
             if (movingItem.getLongRsi() < movingItem.getShortRsi() || movingItem.getDayClose() - sellItem.getDayClose() > 150){
                 cutlose += 1;
                 if (movingItem.getDayClose() > sellItem.getDayClose()){
-                    lostNumb += 1;
+                    lossNumb += 1;
                 }else {
                     winNumb += 1;
                 }
                 totalWin += sellItem.getDayClose() - movingItem.getDayClose();
-                lostsell += sellItem.getDayClose() - movingItem.getDayClose();
+                losssell += sellItem.getDayClose() - movingItem.getDayClose();
                 movingItem.setBuyPrice(movingItem.getDayClose());
-                movingItem.setWinOrLost(sellItem.getDayClose() - movingItem.getDayClose());
+                movingItem.setWinOrloss(sellItem.getDayClose() - movingItem.getDayClose());
                 break;
             }
 
             if (i == position + validDays - 1){
                 if (movingItem.getDayClose() > sellItem.getDayClose()){
-                    lostNumb += 1;
+                    lossNumb += 1;
                 }else {
                     winNumb += 1;
                 }
                 totalWin += sellItem.getDayClose() - movingItem.getDayClose();
                 movingItem.setBuyPrice(movingItem.getDayClose());
-                movingItem.setWinOrLost(sellItem.getDayClose() - movingItem.getDayClose());
+                movingItem.setWinOrloss(sellItem.getDayClose() - movingItem.getDayClose());
                 break;
             }
         }
@@ -330,8 +330,8 @@ public class CrossRSIActivity extends AppCompatActivity {
         crossRSITxt.setText(
                 "Total win: " + totalWin +
                         "\n" + "Win Number: " + winNumb +
-                        "\n" + "Lost Number: " + lostNumb +
-                        "\n" + "Cut Lost: " + cutlose);
-        Log.i(TAG, "printResult: " + totalTrade + " " + lostbuy + " " + lostsell);
+                        "\n" + "loss Number: " + lossNumb +
+                        "\n" + "Cut loss: " + cutlose);
+        Log.i(TAG, "printResult: " + totalTrade + " " + lossbuy + " " + losssell);
     }
 }

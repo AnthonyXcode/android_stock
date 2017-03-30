@@ -20,7 +20,7 @@ public class CrossRSIItem {
     private boolean buy;
     private int buyPrice;
     private int sellPrice;
-    private int winOrLost;
+    private int winOrloss;
 
     public String getDay() {
         return day;
@@ -142,11 +142,11 @@ public class CrossRSIItem {
         this.sellPrice = sellPrice;
     }
 
-    public int getWinOrLost() {
-        return winOrLost;
+    public int getWinOrloss() {
+        return winOrloss;
     }
 
-    public void setWinOrLost(int winOrLost) {
-        this.winOrLost = winOrLost;
+    public void setWinOrloss(int winOrloss) {
+        this.winOrloss = winOrloss;
     }
 }

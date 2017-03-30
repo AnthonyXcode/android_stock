@@ -71,10 +71,10 @@
         <TextView
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:text="Cut Lost:" />
+            android:text="Cut loss:" />
 
         <EditText
-            android:id="@+id/cutLostEditTxt"
+            android:id="@+id/cutlossEditTxt"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:ems="10"

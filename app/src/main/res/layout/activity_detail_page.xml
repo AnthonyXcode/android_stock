@@ -217,13 +217,13 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:layout_below="@+id/winLostLL">
+                android:layout_below="@+id/winlossLL">
 
                 <TextView
                     android:text="Win Value: "
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/WinValue "
+                    android:id="@+id/WinValue"
                     android:background="#000000" />
 
                 <TextView
@@ -233,7 +233,7 @@
                     android:id="@+id/winValueTxt" />
 
                 <TextView
-                    android:text="Lost Value: "
+                    android:text="Loss Value: "
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/textView31"
@@ -244,7 +244,7 @@
                     android:text="TextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/lostValueTxt" />
+                    android:id="@+id/lossValueTxt" />
 
                 <TextView
                     android:text="Force Value: "
@@ -264,7 +264,7 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:id="@+id/winLostLL"
+                android:id="@+id/winlossLL"
                 android:layout_below="@+id/buySellTotalLL"
                 android:weightSum="4">
 
@@ -282,7 +282,7 @@
                     android:id="@+id/winNumberTxt" />
 
                 <TextView
-                    android:text="Lost no.: "
+                    android:text="loss no.: "
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/textView25"
@@ -293,7 +293,7 @@
                     android:text="TextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/lostNumberTxt" />
+                    android:id="@+id/lossNumberTxt" />
 
                 <TextView
                     android:text="force no.:"
@@ -316,7 +316,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:id="@+id/buySellTotalLL"
-                android:layout_below="@+id/targetAndCutLost"
+                android:layout_below="@+id/targetAndCutloss"
                 android:weightSum="4">
 
                 <TextView
@@ -353,7 +353,7 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:id="@+id/targetAndCutLost"
+                android:id="@+id/targetAndCutloss"
                 android:layout_below="@+id/buyOrSellLL"
                 android:weightSum="4">
 
@@ -371,7 +371,7 @@
                     android:id="@+id/targetTxt" />
 
                 <TextView
-                    android:text="Cut Lost"
+                    android:text="Cut loss"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/textView18"
@@ -379,10 +379,10 @@
                     android:layout_marginLeft="10dp" />
 
                 <TextView
-                    android:text="cut lost"
+                    android:text="cut loss"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/cutLostTxt"
+                    android:id="@+id/cutlossTxt"
                     android:layout_weight="1" />
             </LinearLayout>
 

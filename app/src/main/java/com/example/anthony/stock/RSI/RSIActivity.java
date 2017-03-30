@@ -38,14 +38,14 @@ public class RSIActivity extends AppCompatActivity {
     private EditText targetValueEditTxt;
     private EditText priceEditTxt;
     private Button priceOKBtn;
-    private TextView cutLostRsiTxt;
+    private TextView cutlossRsiTxt;
     private int target = 800;
     private int totalWin = 0;
     private int totalTray = 0;
     private int winNumber = 0;
-    private int lostNumber = 0;
+    private int lossNumber = 0;
     private int meetTarget = 0;
-    private int cutLost = 0;
+    private int cutloss = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +70,7 @@ public class RSIActivity extends AppCompatActivity {
         targetValueEditTxt = (EditText)findViewById(R.id.targetValueEditTxt);
         priceEditTxt = (EditText)findViewById(R.id.priceEditTxt);
         priceOKBtn = (Button)findViewById(R.id.priceOKBtn);
-        cutLostRsiTxt = (TextView)findViewById(R.id.cutLostRsiTxt);
+        cutlossRsiTxt = (TextView)findViewById(R.id.cutlossRsiTxt);
         rsiDayEditTxt.setText(String.valueOf(rsiDays));
         validRsiTxt.setText(String.valueOf((int) validRSI));
         validDayEditTxt.setText(String.valueOf(validDays));
@@ -106,9 +106,9 @@ public class RSIActivity extends AppCompatActivity {
         totalWin = 0;
         totalTray = 0;
         winNumber = 0;
-        lostNumber = 0;
+        lossNumber = 0;
         meetTarget = 0;
-        cutLost = 0;
+        cutloss = 0;
         lowerThan10 = 0;
         from10to20 = 0;
         from20to30 = 0;
@@ -240,11 +240,11 @@ public class RSIActivity extends AppCompatActivity {
             RSIItem secondItem = allItems.get(i + 1);
             if (firstItem.getRsi() > 100 - validRSI && secondItem.getRsi() < 100 - validRSI){
                 secondItem.setSell(true);
-                countWinAndLostForSell(i + 1);
+                countWinAndlossForSell(i + 1);
                 totalTray += 1;
             }else if (firstItem.getRsi() < validRSI && secondItem.getRsi() > validRSI){
                 secondItem.setBuy(true);
-                countWinAndLostForBuy(i + 1);
+                countWinAndlossForBuy(i + 1);
                 totalTray += 1;
             } else {
                 secondItem.setBuy(false);
@@ -254,7 +254,7 @@ public class RSIActivity extends AppCompatActivity {
         adapter.addAll(allItems, (int) validRSI);
         RSIListview.setSelection(RSIListview.getCount());
     }
-    private void countWinAndLostForBuy(int position){
+    private void countWinAndlossForBuy(int position){
         RSIItem buyItem = allItems.get(position);
         buyItem.setBuyPrice(buyItem.getDayClose());
 
@@ -274,7 +274,7 @@ public class RSIActivity extends AppCompatActivity {
 
 //            if (movingItem.getRsi() < validRSI){
 //                totalWin += movingItem.getDayClose() - buyItem.getDayClose();
-//                cutLost += 1;
+//                cutloss += 1;
 //                movingItem.setSellPrice(movingItem.getDayClose());
 //                break loop;
 //            }
@@ -284,7 +284,7 @@ public class RSIActivity extends AppCompatActivity {
                 if (movingItem.getDayClose() >= buyItem.getDayClose()){
                     winNumber += 1;
                 }else {
-                    lostNumber += 1;
+                    lossNumber += 1;
                 }
                 movingItem.setSellPrice(movingItem.getDayClose());
                 break loop;
@@ -292,7 +292,7 @@ public class RSIActivity extends AppCompatActivity {
         }
     }
 
-    private void countWinAndLostForSell(int position){
+    private void countWinAndlossForSell(int position){
         RSIItem sellItem = allItems.get(position);
         sellItem.setSellPrice(sellItem.getDayClose());
 
@@ -314,7 +314,7 @@ public class RSIActivity extends AppCompatActivity {
 
 //            if (movingItem.getRsi() > 100 - validRSI){
 //                totalWin += sellItem.getDayClose() - movingItem.getDayClose();
-//                cutLost += 1;
+//                cutloss += 1;
 //                movingItem.setBuyPrice(movingItem.getDayClose());
 //                break loop;
 //            }
@@ -324,7 +324,7 @@ public class RSIActivity extends AppCompatActivity {
                 if (sellItem.getDayClose() > movingItem.getDayClose()){
                     winNumber += 1;
                 }else {
-                    lostNumber += 1;
+                    lossNumber += 1;
                 }
                 movingItem.setBuyPrice(movingItem.getDayClose());
                 break loop;
@@ -373,24 +373,24 @@ public class RSIActivity extends AppCompatActivity {
                 + "\nTotal Tray:" + totalTray
                 + "\nTotal meet target:" + meetTarget
                 + "\nWin Number:" + winNumber
-                + "\nLost Number:" + lostNumber
-                + "\nCut Lost:" + cutLost;
+                + "\nloss Number:" + lossNumber
+                + "\nCut loss:" + cutloss;
         rsiResultTxt.setText(result);
     }
 
     private void predictPrice(){
         RSIItem lastItem = allItems.get(allItems.size() - 1);
-        int cutlostValue;
+        int cutlossValue;
         if (lastItem.getRsi() > 50){
             int different = (int) (((100 - validRSI) / validRSI) * lastItem.getDropAverage() * (validDays - 1)
                                 - lastItem.getRaiseAverage() * (validDays - 1));
-            cutlostValue = lastItem.getDayClose() + different;
+            cutlossValue = lastItem.getDayClose() + different;
         }else {
             int different = (int) (((100 - validRSI)/ validRSI) * lastItem.getRaiseAverage() * (validDays - 1)
                                 - lastItem.getDropAverage() * (validDays - 1));
-            cutlostValue = lastItem.getDayClose() - different;
+            cutlossValue = lastItem.getDayClose() - different;
         }
-        priceEditTxt.setHint(String.valueOf(cutlostValue));
+        priceEditTxt.setHint(String.valueOf(cutlossValue));
     }
 
     private void predictRsi(){
@@ -408,6 +408,6 @@ public class RSIActivity extends AppCompatActivity {
             double averageDrop = (lastItem.getDropAverage() * (validDays - 1)) / validDays;
             rsi = (int) ((averageRaise / (averageRaise + averageDrop)) * 100);
         }
-        cutLostRsiTxt.setText(String.valueOf(rsi));
+        cutlossRsiTxt.setText(String.valueOf(rsi));
     }
 }

@@ -9,7 +9,7 @@
     </style>
 
     <style name="NewAppTheme" parent="Theme.AppCompat.NoActionBar">
-        <item name="android:windowBackground">@color/mainGreenColor</item>
+        <item name="android:windowBackground">@color/background</item>
     </style>
 
     <style name="NewAppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

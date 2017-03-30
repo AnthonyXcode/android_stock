@@ -24,7 +24,7 @@ public class MovingActivity extends AppCompatActivity {
     EditText longMaEditTxt;
     EditText shortMaEditTxt;
     EditText movingValidDaysEditTxt;
-    EditText cutLostEditTxt;
+    EditText cutlossEditTxt;
     Button movingOKBtn;
     Realm realm;
     RealmResults<DateData> dateDatas;
@@ -32,7 +32,7 @@ public class MovingActivity extends AppCompatActivity {
     int longMoving;
     int shortMoving;
     int validDays;
-    int cutLostvalue;
+    int cutlossvalue;
     ArrayList<MovingItem> movingItems;
     MovingAdapter adapter;
 
@@ -52,7 +52,7 @@ public class MovingActivity extends AppCompatActivity {
         longMoving = 23;
         shortMoving = 8;
         validDays = 18;
-        cutLostvalue = 100;
+        cutlossvalue = 100;
     }
 
     private void setupLayout(){
@@ -61,12 +61,12 @@ public class MovingActivity extends AppCompatActivity {
         longMaEditTxt = (EditText) findViewById(R.id.longMaEditTxt);
         shortMaEditTxt = (EditText) findViewById(R.id.shortMaEditTxt);
         movingValidDaysEditTxt = (EditText) findViewById(R.id.movingValidDaysEditTxt);
-        cutLostEditTxt = (EditText) findViewById(R.id.cutLostEditTxt);
+        cutlossEditTxt = (EditText) findViewById(R.id.cutlossEditTxt);
         movingOKBtn = (Button) findViewById(R.id.movingOKBtn);
         longMaEditTxt.setText(String.valueOf(longMoving));
         shortMaEditTxt.setText(String.valueOf(shortMoving));
         movingValidDaysEditTxt.setText(String.valueOf(validDays));
-        cutLostEditTxt.setText(String.valueOf(cutLostvalue));
+        cutlossEditTxt.setText(String.valueOf(cutlossvalue));
     }
 
     private void setupClick(){
@@ -87,7 +87,7 @@ public class MovingActivity extends AppCompatActivity {
         longMoving = Integer.parseInt(longMaEditTxt.getText().toString());
         shortMoving = Integer.parseInt(shortMaEditTxt.getText().toString());
         validDays = Integer.parseInt(movingValidDaysEditTxt.getText().toString());
-        cutLostvalue = Integer.parseInt(cutLostEditTxt.getText().toString());
+        cutlossvalue = Integer.parseInt(cutlossEditTxt.getText().toString());
     }
 
     private void setupTools(){
@@ -209,7 +209,7 @@ public class MovingActivity extends AppCompatActivity {
 
     private void setupResult(){
         movingResultTxt.setText("Win Number: "+ winNumb
-        + "\n" + "Lost Number: " + loseNumb
+        + "\n" + "loss Number: " + loseNumb
         + "\n" + "Total Win: " + totalWin);
     }
 }

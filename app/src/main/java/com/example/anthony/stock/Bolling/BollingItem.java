@@ -17,13 +17,13 @@ public class BollingItem {
     int dayHigh;
     int dayLow;
     int totalWin;
-    int cutlostValue;
+    int cutlossValue;
     boolean buy;
     boolean sell;
     boolean compensateBuy;
     boolean compensateSell;
-    boolean cutLostBuy;
-    boolean isCutLostSell;
+    boolean cutlossBuy;
+    boolean isCutlossSell;
     boolean normalBuy;
     boolean normalSell;
 
@@ -43,20 +43,20 @@ public class BollingItem {
         this.compensateSell = compensateSell;
     }
 
-    public boolean isCutLostBuy() {
-        return cutLostBuy;
+    public boolean isCutlossBuy() {
+        return cutlossBuy;
     }
 
-    public void setCutLostBuy(boolean cutLostBuy) {
-        this.cutLostBuy = cutLostBuy;
+    public void setCutlossBuy(boolean cutlossBuy) {
+        this.cutlossBuy = cutlossBuy;
     }
 
-    public boolean isCutLostSell() {
-        return isCutLostSell;
+    public boolean isCutlossSell() {
+        return isCutlossSell;
     }
 
-    public void setCutLostSell(boolean cutLostSell) {
-        isCutLostSell = cutLostSell;
+    public void setCutlossSell(boolean cutlossSell) {
+        isCutlossSell = cutlossSell;
     }
 
     public boolean isNormalBuy() {
@@ -187,11 +187,11 @@ public class BollingItem {
         this.totalWin = totalWin;
     }
 
-    public int getCutlostValue() {
-        return cutlostValue;
+    public int getCutlossValue() {
+        return cutlossValue;
     }
 
-    public void setCutlostValue(int cutlostValue) {
-        this.cutlostValue = cutlostValue;
+    public void setCutlossValue(int cutlossValue) {
+        this.cutlossValue = cutlossValue;
     }
 }
