@@ -14,12 +14,12 @@
         android:layout_centerHorizontal="true" />
 
     <ListView
-        android:layout_width="wrap_content"
         android:id="@+id/inhourListView"
-        android:layout_below="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="80dp"
         android:layout_alignLeft="@+id/textView3"
         android:layout_alignStart="@+id/textView3"
-        android:layout_height="100dp" />
+        android:layout_below="@+id/textView3" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -31,12 +31,12 @@
         android:layout_centerHorizontal="true" />
 
     <ListView
-        android:layout_width="wrap_content"
         android:id="@+id/dateListView"
-        android:layout_below="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="80dp"
         android:layout_alignLeft="@+id/inhourListView"
         android:layout_alignStart="@+id/inhourListView"
-        android:layout_height="100dp" />
+        android:layout_below="@+id/textView2" />
 
     <TextView
         android:layout_width="90dp"
@@ -86,44 +86,48 @@
         android:layout_alignEnd="@+id/inhourListView" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Number Of Date in hour:"
         android:id="@+id/textView8"
-        android:layout_below="@+id/dateListView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/dateListView"
-        android:layout_alignStart="@+id/dateListView" />
+        android:layout_alignStart="@+id/dateListView"
+        android:layout_below="@+id/dateListView"
+        android:text="Number Of Date in hour:"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:visibility="gone" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Number Of Date in Date:"
         android:id="@+id/textView9"
-        android:layout_below="@+id/textView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/textView8"
-        android:layout_alignStart="@+id/textView8" />
+        android:layout_alignStart="@+id/textView8"
+        android:layout_below="@+id/textView8"
+        android:text="Number Of Date in Date:"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:visibility="gone" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Small Text"
         android:id="@+id/numOfHour"
-        android:layout_alignTop="@+id/textView8"
-        android:layout_toRightOf="@+id/textView8"
-        android:layout_toEndOf="@+id/textView8" />
-
-    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_alignTop="@+id/textView8"
+        android:layout_toEndOf="@+id/textView8"
+        android:layout_toRightOf="@+id/textView8"
         android:text="Small Text"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:visibility="gone" />
+
+    <TextView
         android:id="@+id/numOfDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignTop="@+id/textView9"
+        android:layout_toEndOf="@+id/textView9"
         android:layout_toRightOf="@+id/textView9"
-        android:layout_toEndOf="@+id/textView9" />
+        android:text="Small Text"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:visibility="gone" />
 
     <ScrollView
         android:layout_width="match_parent"

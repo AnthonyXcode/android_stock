@@ -26,7 +26,13 @@
             android:label="@string/title_activity_rsi"
             android:theme="@style/NewAppTheme" />
         <activity android:name=".Moving.MovingActivity" />
-        <activity android:name=".CrossRSI.CrossRSIActivity"></activity>
+        <activity android:name=".CrossRSI.CrossRSIActivity" />
+
+        <receiver android:name=".Service.BootCompletedReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

@@ -2,6 +2,7 @@ package com.example.anthony.stock.Moving;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,9 +65,9 @@ public class MovingAdapter extends BaseAdapter {
         holder.movingLongMA.setText(String.valueOf(item.getLongMA()));
         holder.movingShortMA.setText(String.valueOf(item.getStortMA()));
         if (item.getLongMA() > item.getStortMA()){
-            view.setBackgroundColor(Color.TRANSPARENT);
+            view.setBackgroundColor(ContextCompat.getColor(context,R.color.readySellBlue));
         }else {
-            view.setBackgroundColor(Color.BLACK);
+            view.setBackgroundColor(ContextCompat.getColor(context, R.color.readyBuyRed));
         }
         holder.movingBuy.setText(String.valueOf(item.getBuyPrice()));
         holder.movingSell.setText(String.valueOf(item.getSellPrice()));

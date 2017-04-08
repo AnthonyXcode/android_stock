@@ -1,8 +1,8 @@
 package com.example.anthony.stock;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,9 +14,10 @@ import android.widget.TextView;
 
 import com.example.anthony.stock.Bolling.BollingActivity;
 import com.example.anthony.stock.CrossRSI.CrossRSIActivity;
-import com.example.anthony.stock.CrossRSI.CrossRSIItem;
 import com.example.anthony.stock.Moving.MovingActivity;
 import com.example.anthony.stock.RSI.RSIActivity;
+
+import java.util.List;
 
 public class MainActivity extends BaseApplication {
 
@@ -37,6 +38,9 @@ public class MainActivity extends BaseApplication {
         listViewAdapter = new ListViewAdapter(this);
         mainListView.setAdapter(listViewAdapter);
     }
+
+
+
 
     private void setupClick(){
         mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
