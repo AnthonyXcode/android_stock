@@ -10,7 +10,7 @@ import java.util.List;
  */
 
 public class CommonTools {
-    private static boolean checkServiceRunning(Class target, Context context){
+    public static boolean checkServiceRunning(Class target, Context context){
         ActivityManager am = (ActivityManager)
                 context.getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningServiceInfo> rs =

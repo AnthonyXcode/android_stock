@@ -1,4 +1,4 @@
-package com.example.anthony.stock.realmclasses;
+package com.example.anthony.stock.RealmClasses.Model;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -6,21 +6,30 @@ import io.realm.annotations.PrimaryKey;
 /**
  * Created by Anthony on 9/11/16.
  */
-public class HourData extends RealmObject {
+public class DateData extends RealmObject {
     @PrimaryKey
-    private int Timestamp;
+    private int Date;
     private int close;
     private int high;
     private int low;
     private int open;
-    private String date;
+    private int volume;
+    private String strDate;
 
-    public String getDate() {
-        return date;
+    public String getStrDate() {
+        return strDate;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setStrDate(String strDate) {
+        this.strDate = strDate;
+    }
+
+    public int getVolume() {
+        return volume;
+    }
+
+    public void setVolume(int volume) {
+        this.volume = volume;
     }
 
     public int getOpen() {
@@ -55,11 +64,12 @@ public class HourData extends RealmObject {
         this.close = close;
     }
 
-    public int getTimestamp() {
-        return Timestamp;
+    public int getDate() {
+        return Date;
     }
 
-    public void setTimestamp(int timestamp) {
-        Timestamp = timestamp;
+    public void setDate(int date) {
+        Date = date;
     }
+
 }

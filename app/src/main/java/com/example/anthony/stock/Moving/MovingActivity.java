@@ -9,8 +9,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.anthony.stock.R;
-import com.example.anthony.stock.realmclasses.DateData;
-import com.example.anthony.stock.realmclasses.HourData;
+import com.example.anthony.stock.RealmClasses.Model.DateData;
+import com.example.anthony.stock.RealmClasses.Model.HourData;
 
 import java.util.ArrayList;
 

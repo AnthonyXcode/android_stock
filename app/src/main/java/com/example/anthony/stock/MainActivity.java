@@ -16,6 +16,8 @@ import com.example.anthony.stock.Bolling.BollingActivity;
 import com.example.anthony.stock.CrossRSI.CrossRSIActivity;
 import com.example.anthony.stock.Moving.MovingActivity;
 import com.example.anthony.stock.RSI.RSIActivity;
+import com.example.anthony.stock.Service.BootCompletedService;
+import com.example.anthony.stock.Utility.CommonTools;
 
 import java.util.List;
 
@@ -24,6 +26,7 @@ public class MainActivity extends BaseApplication {
     ListView mainListView;
     ListViewAdapter listViewAdapter;
     String[] items = {"All", "MACD", "RSI", "Bolling", "Moving", "Cross RSI"};
+    Intent bootCompletedIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +42,18 @@ public class MainActivity extends BaseApplication {
         mainListView.setAdapter(listViewAdapter);
     }
 
+    private void setupTool(){
+        if (!CommonTools.checkServiceRunning(BootCompletedService.class, this)){
+            initBootServiceIntent();
+            startService(bootCompletedIntent);
+        }
+    }
 
-
+    private void initBootServiceIntent(){
+        if (bootCompletedIntent == null){
+            bootCompletedIntent = new Intent(this, BootCompletedService.class);
+        }
+    }
 
     private void setupClick(){
         mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

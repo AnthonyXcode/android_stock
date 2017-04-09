@@ -1,13 +1,12 @@
 package com.example.anthony.stock;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.example.anthony.stock.realmclasses.DateData;
-import com.example.anthony.stock.realmclasses.HourData;
+import com.example.anthony.stock.RealmClasses.Model.DateData;
+import com.example.anthony.stock.RealmClasses.Model.HourData;
 
 import java.util.ArrayList;
 

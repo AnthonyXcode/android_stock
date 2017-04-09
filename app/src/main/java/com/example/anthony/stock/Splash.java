@@ -1,7 +1,6 @@
 package com.example.anthony.stock;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -10,12 +9,15 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.anthony.stock.realmclasses.SaveDataToRealm;
-
+import com.example.anthony.stock.RealmClasses.DataSaver;
+import com.example.anthony.stock.Service.BootCompletedService;
+import com.example.anthony.stock.Utility.CommonTools;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.reactivestreams.Subscription;
 
+import io.reactivex.functions.Consumer;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
@@ -23,6 +25,7 @@ public class Splash extends BaseApplication {
 
     Realm realm;
     private String TAG = "Splash";
+    Intent bootCompletedIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,9 +37,15 @@ public class Splash extends BaseApplication {
                 .build();
         Realm.setDefaultConfiguration(config);
         realm = Realm.getDefaultInstance();
-
-
+        startIntent();
         getHourData();
+    }
+
+    private void startIntent(){
+        if (!CommonTools.checkServiceRunning(BootCompletedService.class, this)) {
+            bootCompletedIntent = new Intent(this, BootCompletedService.class);
+            startService(bootCompletedIntent);
+        }
     }
 
     private void getHourData(){
@@ -47,16 +56,16 @@ public class Splash extends BaseApplication {
                     public void onResponse(String response) {
                         response = response.replace("finance_charts_json_callback( ","");
                         response = response.replace(" )", "");
-                        Log.i(TAG, "onResponse: " + response);
-                        //Log.d("TAG", response);
-                        //showMsgTxt.setText(response);
                         try {
                             JSONObject initialResponse = new JSONObject(response);
                             JSONArray dataArray = initialResponse.getJSONArray("series");
                             int p = dataArray.length();
                             for (int i = p-1; i >= 0; i--){
-                                SaveDataToRealm.SaveHourData saveHourData = new SaveDataToRealm.SaveHourData("SaveHour", dataArray.getJSONObject(i));
-                                saveHourData.onHandleIntent(getIntent());
+                                DataSaver.saveMinsData(dataArray.getJSONObject(i)).subscribe(new Consumer<Boolean>() {
+                                    @Override
+                                    public void accept(Boolean aBoolean) throws Exception {
+                                    }
+                                });
                             }
                             getMonthData();
                         } catch (JSONException e) {
@@ -81,16 +90,15 @@ public class Splash extends BaseApplication {
                     public void onResponse(String response) {
                         response = response.replace("finance_charts_json_callback( ","");
                         response = response.replace(" )", "");
-                        Log.i(TAG, "onResponse: " + response);
-                        //Log.d("TAG", response);
-                        //showMsgTxt.setText(response);
                         try {
                             JSONObject initialResponse = new JSONObject(response);
                             JSONArray dataArray = initialResponse.getJSONArray("series");
                             for (int i = 0, p = dataArray.length(); i<p; i++){
-                                SaveDataToRealm.SaveDateDate saveDateDate = new SaveDataToRealm.SaveDateDate("saveDate",dataArray.getJSONObject(i));
-                                saveDateDate.onHandleIntent(getIntent());
-                                //saveDateDataToReal(dataArray.getJSONObject(i));
+                                DataSaver.saveDateDate(dataArray.getJSONObject(i)).subscribe(new Consumer<Boolean>() {
+                                    @Override
+                                    public void accept(Boolean aBoolean) throws Exception {
+                                    }
+                                });
                             }
                             gotoMain();
                         } catch (JSONException e) {

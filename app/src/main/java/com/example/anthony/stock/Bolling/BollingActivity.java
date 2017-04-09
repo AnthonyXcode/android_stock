@@ -1,7 +1,6 @@
 package com.example.anthony.stock.Bolling;
 
 import android.graphics.Color;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,8 +11,8 @@ import android.widget.TextView;
 
 import com.example.anthony.stock.BaseApplication;
 import com.example.anthony.stock.R;
-import com.example.anthony.stock.realmclasses.DateData;
-import com.example.anthony.stock.realmclasses.HourData;
+import com.example.anthony.stock.RealmClasses.Model.DateData;
+import com.example.anthony.stock.RealmClasses.Model.HourData;
 
 import java.util.ArrayList;
 

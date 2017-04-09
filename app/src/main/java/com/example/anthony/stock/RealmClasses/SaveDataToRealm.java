@@ -1,8 +1,11 @@
-package com.example.anthony.stock.realmclasses;
+package com.example.anthony.stock.RealmClasses;
 
 import android.app.IntentService;
 import android.content.Intent;
 import android.util.Log;
+
+import com.example.anthony.stock.RealmClasses.Model.DateData;
+import com.example.anthony.stock.RealmClasses.Model.HourData;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,8 +15,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import io.realm.Realm;
-import io.realm.RealmConfiguration;
-import io.realm.RealmResults;
 
 /**
  * Created by Anthony on 9/11/16.
