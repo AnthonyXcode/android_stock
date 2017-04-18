@@ -30,11 +30,13 @@
 
         <receiver android:name=".Service.BootCompletedReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
 
-        <service android:name=".Service.BootCompletedService"/>
+        <service android:name=".Service.BootCompletedService" />
+
+        <activity android:name=".KDJ.KDJActivity"></activity>
     </application>
 
 </manifest>

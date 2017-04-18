@@ -28,7 +28,7 @@ public class BaseApplication extends AppCompatActivity{
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStetho();
+//        setStetho();
     }
 
 //    @Override

@@ -94,6 +94,66 @@
                     android:text="OK" />
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:text="Day Low: " />
+
+                <EditText
+                    android:id="@+id/crossDayLowEditTxt"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="number" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:text="Valid RSI: " />
+
+                <EditText
+                    android:id="@+id/crossDayHighEditTxt"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="number" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:text="Present Value: " />
+
+                <EditText
+                    android:id="@+id/crossPresentValueEditTxt"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="number" />
+
+                <Button
+                    android:id="@+id/corssUpdateOKBtn"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:text="Update" />
+            </LinearLayout>
+
             <TextView
                 android:id="@+id/crossRSITxt"
                 android:layout_width="match_parent"

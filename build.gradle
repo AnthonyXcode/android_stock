@@ -12,6 +12,15 @@ buildscript {
     }
 }
 
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.jakewharton:butterknife-gradle-plugin:8.5.1'
+    }
+}
+
 allprojects {
     repositories {
         jcenter()

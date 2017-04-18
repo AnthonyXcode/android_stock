@@ -9,11 +9,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.anthony.stock.Bolling.BollingActivity;
 import com.example.anthony.stock.CrossRSI.CrossRSIActivity;
+import com.example.anthony.stock.KDJ.KDJActivity;
 import com.example.anthony.stock.Moving.MovingActivity;
 import com.example.anthony.stock.RSI.RSIActivity;
 import com.example.anthony.stock.Service.BootCompletedService;
@@ -25,7 +28,7 @@ public class MainActivity extends BaseApplication {
 
     ListView mainListView;
     ListViewAdapter listViewAdapter;
-    String[] items = {"All", "MACD", "RSI", "Bolling", "Moving", "Cross RSI"};
+    String[] items = {"All", "KDJ", "RSI", "Bolling", "Moving", "Cross RSI"};
     Intent bootCompletedIntent;
 
     @Override
@@ -74,6 +77,9 @@ public class MainActivity extends BaseApplication {
                     startActivity(intent);
                 }else if (name.equals("Cross RSI")){
                     Intent intent = new Intent(MainActivity.this, CrossRSIActivity.class);
+                    startActivity(intent);
+                }else if (name.equals("KDJ")){
+                    Intent intent = new Intent(MainActivity.this, KDJActivity.class);
                     startActivity(intent);
                 }
             }

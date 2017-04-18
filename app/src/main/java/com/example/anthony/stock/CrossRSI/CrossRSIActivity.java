@@ -1,5 +1,6 @@
 package com.example.anthony.stock.CrossRSI;
 
+import android.content.ClipData;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,6 +27,10 @@ public class CrossRSIActivity extends AppCompatActivity {
     EditText crossValidRsiEditTxt;
     EditText crossShortRsiDaysEditTxt;
     EditText crossLongRsiDaysEditTxt;
+    EditText crossPresentValueEditTxt;
+    EditText crossDayLowEditTxt;
+    EditText crossDayHighEditTxt;
+    Button corssUpdateOKBtn;
     Button corssRsiOKBtn;
     TextView crossRSITxt;
     int shortRsi = 7;
@@ -48,6 +53,11 @@ public class CrossRSIActivity extends AppCompatActivity {
         setupClick();
         setupTool();
         initValidData();
+        addLastItemFromHourData();
+        countRsi();
+        setupListView();
+        analyseResult();
+        printResult();
     }
 
     private void setupLayout(){
@@ -56,6 +66,10 @@ public class CrossRSIActivity extends AppCompatActivity {
         crossValidRsiEditTxt = (EditText) findViewById(R.id.crossValidRsiEditTxt);
         crossShortRsiDaysEditTxt = (EditText) findViewById(R.id.crossShortRsiDaysEditTxt);
         crossLongRsiDaysEditTxt = (EditText) findViewById(R.id.crossLongRsiDaysEditTxt);
+        crossPresentValueEditTxt = (EditText)findViewById(R.id.crossPresentValueEditTxt);
+        crossDayLowEditTxt = (EditText)findViewById(R.id.crossDayLowEditTxt);
+        crossDayHighEditTxt = (EditText)findViewById(R.id.crossDayHighEditTxt);
+        corssUpdateOKBtn = (Button)findViewById(R.id.corssUpdateOKBtn);
         corssRsiOKBtn = (Button)findViewById(R.id.corssRsiOKBtn);
         crossRSITxt = (TextView)findViewById(R.id.crossRSITxt);
         crossShortRsiDaysEditTxt.setText(String.valueOf(shortRsi));
@@ -70,8 +84,38 @@ public class CrossRSIActivity extends AppCompatActivity {
             public void onClick(View v) {
                 setData();
                 initValidData();
+                addLastItemFromHourData();
+                countRsi();
+                setupListView();
+                analyseResult();
+                printResult();
             }
         });
+
+        corssUpdateOKBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CrossRSIItem item = getLastItem();
+                setData();
+                initValidData();
+                items.add(item);
+                countRsi();
+                setupListView();
+                analyseResult();
+                printResult();
+            }
+        });
+    }
+
+    private CrossRSIItem getLastItem(){
+        int close = Integer.parseInt(crossPresentValueEditTxt.getText().toString());
+        int high = Integer.parseInt(crossDayHighEditTxt.getText().toString());
+        int low = Integer.parseInt(crossDayLowEditTxt.getText().toString());
+        CrossRSIItem item = items.get(items.size() - 1);
+        item.setDayClose(close);
+        item.setDayLow(low);
+        item.setDayHigh(high);
+        return item;
     }
 
     private void setupTool(){
@@ -94,26 +138,15 @@ public class CrossRSIActivity extends AppCompatActivity {
             CrossRSIItem item = initItme(realmItem.getStrDate(), realmItem.getOpen(), realmItem.getClose(), realmItem.getLow(), realmItem.getHigh());
             items.add(item);
         }
-        String dateStr = hourDatas.get(0).getDate();
-        int open = hourDatas.get(0).getOpen();
-        int close = hourDatas.get(0).getClose();
-        int low = hourDatas.get(0).getLow();
-        int hight = hourDatas.get(0).getHigh();
-        for (HourData hourData:hourDatas){
-            if (hourData.getDate().contains(dateStr.substring(0,10))){
-                if (hourData.getLow() < low){
-                    low = hourData.getLow();
-                }
-                if (hourData.getHigh() > hight){
-                    hight = hourData.getHigh();
-                }
-                open = hourData.getOpen();
-            }else {
-                break;
-            }
-        }
-        items.add(initItme(dateStr, open, close, low, hight));
+    }
 
+    private void setupListView() {
+        adapter = new CrossRSIAdapter(items, this);
+        crossRsiListView.setAdapter(adapter);
+        crossRsiListView.setSelection(crossRsiListView.getCount());
+    }
+
+    private void countRsi() {
         for (int i = 0; i < items.size(); i++){
             if (i == shortRsi -1){
                 initRsi(items, shortRsi, true);
@@ -129,11 +162,31 @@ public class CrossRSIActivity extends AppCompatActivity {
                 modifyItem(i , longRsi, false);
             }
         }
-        adapter = new CrossRSIAdapter(items, this);
-        crossRsiListView.setAdapter(adapter);
-        crossRsiListView.setSelection(crossRsiListView.getCount());
-        analyseResult();
-        printResult();
+    }
+
+    private void addLastItemFromHourData() {
+        String dateStr = hourDatas.get(0).getDate();
+        int open = hourDatas.get(0).getOpen();
+        int close = hourDatas.get(0).getClose();
+        int low = hourDatas.get(0).getLow();
+        int high = hourDatas.get(0).getHigh();
+        for (HourData hourData:hourDatas){
+            if (hourData.getDate().contains(dateStr.substring(0,10))){
+                if (hourData.getLow() < low){
+                    low = hourData.getLow();
+                }
+                if (hourData.getHigh() > high){
+                    high = hourData.getHigh();
+                }
+                open = hourData.getOpen();
+            }else {
+                break;
+            }
+        }
+        crossDayLowEditTxt.setText(String.valueOf(low));
+        crossDayHighEditTxt.setText(String.valueOf(high));
+        crossPresentValueEditTxt.setText(String.valueOf(close));
+        items.add(initItme(dateStr, open, close, low, high));
     }
 
     private CrossRSIItem initItme (String day, int dayOpen, int dayClose, int dayLow, int dayHigh){

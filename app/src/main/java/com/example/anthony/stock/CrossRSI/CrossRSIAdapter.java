@@ -34,7 +34,7 @@ public class CrossRSIAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int position) {
+    public CrossRSIItem getItem(int position) {
         return items.get(position);
     }
 

@@ -58,7 +58,7 @@
     <ListView
         android:id="@+id/crossRsiListView"
         android:layout_width="match_parent"
-        android:layout_height="300dp" />
+        android:layout_height="150dp" />
 
     <include layout="@layout/layout_cross_rsi_controller"/>
 </LinearLayout>
