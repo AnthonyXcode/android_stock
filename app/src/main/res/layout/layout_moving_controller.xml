@@ -71,6 +71,24 @@
         <TextView
             android:layout_width="100dp"
             android:layout_height="wrap_content"
+            android:text="Target:" />
+
+        <EditText
+            android:id="@+id/movingTargetEditTxt"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="number" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
             android:text="Cut loss:" />
 
         <EditText

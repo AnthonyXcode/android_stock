@@ -41,7 +41,7 @@ public class RSIActivity extends AppCompatActivity {
     private TextView cutlossRsiTxt;
     private int target = 800;
     private int totalWin = 0;
-    private int totalTray = 0;
+    private int totalTrade = 0;
     private int winNumber = 0;
     private int lossNumber = 0;
     private int meetTarget = 0;
@@ -104,7 +104,7 @@ public class RSIActivity extends AppCompatActivity {
 
     private void resetData(){
         totalWin = 0;
-        totalTray = 0;
+        totalTrade = 0;
         winNumber = 0;
         lossNumber = 0;
         meetTarget = 0;
@@ -241,11 +241,11 @@ public class RSIActivity extends AppCompatActivity {
             if (firstItem.getRsi() > 100 - validRSI && secondItem.getRsi() < 100 - validRSI){
                 secondItem.setSell(true);
                 countWinAndlossForSell(i + 1);
-                totalTray += 1;
+                totalTrade += 1;
             }else if (firstItem.getRsi() < validRSI && secondItem.getRsi() > validRSI){
                 secondItem.setBuy(true);
                 countWinAndlossForBuy(i + 1);
-                totalTray += 1;
+                totalTrade += 1;
             } else {
                 secondItem.setBuy(false);
                 secondItem.setSell(false);
@@ -272,12 +272,12 @@ public class RSIActivity extends AppCompatActivity {
                 break loop;
             }
 
-//            if (movingItem.getRsi() < validRSI){
-//                totalWin += movingItem.getDayClose() - buyItem.getDayClose();
-//                cutloss += 1;
-//                movingItem.setSellPrice(movingItem.getDayClose());
-//                break loop;
-//            }
+            if (movingItem.getRsi() < validRSI){
+                totalWin += movingItem.getDayClose() - buyItem.getDayClose();
+                cutloss += 1;
+                movingItem.setSellPrice(movingItem.getDayClose());
+                break loop;
+            }
 
             if (i == validDays - 1){
                 totalWin += movingItem.getDayClose() - buyItem.getDayClose();
@@ -312,12 +312,12 @@ public class RSIActivity extends AppCompatActivity {
                 break loop;
             }
 
-//            if (movingItem.getRsi() > 100 - validRSI){
-//                totalWin += sellItem.getDayClose() - movingItem.getDayClose();
-//                cutloss += 1;
-//                movingItem.setBuyPrice(movingItem.getDayClose());
-//                break loop;
-//            }
+            if (movingItem.getRsi() > 100 - validRSI){
+                totalWin += sellItem.getDayClose() - movingItem.getDayClose();
+                cutloss += 1;
+                movingItem.setBuyPrice(movingItem.getDayClose());
+                break loop;
+            }
 
             if (i == validDays - 1){
                 totalWin += sellItem.getDayClose() - movingItem.getDayClose();
@@ -370,7 +370,7 @@ public class RSIActivity extends AppCompatActivity {
                 "\n80-90:" + from80to90 +
                 "\n90-100:" + from90to100
                 + "\nTotal win:" + totalWin
-                + "\nTotal Tray:" + totalTray
+                + "\nTotal Trade:" + totalTrade
                 + "\nTotal meet target:" + meetTarget
                 + "\nWin Number:" + winNumber
                 + "\nloss Number:" + lossNumber
@@ -394,7 +394,8 @@ public class RSIActivity extends AppCompatActivity {
     }
 
     private void predictRsi(){
-        RSIItem lastItem = allItems.get(allItems.size() - 1);
+        RSIItem lastItem = allItems.get(allItems.size() - 2);
+        Log.i(TAG, "predictRsi: " + lastItem.getDayClose());
         int closeValue = Integer.parseInt(priceEditTxt.getText().toString());
         int rsi;
         if (lastItem.getDayClose() > closeValue){

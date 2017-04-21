@@ -2,6 +2,7 @@ package com.example.anthony.stock.Moving;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,6 +14,7 @@ import com.example.anthony.stock.RealmClasses.Model.DateData;
 import com.example.anthony.stock.RealmClasses.Model.HourData;
 
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -25,6 +27,7 @@ public class MovingActivity extends AppCompatActivity {
     EditText shortMaEditTxt;
     EditText movingValidDaysEditTxt;
     EditText cutlossEditTxt;
+    EditText movingTargetEditTxt;
     Button movingOKBtn;
     Realm realm;
     RealmResults<DateData> dateDatas;
@@ -33,8 +36,10 @@ public class MovingActivity extends AppCompatActivity {
     int shortMoving;
     int validDays;
     int cutlossvalue;
+    int targetValue;
     ArrayList<MovingItem> movingItems;
     MovingAdapter adapter;
+    private String TAG = MovingActivity.class.getName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +58,7 @@ public class MovingActivity extends AppCompatActivity {
         shortMoving = 8;
         validDays = 18;
         cutlossvalue = 100;
+        targetValue = 300;
     }
 
     private void setupLayout(){
@@ -62,11 +68,13 @@ public class MovingActivity extends AppCompatActivity {
         shortMaEditTxt = (EditText) findViewById(R.id.shortMaEditTxt);
         movingValidDaysEditTxt = (EditText) findViewById(R.id.movingValidDaysEditTxt);
         cutlossEditTxt = (EditText) findViewById(R.id.cutlossEditTxt);
+        movingTargetEditTxt = (EditText) findViewById(R.id.movingTargetEditTxt);
         movingOKBtn = (Button) findViewById(R.id.movingOKBtn);
         longMaEditTxt.setText(String.valueOf(longMoving));
         shortMaEditTxt.setText(String.valueOf(shortMoving));
         movingValidDaysEditTxt.setText(String.valueOf(validDays));
         cutlossEditTxt.setText(String.valueOf(cutlossvalue));
+        movingTargetEditTxt.setText(String.valueOf(targetValue));
     }
 
     private void setupClick(){
@@ -88,6 +96,7 @@ public class MovingActivity extends AppCompatActivity {
         shortMoving = Integer.parseInt(shortMaEditTxt.getText().toString());
         validDays = Integer.parseInt(movingValidDaysEditTxt.getText().toString());
         cutlossvalue = Integer.parseInt(cutlossEditTxt.getText().toString());
+        targetValue = Integer.parseInt(movingTargetEditTxt.getText().toString());
     }
 
     private void setupTools(){
@@ -160,6 +169,22 @@ public class MovingActivity extends AppCompatActivity {
                 totalWin += sellItem.getClose() - buyItem.getClose();
                 break;
             }
+
+            if (buyItem.getClose() - sellItem.getClose() > cutlossvalue){
+                Log.i(TAG, "analyseForBuy: bug");
+                sellItem.setSellPrice(sellItem.getClose());
+                loseNumb += 1;
+                totalWin += sellItem.getClose() - buyItem.getClose();
+                break;
+            }
+
+            if (sellItem.getClose() - buyItem.getClose() > targetValue){
+                sellItem.setSellPrice(sellItem.getClose());
+                winNumb += 1;
+                totalWin += sellItem.getClose() - buyItem.getClose();
+                break;
+            }
+
             if (i == validDays - 1){
                 sellItem.setSellPrice(sellItem.getClose());
                 if (buyItem.getClose() < sellItem.getClose()){
@@ -182,9 +207,25 @@ public class MovingActivity extends AppCompatActivity {
                 }else {
                     loseNumb += 1;
                 }
-                totalWin += buyItem.getClose() - sellItem.getClose();
+                totalWin += sellItem.getClose() - buyItem.getClose();
                 break;
             }
+
+            if (buyItem.getClose() - sellItem.getClose() > cutlossvalue){
+                Log.i(TAG, "analyseForSell: sell");
+                buyItem.setBuyPrice(buyItem.getClose());
+                loseNumb += 1;
+                totalWin += sellItem.getClose() - buyItem.getClose();
+                break;
+            }
+
+            if (sellItem.getClose() - buyItem.getClose() > targetValue){
+                buyItem.setBuyPrice(buyItem.getClose());
+                winNumb += 1;
+                totalWin += sellItem.getClose() - buyItem.getClose();
+                break;
+            }
+
             if (i == validDays - 1){
                 buyItem.setBuyPrice(buyItem.getClose());
                 if (buyItem.getClose() < sellItem.getClose()){
@@ -192,7 +233,7 @@ public class MovingActivity extends AppCompatActivity {
                 }else {
                     loseNumb += 1;
                 }
-                totalWin += buyItem.getClose() - sellItem.getClose();
+                totalWin += sellItem.getClose() - buyItem.getClose();
             }
         }
     }

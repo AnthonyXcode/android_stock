@@ -59,7 +59,15 @@ public class DataSaver {
                                 e.printStackTrace();
                             }
                             realm.commitTransaction();
-                        }else {
+                        }else if (result.getDate() == 20170418){
+                            realm.beginTransaction();
+                            result.setLow(23892);
+                            result.setHigh(24276);
+                            result.setOpen(24268);
+                            result.setClose(23924);
+                            realm.copyToRealmOrUpdate(result);
+                            realm.commitTransaction();
+                        } else {
                             isfinish = true;
                         }
                         realm.close();
