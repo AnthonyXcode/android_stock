@@ -3,6 +3,7 @@ package com.example.anthony.stock.KDJ;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ public class KDJAdapter extends BaseAdapter {
     LayoutInflater layoutInflater;
     ArrayList<KDJItem> items;
     Context context;
+    private String TAG = KDJAdapter.class.getName();
 
     public KDJAdapter(ArrayList<KDJItem> items, Context context) {
         this.items = items;
@@ -62,9 +64,12 @@ public class KDJAdapter extends BaseAdapter {
 
     private void setView(Holder holder, KDJItem item, View view){
         holder.kdjDateTxt.setText(item.getStrDate().substring(0, 10));
-        holder.kdjKTxt.setText(String.valueOf(item.getValueK()));
-        holder.kdjDTxt.setText(String.valueOf(item.getValueD()));
-        holder.kdjJTxt.setText(String.valueOf(item.getValueJ()));
+        holder.kdjKTxt.setText(String.valueOf((int)item.getValueK()));
+        holder.kdjDTxt.setText(String.valueOf((int)item.getValueD()));
+        holder.kdjJTxt.setText(String.valueOf((int)item.getValueJ()));
+        holder.kdjBuyPriceTxt.setText(String.valueOf((int)item.getBuyPrice()));
+        holder.kdjSellPriceTxt.setText(String.valueOf((int)item.getSellPrice()));
+        holder.kdjWinOrLossPriceTxt.setText(String.valueOf(item.getWinOrLossValue()));
         if (item.getValueJ() > 100){
             view.setBackgroundColor(ContextCompat.getColor(context, R.color.readySellBlue));
         }else if (item.getValueJ() < 0){
@@ -78,7 +83,10 @@ public class KDJAdapter extends BaseAdapter {
         holder.kdjDateTxt = (TextView) view.findViewById(R.id.kdjDateTxt);
         holder.kdjKTxt = (TextView) view.findViewById(R.id.kdjKTxt);
         holder.kdjDTxt = (TextView) view.findViewById(R.id.kdjDTxt);
-        holder.kdjJTxt = (TextView) view.findViewById(R.id.kdjKTxt);
+        holder.kdjJTxt = (TextView) view.findViewById(R.id.kdjJTxt);
+        holder.kdjBuyPriceTxt = (TextView)view.findViewById(R.id.kdjBuyPriceTxt);
+        holder.kdjSellPriceTxt = (TextView)view.findViewById(R.id.kdjSellPriceTxt);
+        holder.kdjWinOrLossPriceTxt = (TextView)view.findViewById(R.id.kdjWinOrLossPriceTxt);
     }
 
     private class Holder{
@@ -86,5 +94,8 @@ public class KDJAdapter extends BaseAdapter {
         TextView kdjKTxt;
         TextView kdjDTxt;
         TextView kdjJTxt;
+        TextView kdjBuyPriceTxt;
+        TextView kdjSellPriceTxt;
+        TextView kdjWinOrLossPriceTxt;
     }
 }

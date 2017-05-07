@@ -13,20 +13,6 @@
         android:text="Date" />
 
     <TextView
-        android:id="@+id/movingLongMA"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="Long MA" />
-
-    <TextView
-        android:id="@+id/movingShortMA"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="Short MA" />
-
-    <TextView
         android:id="@+id/movingBuy"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -35,6 +21,13 @@
 
     <TextView
         android:id="@+id/movingSell"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Sell" />
+
+    <TextView
+        android:id="@+id/movingWinOrLoss"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"

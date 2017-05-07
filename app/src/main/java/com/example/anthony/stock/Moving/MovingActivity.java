@@ -28,6 +28,10 @@ public class MovingActivity extends AppCompatActivity {
     EditText movingValidDaysEditTxt;
     EditText cutlossEditTxt;
     EditText movingTargetEditTxt;
+    EditText movingNewCloseEditTxt;
+    EditText movingDayHighEditTxt;
+    EditText movingDayLowEditTxt;
+    Button movingUpdateBtn;
     Button movingOKBtn;
     Realm realm;
     RealmResults<DateData> dateDatas;
@@ -50,15 +54,18 @@ public class MovingActivity extends AppCompatActivity {
         setupClick();
         setupTools();
         setupDatas();
+        addHourItem();
+        countResult();
+        setupListView();
         setupResult();
     }
 
     private void initValue(){
-        longMoving = 23;
+        longMoving = 27;
         shortMoving = 8;
-        validDays = 18;
-        cutlossvalue = 100;
-        targetValue = 300;
+        validDays = 6;
+        cutlossvalue = 250;
+        targetValue = 550;
     }
 
     private void setupLayout(){
@@ -70,6 +77,10 @@ public class MovingActivity extends AppCompatActivity {
         cutlossEditTxt = (EditText) findViewById(R.id.cutlossEditTxt);
         movingTargetEditTxt = (EditText) findViewById(R.id.movingTargetEditTxt);
         movingOKBtn = (Button) findViewById(R.id.movingOKBtn);
+        movingNewCloseEditTxt = (EditText)findViewById(R.id.movingNewCloseEditTxt);
+        movingDayHighEditTxt = (EditText) findViewById(R.id.movingDayHighEditTxt);
+        movingDayLowEditTxt = (EditText)findViewById(R.id.movingDayLowEditTxt);
+        movingUpdateBtn = (Button)findViewById(R.id.movingUpdateBtn);
         longMaEditTxt.setText(String.valueOf(longMoving));
         shortMaEditTxt.setText(String.valueOf(shortMoving));
         movingValidDaysEditTxt.setText(String.valueOf(validDays));
@@ -83,7 +94,36 @@ public class MovingActivity extends AppCompatActivity {
             public void onClick(View view) {
                 setupValue();
                 setupDatas();
+                addHourItem();
+                countResult();
+                setupListView();
                 setupResult();
+            }
+        });
+
+        movingUpdateBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setupValue();
+
+                int close = Integer.parseInt(movingNewCloseEditTxt.getText().toString());
+                int high = Integer.parseInt(movingDayHighEditTxt.getText().toString());
+                int low = Integer.parseInt(movingDayLowEditTxt.getText().toString());
+
+                MovingItem item = movingItems.get(movingItems.size() - 1);
+                item.setClose(close);
+                item.setHigh(high);
+                item.setLow(low);
+                item.setBuyPrice(0);
+                item.setSellPrice(0);
+                movingItems.set(movingItems.size() - 1, item);
+                item.setLongMA(countMA(movingItems, longMoving));
+                item.setStortMA(countMA(movingItems, shortMoving));
+
+                countResult();
+                setupListView();
+                setupResult();
+
             }
         });
     }
@@ -104,20 +144,53 @@ public class MovingActivity extends AppCompatActivity {
         dateDatas = realm.where(DateData.class).findAll().sort("Date");
         hourDatas = realm.where(HourData.class).findAll().sort("Timestamp", Sort.DESCENDING);
         movingItems = new ArrayList<>();
-
     }
 
     private void setupDatas(){
         movingItems.clear();
         for (int i = 0; i < dateDatas.size(); i++) {
-            MovingItem item = initMovingItem(dateDatas.get(i));
+            DateData data = dateDatas.get(i);
+            MovingItem item = initMovingItem(data.getDate(), data.getStrDate(), data.getClose(), data.getOpen(), data.getHigh(), data.getLow());
             if (movingItems.size() > longMoving){
                 item.setLongMA(countMA(movingItems, longMoving));
                 item.setStortMA(countMA(movingItems, shortMoving));
             }
             movingItems.add(item);
         }
+    }
 
+    private void addHourItem() {
+        HourData lastData = hourDatas.get(0);
+        int date = lastData.getTimestamp();
+        String dateStr = lastData.getDate();
+        int open = lastData.getOpen();
+        int close = lastData.getClose();
+        int high = lastData.getHigh();
+        int low = lastData.getLow();
+        for (HourData item : hourDatas) {
+            if (item.getDate().contains(dateStr.substring(0, 10))){
+                open = item.getOpen();
+                if (high < item.getHigh()){
+                    high = item.getHigh();
+                }
+
+                if (low > item.getLow()){
+                    low = item.getLow();
+                }
+            }else {
+                break;
+            }
+        }
+        MovingItem hourItem = initMovingItem(date, dateStr, close, open, high, low);
+        hourItem.setLongMA(countMA(movingItems, longMoving));
+        hourItem.setStortMA(countMA(movingItems, shortMoving));
+        movingItems.add(hourItem);
+        movingNewCloseEditTxt.setText(String.valueOf(close));
+        movingDayHighEditTxt.setText(String.valueOf(high));
+        movingDayLowEditTxt.setText(String.valueOf(low));
+    }
+
+    private void countResult() {
         for (int i = 1; i < movingItems.size(); i++) {
             MovingItem previousItem = movingItems.get(i - 1);
             MovingItem item = movingItems.get(i);
@@ -137,19 +210,22 @@ public class MovingActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    private void setupListView() {
         adapter = new MovingAdapter(movingItems, this);
         movingListView.setAdapter(adapter);
         movingListView.setSelection(movingItems.size());
     }
 
-    private MovingItem initMovingItem(DateData dateData){
+    private MovingItem initMovingItem(int date, String strDate, int close, int open, int high, int low){
         MovingItem item = new MovingItem();
-        item.setDate(dateData.getDate());
-        item.setStrDate(dateData.getStrDate());
-        item.setClose(dateData.getClose());
-        item.setOpen(dateData.getOpen());
-        item.setHigh(dateData.getHigh());
-        item.setLow(dateData.getLow());
+        item.setDate(date);
+        item.setStrDate(strDate);
+        item.setClose(close);
+        item.setOpen(open);
+        item.setHigh(high);
+        item.setLow(low);
         return item;
     }
 
@@ -167,6 +243,7 @@ public class MovingActivity extends AppCompatActivity {
                     loseNumb += 1;
                 }
                 totalWin += sellItem.getClose() - buyItem.getClose();
+                sellItem.setWinOrLoss(sellItem.getClose() - buyItem.getClose());
                 break;
             }
 
@@ -175,6 +252,7 @@ public class MovingActivity extends AppCompatActivity {
                 sellItem.setSellPrice(sellItem.getClose());
                 loseNumb += 1;
                 totalWin += sellItem.getClose() - buyItem.getClose();
+                sellItem.setWinOrLoss(sellItem.getClose() - buyItem.getClose());
                 break;
             }
 
@@ -182,6 +260,7 @@ public class MovingActivity extends AppCompatActivity {
                 sellItem.setSellPrice(sellItem.getClose());
                 winNumb += 1;
                 totalWin += sellItem.getClose() - buyItem.getClose();
+                sellItem.setWinOrLoss(sellItem.getClose() - buyItem.getClose());
                 break;
             }
 
@@ -193,6 +272,7 @@ public class MovingActivity extends AppCompatActivity {
                     loseNumb += 1;
                 }
                 totalWin += sellItem.getClose() - buyItem.getClose();
+                sellItem.setWinOrLoss(sellItem.getClose() - buyItem.getClose());
             }
         }
     }
@@ -208,6 +288,7 @@ public class MovingActivity extends AppCompatActivity {
                     loseNumb += 1;
                 }
                 totalWin += sellItem.getClose() - buyItem.getClose();
+                buyItem.setWinOrLoss(sellItem.getClose() - buyItem.getClose());
                 break;
             }
 
@@ -216,6 +297,7 @@ public class MovingActivity extends AppCompatActivity {
                 buyItem.setBuyPrice(buyItem.getClose());
                 loseNumb += 1;
                 totalWin += sellItem.getClose() - buyItem.getClose();
+                buyItem.setWinOrLoss(sellItem.getClose() - buyItem.getClose());
                 break;
             }
 
@@ -223,6 +305,7 @@ public class MovingActivity extends AppCompatActivity {
                 buyItem.setBuyPrice(buyItem.getClose());
                 winNumb += 1;
                 totalWin += sellItem.getClose() - buyItem.getClose();
+                buyItem.setWinOrLoss(sellItem.getClose() - buyItem.getClose());
                 break;
             }
 
@@ -234,6 +317,7 @@ public class MovingActivity extends AppCompatActivity {
                     loseNumb += 1;
                 }
                 totalWin += sellItem.getClose() - buyItem.getClose();
+                buyItem.setWinOrLoss(sellItem.getClose() - buyItem.getClose());
             }
         }
     }

@@ -16,6 +16,7 @@ public class MovingItem {
     private int longMA;
     private int buyPrice;
     private int sellPrice;
+    private int winOrLoss;
 
     public int getDate() {
         return Date;
@@ -103,5 +104,13 @@ public class MovingItem {
 
     public void setSellPrice(int sellPrice) {
         this.sellPrice = sellPrice;
+    }
+
+    public int getWinOrLoss() {
+        return winOrLoss;
+    }
+
+    public void setWinOrLoss(int winOrLoss) {
+        this.winOrLoss = winOrLoss;
     }
 }

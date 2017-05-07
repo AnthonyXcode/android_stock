@@ -17,6 +17,7 @@ public class KDJItem {
     private double valueJ;
     private int buyPrice;
     private int sellPrice;
+    private int winOrLossValue;
 
     public int getDate() {
         return Date;
@@ -112,5 +113,13 @@ public class KDJItem {
 
     public void setSellPrice(int sellPrice) {
         this.sellPrice = sellPrice;
+    }
+
+    public int getWinOrLossValue() {
+        return winOrLossValue;
+    }
+
+    public void setWinOrLossValue(int winOrLossValue) {
+        this.winOrLossValue = winOrLossValue;
     }
 }

@@ -62,8 +62,7 @@ public class MovingAdapter extends BaseAdapter {
 
     private void setView(Holder holder, MovingItem item, View view){
         holder.movingDate.setText(item.getStrDate().substring(0,10));
-        holder.movingLongMA.setText(String.valueOf(item.getLongMA()));
-        holder.movingShortMA.setText(String.valueOf(item.getStortMA()));
+        holder.movingWinOrLoss.setText(String.valueOf(item.getWinOrLoss()));
         if (item.getLongMA() > item.getStortMA()){
             view.setBackgroundColor(ContextCompat.getColor(context,R.color.readySellBlue));
         }else {
@@ -75,16 +74,14 @@ public class MovingAdapter extends BaseAdapter {
 
     private void initView(Holder holder, View view){
         holder.movingDate = (TextView)view.findViewById(R.id.movingDate);
-        holder.movingLongMA = (TextView) view.findViewById(R.id.movingLongMA);
-        holder.movingShortMA = (TextView)view.findViewById(R.id.movingShortMA);
+        holder.movingWinOrLoss = (TextView) view.findViewById(R.id.movingWinOrLoss);
         holder.movingBuy = (TextView) view.findViewById(R.id.movingBuy);
         holder.movingSell = (TextView) view.findViewById(R.id.movingSell);
     }
 
     private class Holder{
         TextView movingDate;
-        TextView movingLongMA;
-        TextView movingShortMA;
+        TextView movingWinOrLoss;
         TextView movingBuy;
         TextView movingSell;
     }
