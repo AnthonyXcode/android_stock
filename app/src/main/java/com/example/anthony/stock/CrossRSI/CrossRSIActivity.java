@@ -136,6 +136,11 @@ public class CrossRSIActivity extends AppCompatActivity {
         items.clear();
         for (DateData realmItem:dateDatas){
             CrossRSIItem item = initItme(realmItem.getStrDate(), realmItem.getOpen(), realmItem.getClose(), realmItem.getLow(), realmItem.getHigh());
+            if (realmItem.getStrDate().contains("2017/05/16")){
+                Log.i(TAG, "initValidData: 16 " + realmItem.getDate());
+            }else if (realmItem.getStrDate().contains("2017/05/17")){
+                Log.i(TAG, "initValidData: 17 " + realmItem.getDate());
+            }
             items.add(item);
         }
     }
@@ -165,6 +170,7 @@ public class CrossRSIActivity extends AppCompatActivity {
     }
 
     private void addLastItemFromHourData() {
+        if (hourDatas.size() == 0) return;
         String dateStr = hourDatas.get(0).getDate();
         int open = hourDatas.get(0).getOpen();
         int close = hourDatas.get(0).getClose();

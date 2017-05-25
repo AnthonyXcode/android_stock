@@ -76,6 +76,44 @@ public class DataSaver {
                 });
     }
 
+    public static Observable<Boolean> saveData(final int date, final int close, final int high, final int low, final int open, final int volume){
+        return Observable.just("").observeOn(AndroidSchedulers.mainThread())
+                .map(new Function<String, Boolean>() {
+                    @Override
+                    public Boolean apply(String s) throws Exception {
+                        Realm realm = Realm.getDefaultInstance();
+//                        DateData result = realm.where(DateData.class).equalTo("Date", date).findFirst();
+//                        if (result == null){
+                            realm.beginTransaction();
+                            DateData data = new DateData();
+                            data.setDate(date);
+                            data.setClose(close);
+                            data.setHigh(high);
+                            data.setLow(low);
+                            data.setOpen(open);
+                            data.setVolume(volume);
+
+                            String stringDate = String.valueOf(date) + " GMT+08:00";
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd z");
+                            try {
+                                Date newDate = sdf.parse(stringDate);
+                                String dateAsText = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss z").format(newDate);
+                                Log.i("TAG new date", dateAsText);
+                                data.setStrDate(dateAsText);
+                                realm.copyToRealmOrUpdate(data);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                                return false;
+                            }
+                            realm.copyToRealmOrUpdate(data);
+                            realm.commitTransaction();
+//                        }
+                        realm.close();
+                        return true;
+                    }
+                });
+    }
+
     public static Observable<Boolean> saveMinsData(final JSONObject jsonObject) {
         return Observable.just("").observeOn(AndroidSchedulers.mainThread()).map(new Function<Object, Boolean>() {
             @Override

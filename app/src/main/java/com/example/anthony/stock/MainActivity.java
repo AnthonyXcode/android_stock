@@ -15,20 +15,30 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.anthony.stock.Bolling.BollingActivity;
+import com.example.anthony.stock.CheckData.CheckDataActivity;
 import com.example.anthony.stock.CrossRSI.CrossRSIActivity;
+import com.example.anthony.stock.FirebaseModel.DateFBModel;
+import com.example.anthony.stock.FirebaseModel.HourFBModel;
 import com.example.anthony.stock.KDJ.KDJActivity;
 import com.example.anthony.stock.Moving.MovingActivity;
 import com.example.anthony.stock.RSI.RSIActivity;
+import com.example.anthony.stock.RealmClasses.Model.DateData;
+import com.example.anthony.stock.RealmClasses.Model.HourData;
 import com.example.anthony.stock.Service.BootCompletedService;
 import com.example.anthony.stock.Utility.CommonTools;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
+
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 public class MainActivity extends BaseApplication {
 
     ListView mainListView;
     ListViewAdapter listViewAdapter;
-    String[] items = {"All", "KDJ", "RSI", "Bolling", "Moving", "Cross RSI"};
+    String[] items = {"All", "KDJ", "RSI", "Bolling", "Moving", "Cross RSI", "check data"};
     Intent bootCompletedIntent;
 
     @Override
@@ -37,6 +47,7 @@ public class MainActivity extends BaseApplication {
         setContentView(R.layout.activity_main);
         setupLayout();
         setupClick();
+        uploadDataToFirebase();
     }
 
     private void setupLayout(){
@@ -80,6 +91,9 @@ public class MainActivity extends BaseApplication {
                     startActivity(intent);
                 }else if (name.equals("KDJ")){
                     Intent intent = new Intent(MainActivity.this, KDJActivity.class);
+                    startActivity(intent);
+                }else if (name.equals("check data")){
+                    Intent intent = new Intent(MainActivity.this, CheckDataActivity.class);
                     startActivity(intent);
                 }
             }
@@ -131,5 +145,26 @@ public class MainActivity extends BaseApplication {
         private class ViewHolder{
             TextView mainItemTxt;
         }
+    }
+
+    private void uploadDataToFirebase(){
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference dateRef = database.getReference("Date Data");
+
+        Realm realm = Realm.getDefaultInstance();
+        RealmResults<DateData> datas = realm.where(DateData.class).findAll();
+//        for (DateData data :
+//                datas) {
+//            DateFBModel model = new DateFBModel();
+//            model.setDate(data.getDate());
+//            model.setStrDate(data.getStrDate());
+//            model.setOpen(data.getOpen());
+//            model.setClose(data.getClose());
+//            model.setHigh(data.getHigh());
+//            model.setLow(data.getLow());
+//            model.setVolume(data.getVolume());
+//            dateRef.child(data.getStrDate()).setValue(model);
+//        }
+        realm.close();
     }
 }

@@ -36,7 +36,8 @@
 
         <service android:name=".Service.BootCompletedService" />
 
-        <activity android:name=".KDJ.KDJActivity"></activity>
+        <activity android:name=".KDJ.KDJActivity" />
+        <activity android:name=".CheckData.CheckDataActivity"></activity>
     </application>
 
 </manifest>

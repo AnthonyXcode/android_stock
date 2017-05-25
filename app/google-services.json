@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "1076463827224",
+    "firebase_url": "https://stock-f3b2b.firebaseio.com",
+    "project_id": "stock-f3b2b",
+    "storage_bucket": "stock-f3b2b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1076463827224:android:5646d8e42d76ff9f",
+        "android_client_info": {
+          "package_name": "com.example.anthony.stock"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1076463827224-vqv7a1cfcdvqf13cfp0snf4p4jru38fc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDfV7hK52N_Af7cERa-l2oo52aybmr1OiQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

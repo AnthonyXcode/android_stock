@@ -1,11 +1,14 @@
 package com.example.anthony.stock.RealmClasses.Model;
 
+import com.google.firebase.database.IgnoreExtraProperties;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by Anthony on 9/11/16.
  */
+@IgnoreExtraProperties
 public class DateData extends RealmObject {
     @PrimaryKey
     private int Date;
@@ -15,6 +18,7 @@ public class DateData extends RealmObject {
     private int open;
     private int volume;
     private String strDate;
+    private boolean fromFirebase;
 
     public String getStrDate() {
         return strDate;
@@ -72,4 +76,10 @@ public class DateData extends RealmObject {
         Date = date;
     }
 
+    public boolean isFromFirebase() {
+        return fromFirebase;
+    }
+    public void setFromFirebase(boolean fromFirebase) {
+        this.fromFirebase = fromFirebase;
+    }
 }

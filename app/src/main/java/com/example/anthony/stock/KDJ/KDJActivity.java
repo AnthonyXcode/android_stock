@@ -255,12 +255,16 @@ public class KDJActivity extends AppCompatActivity {
                     item.setSellPrice(item.getClose());
                     analysisForSellToJ(i, item);
                     tradeNumb += 1;
+                    Log.i(TAG, "analysisData: " + item.getDate());
+                    Log.i(TAG, "analysisData trade: " + tradeNumb);
                 }
             }else if (item.getValueJ() < 15){
                 if (Math.abs(item.getValueJ() - item.getValueD()) < 5 && Math.abs(item.getValueJ() - item.getValueK()) < 5){
                     item.setBuyPrice(item.getClose());
                     analysisForBuyToJ(i, item);
                     tradeNumb += 1;
+                    Log.i(TAG, "analysisData: " + item.getDate());
+                    Log.i(TAG, "analysisData trade: " + tradeNumb);
                 }
             }
 
@@ -288,27 +292,36 @@ public class KDJActivity extends AppCompatActivity {
                 break;
             }
 
-            if (sellItem.getValueJ() < 0 || buyItem.getClose() - sellItem.getClose() > cutLossValue){
-                cutLossValue += 1;
-                totalWin += sellItem.getClose() - buyItem.getClose();
-                sellItem.setSellPrice(sellItem.getClose());
-                sellItem.setWinOrLossValue(sellItem.getClose() - buyItem.getClose());
-                break;
-            }
+//            if (sellItem.getValueJ() < 0 || buyItem.getClose() - sellItem.getClose() > cutLossValue){
+//                Log.i(TAG, "analysisForBuyToJ: date " + sellItem.getDate());
+//                Log.i(TAG, "analysisForBuyToJ: j " + sellItem.getValueJ());
+//                Log.i(TAG, "analysisForBuyToJ: buy close " + buyItem.getClose());
+//                Log.i(TAG, "analysisForBuyToJ: sell close " + sellItem.getClose());
+//                Log.i(TAG, "analysisForBuyToJ: cutloss " + cutLossValue);
+//                cutLostNumb += 1;
+//                totalWin += sellItem.getClose() - buyItem.getClose();
+//                sellItem.setSellPrice(sellItem.getClose());
+//                sellItem.setWinOrLossValue(sellItem.getClose() - buyItem.getClose());
+//                Log.i(TAG, "analysisData cut: " + cutLostNumb);
+//                break;
+//            }
 
             if (sellItem.getClose() - buyItem.getClose() > target){
                 meetTargetNumb += 1;
                 totalWin += sellItem.getClose() - buyItem.getClose();
                 sellItem.setSellPrice(sellItem.getClose());
                 sellItem.setWinOrLossValue(sellItem.getClose() - buyItem.getClose());
+                Log.i(TAG, "analysisData meet: " + meetTargetNumb);
                 break;
             }
 
             if (i == KDJValidDays - 1){
                 if (sellItem.getClose() > buyItem.getClose()){
                     winNumb += 1;
-                }else {
-                    lossNumb += 1;
+                    Log.i(TAG, "analysisData win: " + winNumb);
+                } else {
+                    lossNumb +=1;
+                    Log.i(TAG, "analysisData loss: " + lossNumb);
                 }
                 totalWin += sellItem.getClose() - buyItem.getClose();
                 sellItem.setSellPrice(sellItem.getClose());
@@ -328,27 +341,31 @@ public class KDJActivity extends AppCompatActivity {
                 break;
             }
 
-            if (buyItem.getValueJ() > 100 || buyItem.getClose() - sellItem.getClose() > cutLossValue){
-                cutLostNumb += 1;
-                totalWin += sellItem.getClose() - buyItem.getClose();
-                buyItem.setBuyPrice(buyItem.getClose());
-                buyItem.setWinOrLossValue(sellItem.getClose() - buyItem.getClose());
-                break;
-            }
+//            if (buyItem.getValueJ() > 100 || buyItem.getClose() - sellItem.getClose() > cutLossValue){
+//                cutLostNumb += 1;
+//                totalWin += sellItem.getClose() - buyItem.getClose();
+//                buyItem.setBuyPrice(buyItem.getClose());
+//                buyItem.setWinOrLossValue(sellItem.getClose() - buyItem.getClose());
+//                Log.i(TAG, "analysisData cut: " + cutLostNumb);
+//                break;
+//            }
 
             if (sellItem.getClose() - buyItem.getClose() > target){
                 meetTargetNumb += 1;
                 totalWin += sellItem.getClose() - buyItem.getClose();
                 buyItem.setBuyPrice(buyItem.getClose());
-                buyItem.setWinOrLossValue(sellItem.getClose() - buyItem.getClose());
+                buyItem.setWinOrLossValue(buyItem.getWinOrLossValue() + sellItem.getClose() - buyItem.getClose());
+                Log.i(TAG, "analysisData meet: " + meetTargetNumb);
                 break;
             }
 
             if (i == KDJValidDays - 1){
                 if (sellItem.getClose() > buyItem.getClose()){
                     winNumb += 1;
-                }else {
+                    Log.i(TAG, "analysisData win: " + winNumb);
+                } else {
                     lossNumb += 1;
+                    Log.i(TAG, "analysisData loss: " + lossNumb);
                 }
                 totalWin += sellItem.getClose() - buyItem.getClose();
                 buyItem.setBuyPrice(buyItem.getClose());

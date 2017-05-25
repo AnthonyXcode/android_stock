@@ -70,14 +70,25 @@ public class KDJAdapter extends BaseAdapter {
         holder.kdjBuyPriceTxt.setText(String.valueOf((int)item.getBuyPrice()));
         holder.kdjSellPriceTxt.setText(String.valueOf((int)item.getSellPrice()));
         holder.kdjWinOrLossPriceTxt.setText(String.valueOf(item.getWinOrLossValue()));
-        if (item.getValueJ() > 100){
-            view.setBackgroundColor(ContextCompat.getColor(context, R.color.readySellBlue));
-        }else if (item.getValueJ() < 0){
+        if (item.getWinOrLossValue() != 0){
             view.setBackgroundColor(ContextCompat.getColor(context, R.color.readyBuyRed));
-        }else {
+        } else {
             view.setBackgroundColor(Color.BLACK);
         }
+//        if (item.getValueJ() > 100){
+//            view.setBackgroundColor(ContextCompat.getColor(context, R.color.readySellBlue));
+//        }else if (item.getValueJ() < 0){
+//            view.setBackgroundColor(ContextCompat.getColor(context, R.color.readyBuyRed));
+//        }else {
+//            view.setBackgroundColor(Color.BLACK);
+//        }
     }
+
+//    CL:
+//    MT:6
+//    L:14
+//    W:15
+//    TN:
 
     private void initView(View view, Holder holder){
         holder.kdjDateTxt = (TextView) view.findViewById(R.id.kdjDateTxt);
