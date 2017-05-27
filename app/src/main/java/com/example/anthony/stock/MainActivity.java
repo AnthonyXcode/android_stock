@@ -1,6 +1,5 @@
 package com.example.anthony.stock;
 
-import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,8 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -18,19 +15,21 @@ import com.example.anthony.stock.Bolling.BollingActivity;
 import com.example.anthony.stock.CheckData.CheckDataActivity;
 import com.example.anthony.stock.CrossRSI.CrossRSIActivity;
 import com.example.anthony.stock.FirebaseModel.DateFBModel;
-import com.example.anthony.stock.FirebaseModel.HourFBModel;
 import com.example.anthony.stock.KDJ.KDJActivity;
 import com.example.anthony.stock.Moving.MovingActivity;
 import com.example.anthony.stock.RSI.RSIActivity;
 import com.example.anthony.stock.RealmClasses.Model.DateData;
-import com.example.anthony.stock.RealmClasses.Model.HourData;
 import com.example.anthony.stock.Service.BootCompletedService;
 import com.example.anthony.stock.Utility.CommonTools;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
-import java.util.List;
-
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Function;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -38,8 +37,9 @@ public class MainActivity extends BaseApplication {
 
     ListView mainListView;
     ListViewAdapter listViewAdapter;
-    String[] items = {"All", "KDJ", "RSI", "Bolling", "Moving", "Cross RSI", "check data"};
+    String[] items = {"All", "KDJ", "RSI", "Bolling", "Moving", "Cross RSI", "Check Data"};
     Intent bootCompletedIntent;
+    private final static String TAG = MainActivity.class.getName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +47,7 @@ public class MainActivity extends BaseApplication {
         setContentView(R.layout.activity_main);
         setupLayout();
         setupClick();
-        uploadDataToFirebase();
+        downDataFromFirebase();
     }
 
     private void setupLayout(){
@@ -92,7 +92,7 @@ public class MainActivity extends BaseApplication {
                 }else if (name.equals("KDJ")){
                     Intent intent = new Intent(MainActivity.this, KDJActivity.class);
                     startActivity(intent);
-                }else if (name.equals("check data")){
+                }else if (name.equals("Check Data")){
                     Intent intent = new Intent(MainActivity.this, CheckDataActivity.class);
                     startActivity(intent);
                 }
@@ -147,9 +147,40 @@ public class MainActivity extends BaseApplication {
         }
     }
 
-    private void uploadDataToFirebase(){
+    private void downDataFromFirebase(){
+        mainListView.setVisibility(View.GONE);
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference dateRef = database.getReference("Date Data");
+
+        dateRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Iterable<DataSnapshot> yearData = dataSnapshot.getChildren();
+                for (DataSnapshot year:yearData){
+                    Iterable<DataSnapshot> monthData = year.getChildren();
+                    for (DataSnapshot month : monthData) {
+                        Iterable<DataSnapshot> dateData = month.getChildren();
+                        for (DataSnapshot date : dateData) {
+                            DateFBModel model = date.getValue(DateFBModel.class);
+                            Observable.just("")
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .map(new Function<String, Object>() {
+                                        @Override
+                                        public Object apply(String s) throws Exception {
+                                            return null;
+                                        }
+                                    })
+                                    .subscribe();
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         Realm realm = Realm.getDefaultInstance();
         RealmResults<DateData> datas = realm.where(DateData.class).findAll();

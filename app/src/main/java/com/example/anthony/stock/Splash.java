@@ -39,15 +39,18 @@ public class Splash extends BaseApplication {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        setupTool();
+        startIntent();
+        getDateDataModifier();
+//        getHourData();
+    }
 
+    private void setupTool() {
         RealmConfiguration config = new RealmConfiguration.Builder(this)
                 .deleteRealmIfMigrationNeeded()
                 .build();
         Realm.setDefaultConfiguration(config);
         realm = Realm.getDefaultInstance();
-        startIntent();
-        getDateDataModifier();
-//        getHourData();
     }
 
     private void startIntent(){
