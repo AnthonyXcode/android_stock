@@ -32,10 +32,19 @@
 
         <ImageView
             android:id="@+id/checkedImg"
-            android:layout_width="wrap_content"
+            android:layout_width="10dp"
             android:layout_height="35dp"
+            android:layout_margin="5dp"
             android:layout_weight="1"
             app:srcCompat="@drawable/checked" />
+
+        <ImageView
+            android:id="@+id/deleteImg"
+            android:layout_width="10dp"
+            android:layout_height="35dp"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/error" />
 
     </LinearLayout>
 

@@ -33,6 +33,7 @@ public class CheckDataActivity extends AppCompatActivity {
     EditText closeEditText;
     EditText openEditText;
     ImageView checkedImg;
+    ImageView deleteImg;
     ListView checkDataListView;
     FirebaseDatabase database;
     DatabaseReference dateRef;
@@ -57,9 +58,11 @@ public class CheckDataActivity extends AppCompatActivity {
         lowEditText = (EditText) findViewById(R.id.lowEditText);
         highEditText = (EditText) findViewById(R.id.highEditText);
         checkedImg = (ImageView) findViewById(R.id.checkedImg);
+        deleteImg = (ImageView) findViewById(R.id.deleteImg);
         dateEditText = (EditText) findViewById(R.id.dateEditText);
         volumeEditText = (EditText) findViewById(R.id.volumeEditText);
         checkDataListView = (ListView) findViewById(R.id.checkDataListView);
+        deleteImg.setVisibility(View.GONE);
     }
 
     private void setupClick(){
@@ -137,5 +140,12 @@ public class CheckDataActivity extends AppCompatActivity {
 
     public void removeItem (int position){
         uncheckedItems.remove(position);
+    }
+
+    public void deleteItemFromRealm(int date){
+        DateData item = realm.where(DateData.class).equalTo("Date", date).findFirst();
+        realm.beginTransaction();
+        item.deleteFromRealm();
+        realm.commitTransaction();
     }
 }

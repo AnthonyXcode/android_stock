@@ -77,6 +77,22 @@ public class DataSaver {
                 });
     }
 
+    public static void saveData(int date, String dateString, int volume, int open, int close, int low, int high){
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        DateData data = new DateData();
+        data.setDate(date);
+        data.setClose(close);
+        data.setHigh(high);
+        data.setLow(low);
+        data.setOpen(open);
+        data.setVolume(volume);
+        data.setStrDate(dateString);
+        realm.copyToRealmOrUpdate(data);
+        realm.commitTransaction();
+        realm.close();
+    }
+
     public static Observable<Boolean> saveData(final int date, final int close, final int high, final int low, final int open, final int volume) {
         return Observable.just("").observeOn(AndroidSchedulers.mainThread())
                 .map(new Function<String, Boolean>() {

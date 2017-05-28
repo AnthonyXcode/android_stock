@@ -58,7 +58,7 @@ public class CheckAdapte extends BaseAdapter {
     }
 
     private void setupLayout(final int position, final Holder holder){
-        UncheckedItem item = items.get(position);
+        final UncheckedItem item = items.get(position);
         holder.dateEditText.setText(String.valueOf(item.getDate()));
         holder.volumeEditText.setText(String.valueOf(item.getVolume()));
         holder.openEditText.setText(String.valueOf(item.getOpen()));
@@ -80,6 +80,15 @@ public class CheckAdapte extends BaseAdapter {
                 notifyDataSetChanged();
             }
         });
+
+        holder.deleteImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((CheckDataActivity)context).removeItem(position);
+                ((CheckDataActivity)context).deleteItemFromRealm(item.getDate());
+                notifyDataSetChanged();
+            }
+        });
     }
 
     private void initLayout(Holder holder, View view){
@@ -90,6 +99,7 @@ public class CheckAdapte extends BaseAdapter {
         holder.volumeEditText = (EditText) view.findViewById(R.id.volumeEditText);
         holder.lowEditText = (EditText) view.findViewById(R.id.lowEditText);
         holder.highEditText = (EditText) view.findViewById(R.id.highEditText);
+        holder.deleteImg = (ImageView) view.findViewById(R.id.deleteImg);
     }
 
     private class Holder {
@@ -100,5 +110,6 @@ public class CheckAdapte extends BaseAdapter {
         EditText closeEditText;
         EditText openEditText;
         ImageView checkedImg;
+        ImageView deleteImg;
     }
 }

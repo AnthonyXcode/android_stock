@@ -12,7 +12,8 @@ public class MovingItem {
     private int open;
     private int volume;
     private String strDate;
-    private int stortMA;
+    private int shortMA;
+    private int meddleMA;
     private int longMA;
     private int buyPrice;
     private int sellPrice;
@@ -74,12 +75,12 @@ public class MovingItem {
         this.strDate = strDate;
     }
 
-    public int getStortMA() {
-        return stortMA;
+    public int getShortMA() {
+        return shortMA;
     }
 
-    public void setStortMA(int stortMA) {
-        this.stortMA = stortMA;
+    public void setShortMA(int shortMA) {
+        this.shortMA = shortMA;
     }
 
     public int getLongMA() {
@@ -112,5 +113,13 @@ public class MovingItem {
 
     public void setWinOrLoss(int winOrLoss) {
         this.winOrLoss = winOrLoss;
+    }
+
+    public int getMeddleMA() {
+        return meddleMA;
+    }
+
+    public void setMeddleMA(int meddleMA) {
+        this.meddleMA = meddleMA;
     }
 }

@@ -12,9 +12,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.anthony.stock.CheckData.UncheckedItem;
 import com.example.anthony.stock.RealmClasses.DataSaver;
 import com.example.anthony.stock.Service.BootCompletedService;
 import com.example.anthony.stock.Utility.CommonTools;
+import com.example.anthony.stock.Utility.DataHandler;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,6 +27,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -133,60 +138,37 @@ public class Splash extends BaseApplication {
         StringRequest stringRequest = new StringRequest("http://hq.sinajs.cn/list=hkHSI", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                String[] stringData = response.split("\"");
-                String[] stringElement = stringData[1].split(",");
-                generateLog(stringData, stringElement);
-
-                String date = formatDateString(stringElement[17]);
-                String close = stringElement[6];
-                String high = stringElement[4];
-                String low = stringElement[5];
-                String open = stringElement[2];
-                String volum = stringElement[11];
-                DataSaver.saveData((int) Double.parseDouble(date), (int)Double.parseDouble(close),
-                        (int)Double.parseDouble(high), (int)Double.parseDouble(low), (int)Double.parseDouble(open), (int)Double.parseDouble(volum))
-                        .subscribe(new Consumer<Boolean>() {
+                final UncheckedItem item = DataHandler.handlerSinaData(response);
+                Observable.just(item)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnNext(new Consumer<UncheckedItem>() {
                             @Override
-                            public void accept(Boolean aBoolean) throws Exception {
-                                if (aBoolean) {
-                                    gotoMain();
-                                } else {
-                                    Toast.makeText(Splash.this, "Cannot update!", Toast.LENGTH_SHORT).show();
-                                    gotoMain();
-                                }
+                            public void accept(UncheckedItem uncheckedItem) throws Exception {
+                                DataSaver.saveData(uncheckedItem.getDate(), uncheckedItem.getStrDate(), item.getVolume(),
+                                        uncheckedItem.getOpen(), uncheckedItem.getClose(), uncheckedItem.getLow(), uncheckedItem.getHigh());
+                            }
+                        })
+                        .subscribe(new Consumer<UncheckedItem>() {
+                            @Override
+                            public void accept(UncheckedItem uncheckedItem) throws Exception {
+                                gotoMain();
+                            }
+                        }, new Consumer<Throwable>() {
+                            @Override
+                            public void accept(Throwable throwable) throws Exception {
+                                Toast.makeText(Splash.this, "Update Error", Toast.LENGTH_SHORT).show();
+                                gotoMain();
                             }
                         });
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                Toast.makeText(Splash.this, "API Error", Toast.LENGTH_SHORT).show();
                 gotoMain();
             }
         });
         requestQueue.add(stringRequest);
-    }
-
-    private void generateLog(String[] stringData, String[] stringElement) {
-        Log.i(TAG, "onResponse: " + stringData.length);
-        Log.i(TAG, "onResponse: open: " + stringElement[2]);
-        Log.i(TAG, "onResponse: close: " + stringElement[6]);
-        Log.i(TAG, "onResponse: high: " + stringElement[4]);
-        Log.i(TAG, "onResponse: low: " + stringElement[5]);
-        Log.i(TAG, "onResponse: volume" + Integer.parseInt(stringElement[11]) * 1000);
-        Log.i(TAG, "onResponse: Date: " + stringElement[17]);
-    }
-
-    private String formatDateString (String obj) {
-        String stringDate = String.valueOf(obj);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-        try {
-            Date newDate = sdf.parse(stringDate);
-            String dateAsText = new SimpleDateFormat("yyyyMMdd").format(newDate);
-            return dateAsText;
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return obj;
-        }
     }
 
     private void gotoMain(){

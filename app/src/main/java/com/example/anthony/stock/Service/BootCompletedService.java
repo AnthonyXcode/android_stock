@@ -11,17 +11,21 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.text.LoginFilter;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.anthony.stock.CheckData.UncheckedItem;
 import com.example.anthony.stock.CrossRSI.CrossRSIItem;
 import com.example.anthony.stock.R;
 import com.example.anthony.stock.RealmClasses.DataSaver;
 import com.example.anthony.stock.RealmClasses.Model.DateData;
 import com.example.anthony.stock.RealmClasses.Model.HourData;
+import com.example.anthony.stock.Splash;
+import com.example.anthony.stock.Utility.DataHandler;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,6 +37,8 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -86,7 +92,7 @@ public class BootCompletedService extends Service{
                 }
             }
         };
-        timeInterval = 600000;
+        timeInterval = 60000;
         try{
             realm = Realm.getDefaultInstance();
         }catch (Exception ex){
@@ -99,7 +105,7 @@ public class BootCompletedService extends Service{
         requestQueue = Volley.newRequestQueue(this);
         items = new ArrayList<>();
         manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        scheduleTimer.schedule(timerTask, 10000, timeInterval);
+        scheduleTimer.schedule(timerTask, 0, timeInterval);
     }
 
     private boolean ifNeedToUpdate(){
@@ -128,86 +134,48 @@ public class BootCompletedService extends Service{
     }
 
     private void updateData(){
-        StringRequest minsRequest = new StringRequest("http://chartapi.finance.yahoo.com/instrument/1.0/%5EHSI/chartdata;type=quote;range=20d/json",
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        response = response.replace("finance_charts_json_callback( ","");
-                        response = response.replace(" )", "");
-                        try {
-                            JSONObject initialResponse = new JSONObject(response);
-                            JSONArray dataArray = initialResponse.getJSONArray("series");
-
-
-                            int p = dataArray.length();
-                            for (int i = p-1; i >= 0; i--){
-                                DataSaver.saveMinsData(dataArray.getJSONObject(i)).subscribe(new Consumer<Boolean>() {
-                                    @Override
-                                    public void accept(Boolean aBoolean) throws Exception {
-                                        if (aBoolean & !presenting){
-                                            minsDataGot = true;
-                                            startCal();
-                                        }
-                                    }
-                                });
+        StringRequest updateData = new StringRequest("http://hq.sinajs.cn/list=hkHSI", new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                final UncheckedItem item = DataHandler.handlerSinaData(response);
+                Observable.just(item)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnNext(new Consumer<UncheckedItem>() {
+                            @Override
+                            public void accept(UncheckedItem uncheckedItem) throws Exception {
+                                DataSaver.saveData(uncheckedItem.getDate(), uncheckedItem.getStrDate(), item.getVolume(),
+                                        uncheckedItem.getOpen(), uncheckedItem.getClose(), uncheckedItem.getLow(), uncheckedItem.getHigh());
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
+                        })
+                        .subscribe(new Consumer<UncheckedItem>() {
+                            @Override
+                            public void accept(UncheckedItem uncheckedItem) throws Exception {
+                                daysDataGot = true;
+                                startCal();
+                            }
+                        }, new Consumer<Throwable>() {
+                            @Override
+                            public void accept(Throwable throwable) throws Exception {
+                                Toast.makeText(BootCompletedService.this, "Update Error", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }
+        }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-            }
-        });
-        requestQueue.add(minsRequest);
 
-        final StringRequest daysRequest = new StringRequest("http://chartapi.finance.yahoo.com/instrument/1.0/%5EHSI/chartdata;type=quote;range=3y/json",
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        response = response.replace("finance_charts_json_callback( ","");
-                        response = response.replace(" )", "");
-                        try {
-                            JSONObject initialResponse = new JSONObject(response);
-                            JSONArray dataArray = initialResponse.getJSONArray("series");
-                            for (int i = 0, p = dataArray.length(); i<p; i++){
-                                DataSaver.saveDateDate(dataArray.getJSONObject(i)).subscribe(new Consumer<Boolean>() {
-                                    @Override
-                                    public void accept(Boolean aBoolean) throws Exception {
-                                        if (aBoolean && !presenting){
-                                            daysDataGot = true;
-                                            startCal();
-                                        }
-                                    }
-                                });
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
             }
         });
-        requestQueue.add(daysRequest);
+        requestQueue.add(updateData);
     }
 
     boolean minsDataGot = false;
     boolean daysDataGot = false;
-    boolean presenting = false;
+
 
     private void startCal(){
-        if (minsDataGot && daysDataGot){
-            presenting = true;
-            Log.i(TAG, "startCal: ");
-            calResult();
-            successNotification();
-            minsDataGot = false;
-            daysDataGot = false;
-            presenting =false;
-        }
+        calResult();
+        successNotification();
     }
 
     int shortRsi = 7;
@@ -225,26 +193,6 @@ public class BootCompletedService extends Service{
             CrossRSIItem item = initItme(realmItem.getStrDate(), realmItem.getOpen(), realmItem.getClose(), realmItem.getLow(), realmItem.getHigh());
             items.add(item);
         }
-        String dateStr = hourDatas.get(0).getDate();
-        int open = hourDatas.get(0).getOpen();
-        int close = hourDatas.get(0).getClose();
-        int low = hourDatas.get(0).getLow();
-        int hight = hourDatas.get(0).getHigh();
-        for (HourData hourData:hourDatas){
-            if (hourData.getDate().contains(dateStr.substring(0,10))){
-                if (hourData.getLow() < low){
-                    low = hourData.getLow();
-                }
-                if (hourData.getHigh() > hight){
-                    hight = hourData.getHigh();
-                }
-                open = hourData.getOpen();
-            }else {
-                break;
-            }
-        }
-        items.add(initItme(dateStr, open, close, low, hight));
-
         for (int i = 0; i < items.size(); i++){
             if (i == shortRsi -1){
                 initRsi(items, shortRsi, true);
