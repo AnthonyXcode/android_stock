@@ -1,4 +1,4 @@
-package com.example.anthony.stock;
+package com.example.anthony.stock.All;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.anthony.stock.R;
 import com.example.anthony.stock.RealmClasses.Model.DateData;
 
 import io.realm.RealmResults;

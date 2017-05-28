@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/NewAppTheme">
         <activity android:name=".MainActivity" />
-        <activity android:name=".DetailPageActivity" />
+        <activity android:name=".All.DetailPageActivity" />
         <activity android:name=".Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

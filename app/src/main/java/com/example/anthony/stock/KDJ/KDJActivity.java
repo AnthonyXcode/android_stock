@@ -56,7 +56,7 @@ public class KDJActivity extends AppCompatActivity {
         initTools();
         initStratege();
         initDataArray();
-        addHourData();
+//        addHourData();
         analysisData();
         initListView();
         printResult();
@@ -82,10 +82,10 @@ public class KDJActivity extends AppCompatActivity {
             public void onClick(View view) {
                 setupStrategy();
                 initDataArray();
-                addHourData();
+//                addHourData();
                 analysisData();
-                printResult();
                 initListView();
+                printResult();
             }
         });
 
@@ -94,11 +94,11 @@ public class KDJActivity extends AppCompatActivity {
             public void onClick(View view) {
                 setupStrategy();
                 initDataArray();
-                addHourData();
+//                addHourData();
                 updateData();
                 analysisData();
-                printResult();
                 initListView();
+                printResult();
             }
         });
     }
@@ -115,7 +115,6 @@ public class KDJActivity extends AppCompatActivity {
         KDJValidDays = Integer.parseInt(KDJValidDaysEditTxt.getText().toString());
         cutLossValue = Integer.parseInt(KDJCutlossEditTxt.getText().toString());
         target = Integer.parseInt(KDJTargetEditTxt.getText().toString());
-        KDJDays = Integer.parseInt(KDJDaysEditTxt.getText().toString());
     }
 
     private void initStratege() {
@@ -292,19 +291,19 @@ public class KDJActivity extends AppCompatActivity {
                 break;
             }
 
-//            if (sellItem.getValueJ() < 0 || buyItem.getClose() - sellItem.getClose() > cutLossValue){
-//                Log.i(TAG, "analysisForBuyToJ: date " + sellItem.getDate());
-//                Log.i(TAG, "analysisForBuyToJ: j " + sellItem.getValueJ());
-//                Log.i(TAG, "analysisForBuyToJ: buy close " + buyItem.getClose());
-//                Log.i(TAG, "analysisForBuyToJ: sell close " + sellItem.getClose());
-//                Log.i(TAG, "analysisForBuyToJ: cutloss " + cutLossValue);
-//                cutLostNumb += 1;
-//                totalWin += sellItem.getClose() - buyItem.getClose();
-//                sellItem.setSellPrice(sellItem.getClose());
-//                sellItem.setWinOrLossValue(sellItem.getClose() - buyItem.getClose());
-//                Log.i(TAG, "analysisData cut: " + cutLostNumb);
-//                break;
-//            }
+            if (sellItem.getValueJ() < 0 || buyItem.getClose() - sellItem.getClose() > cutLossValue){
+                Log.i(TAG, "analysisForBuyToJ: date " + sellItem.getDate());
+                Log.i(TAG, "analysisForBuyToJ: j " + sellItem.getValueJ());
+                Log.i(TAG, "analysisForBuyToJ: buy close " + buyItem.getClose());
+                Log.i(TAG, "analysisForBuyToJ: sell close " + sellItem.getClose());
+                Log.i(TAG, "analysisForBuyToJ: cutloss " + cutLossValue);
+                cutLostNumb += 1;
+                totalWin += sellItem.getClose() - buyItem.getClose();
+                sellItem.setSellPrice(sellItem.getClose());
+                sellItem.setWinOrLossValue(sellItem.getClose() - buyItem.getClose());
+                Log.i(TAG, "analysisData cut: " + cutLostNumb);
+                break;
+            }
 
             if (sellItem.getClose() - buyItem.getClose() > target){
                 meetTargetNumb += 1;
@@ -341,14 +340,14 @@ public class KDJActivity extends AppCompatActivity {
                 break;
             }
 
-//            if (buyItem.getValueJ() > 100 || buyItem.getClose() - sellItem.getClose() > cutLossValue){
-//                cutLostNumb += 1;
-//                totalWin += sellItem.getClose() - buyItem.getClose();
-//                buyItem.setBuyPrice(buyItem.getClose());
-//                buyItem.setWinOrLossValue(sellItem.getClose() - buyItem.getClose());
-//                Log.i(TAG, "analysisData cut: " + cutLostNumb);
-//                break;
-//            }
+            if (buyItem.getValueJ() > 100 || buyItem.getClose() - sellItem.getClose() > cutLossValue){
+                cutLostNumb += 1;
+                totalWin += sellItem.getClose() - buyItem.getClose();
+                buyItem.setBuyPrice(buyItem.getClose());
+                buyItem.setWinOrLossValue(sellItem.getClose() - buyItem.getClose());
+                Log.i(TAG, "analysisData cut: " + cutLostNumb);
+                break;
+            }
 
             if (sellItem.getClose() - buyItem.getClose() > target){
                 meetTargetNumb += 1;

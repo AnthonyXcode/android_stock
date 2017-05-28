@@ -11,6 +11,7 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.anthony.stock.All.DetailPageActivity;
 import com.example.anthony.stock.Bolling.BollingActivity;
 import com.example.anthony.stock.CheckData.CheckDataActivity;
 import com.example.anthony.stock.CrossRSI.CrossRSIActivity;
@@ -19,19 +20,18 @@ import com.example.anthony.stock.KDJ.KDJActivity;
 import com.example.anthony.stock.Moving.MovingActivity;
 import com.example.anthony.stock.RSI.RSIActivity;
 import com.example.anthony.stock.RealmClasses.Model.DateData;
-import com.example.anthony.stock.Service.BootCompletedService;
-import com.example.anthony.stock.Utility.CommonTools;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Function;
+import io.reactivex.functions.Consumer;
 import io.realm.Realm;
-import io.realm.RealmResults;
 
 public class MainActivity extends BaseApplication {
 
@@ -54,19 +54,6 @@ public class MainActivity extends BaseApplication {
         mainListView = (ListView)findViewById(R.id.mainListView);
         listViewAdapter = new ListViewAdapter(this);
         mainListView.setAdapter(listViewAdapter);
-    }
-
-    private void setupTool(){
-        if (!CommonTools.checkServiceRunning(BootCompletedService.class, this)){
-            initBootServiceIntent();
-            startService(bootCompletedIntent);
-        }
-    }
-
-    private void initBootServiceIntent(){
-        if (bootCompletedIntent == null){
-            bootCompletedIntent = new Intent(this, BootCompletedService.class);
-        }
     }
 
     private void setupClick(){
@@ -148,7 +135,6 @@ public class MainActivity extends BaseApplication {
     }
 
     private void downDataFromFirebase(){
-        mainListView.setVisibility(View.GONE);
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference dateRef = database.getReference("Date Data");
 
@@ -156,24 +142,18 @@ public class MainActivity extends BaseApplication {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Iterable<DataSnapshot> yearData = dataSnapshot.getChildren();
+                ArrayList<DateFBModel> fbModelArr = new ArrayList<>();
                 for (DataSnapshot year:yearData){
                     Iterable<DataSnapshot> monthData = year.getChildren();
                     for (DataSnapshot month : monthData) {
                         Iterable<DataSnapshot> dateData = month.getChildren();
                         for (DataSnapshot date : dateData) {
                             DateFBModel model = date.getValue(DateFBModel.class);
-                            Observable.just("")
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .map(new Function<String, Object>() {
-                                        @Override
-                                        public Object apply(String s) throws Exception {
-                                            return null;
-                                        }
-                                    })
-                                    .subscribe();
+                            fbModelArr.add(model);
                         }
                     }
                 }
+                addFbDataToRealm(fbModelArr);
             }
 
             @Override
@@ -181,21 +161,38 @@ public class MainActivity extends BaseApplication {
 
             }
         });
+    }
 
-        Realm realm = Realm.getDefaultInstance();
-        RealmResults<DateData> datas = realm.where(DateData.class).findAll();
-//        for (DateData data :
-//                datas) {
-//            DateFBModel model = new DateFBModel();
-//            model.setDate(data.getDate());
-//            model.setStrDate(data.getStrDate());
-//            model.setOpen(data.getOpen());
-//            model.setClose(data.getClose());
-//            model.setHigh(data.getHigh());
-//            model.setLow(data.getLow());
-//            model.setVolume(data.getVolume());
-//            dateRef.child(data.getStrDate()).setValue(model);
-//        }
-        realm.close();
+    private void addFbDataToRealm(final ArrayList<DateFBModel> fbModelArr){
+        Observable.just("")
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(new Consumer<String>() {
+                    @Override
+                    public void accept(String s) throws Exception {
+                        Realm realm = Realm.getDefaultInstance();
+                        realm.beginTransaction();
+                        realm.copyToRealmOrUpdate(fbModelsToRealmModels(fbModelArr));
+                        realm.commitTransaction();
+                        realm.close();
+                    }
+                })
+                .subscribe();
+    }
+
+    private ArrayList<DateData> fbModelsToRealmModels(ArrayList<DateFBModel> fbModelArr){
+        ArrayList<DateData> realmDataArr = new ArrayList<>();
+        for (DateFBModel model : fbModelArr) {
+            DateData realmData = new DateData();
+            realmData.setStrDate(model.getStrDate());
+            realmData.setDate(model.getDate());
+            realmData.setVolume(model.getVolume());
+            realmData.setFromFirebase(true);
+            realmData.setOpen(model.getOpen());
+            realmData.setClose(model.getClose());
+            realmData.setLow(model.getLow());
+            realmData.setHigh(model.getHigh());
+            realmDataArr.add(realmData);
+        }
+        return realmDataArr;
     }
 }

@@ -1,6 +1,5 @@
 package com.example.anthony.stock.CrossRSI;
 
-import android.content.ClipData;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,8 +29,8 @@ public class CrossRSIActivity extends AppCompatActivity {
     EditText crossPresentValueEditTxt;
     EditText crossDayLowEditTxt;
     EditText crossDayHighEditTxt;
-    Button corssUpdateOKBtn;
-    Button corssRsiOKBtn;
+    Button crossUpdateOKBtn;
+    Button crossRsiOKBtn;
     TextView crossRSITxt;
     int shortRsi = 7;
     int longRsi = 25;
@@ -69,8 +68,8 @@ public class CrossRSIActivity extends AppCompatActivity {
         crossPresentValueEditTxt = (EditText)findViewById(R.id.crossPresentValueEditTxt);
         crossDayLowEditTxt = (EditText)findViewById(R.id.crossDayLowEditTxt);
         crossDayHighEditTxt = (EditText)findViewById(R.id.crossDayHighEditTxt);
-        corssUpdateOKBtn = (Button)findViewById(R.id.corssUpdateOKBtn);
-        corssRsiOKBtn = (Button)findViewById(R.id.corssRsiOKBtn);
+        crossUpdateOKBtn = (Button)findViewById(R.id.corssUpdateOKBtn);
+        crossRsiOKBtn = (Button)findViewById(R.id.corssRsiOKBtn);
         crossRSITxt = (TextView)findViewById(R.id.crossRSITxt);
         crossShortRsiDaysEditTxt.setText(String.valueOf(shortRsi));
         crossLongRsiDaysEditTxt.setText(String.valueOf(longRsi));
@@ -79,7 +78,7 @@ public class CrossRSIActivity extends AppCompatActivity {
     }
 
     private void setupClick(){
-        corssRsiOKBtn.setOnClickListener(new View.OnClickListener() {
+        crossRsiOKBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 setData();
@@ -92,7 +91,7 @@ public class CrossRSIActivity extends AppCompatActivity {
             }
         });
 
-        corssUpdateOKBtn.setOnClickListener(new View.OnClickListener() {
+        crossUpdateOKBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 CrossRSIItem item = getLastItem();

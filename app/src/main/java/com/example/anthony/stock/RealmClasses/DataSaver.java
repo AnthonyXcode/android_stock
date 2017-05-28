@@ -24,7 +24,8 @@ import io.realm.Realm;
  */
 
 public class DataSaver {
-    public static Observable<Boolean> saveDateDate(final JSONObject jsonObject){
+    private final static String TAG = DataSaver.class.getName();
+    public static Observable<Boolean> saveDateDate(final JSONObject jsonObject) {
         return Observable.just("").observeOn(AndroidSchedulers.mainThread())
                 .map(new Function<Object, Boolean>() {
                     @Override
@@ -59,7 +60,7 @@ public class DataSaver {
                                 e.printStackTrace();
                             }
                             realm.commitTransaction();
-                        }else if (result.getDate() == 20170418){
+                        } else if (result.getDate() == 20170418) {
                             realm.beginTransaction();
                             result.setLow(23892);
                             result.setHigh(24276);
@@ -76,37 +77,39 @@ public class DataSaver {
                 });
     }
 
-    public static Observable<Boolean> saveData(final int date, final int close, final int high, final int low, final int open, final int volume){
+    public static Observable<Boolean> saveData(final int date, final int close, final int high, final int low, final int open, final int volume) {
         return Observable.just("").observeOn(AndroidSchedulers.mainThread())
                 .map(new Function<String, Boolean>() {
                     @Override
                     public Boolean apply(String s) throws Exception {
+
                         Realm realm = Realm.getDefaultInstance();
 //                        DateData result = realm.where(DateData.class).equalTo("Date", date).findFirst();
 //                        if (result == null){
-                            realm.beginTransaction();
-                            DateData data = new DateData();
-                            data.setDate(date);
-                            data.setClose(close);
-                            data.setHigh(high);
-                            data.setLow(low);
-                            data.setOpen(open);
-                            data.setVolume(volume);
+                        realm.beginTransaction();
+                        DateData data = new DateData();
+                        data.setDate(date);
+                        data.setClose(close);
+                        data.setHigh(high);
+                        data.setLow(low);
+                        data.setOpen(open);
+                        data.setVolume(volume);
+                        data.setFromFirebase(false);
 
-                            String stringDate = String.valueOf(date) + " GMT+08:00";
-                            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd z");
-                            try {
-                                Date newDate = sdf.parse(stringDate);
-                                String dateAsText = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss z").format(newDate);
-                                Log.i("TAG new date", dateAsText);
-                                data.setStrDate(dateAsText);
-                                realm.copyToRealmOrUpdate(data);
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                                return false;
-                            }
+                        String stringDate = String.valueOf(date) + " GMT+08:00";
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd z");
+                        try {
+                            Date newDate = sdf.parse(stringDate);
+                            String dateAsText = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss z").format(newDate);
+                            Log.i("TAG new date", dateAsText);
+                            data.setStrDate(dateAsText);
                             realm.copyToRealmOrUpdate(data);
-                            realm.commitTransaction();
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                            return false;
+                        }
+                        realm.copyToRealmOrUpdate(data);
+                        realm.commitTransaction();
 //                        }
                         realm.close();
                         return true;

@@ -133,17 +133,9 @@ public class Splash extends BaseApplication {
         StringRequest stringRequest = new StringRequest("http://hq.sinajs.cn/list=hkHSI", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.i(TAG, "onResponse: " + response);
                 String[] stringData = response.split("\"");
-                Log.i(TAG, "onResponse: " + stringData.length);
-                Log.i(TAG, "onResponse: " + stringData[1]);
                 String[] stringElement = stringData[1].split(",");
-                Log.i(TAG, "onResponse: open: " + stringElement[2]);
-                Log.i(TAG, "onResponse: close: " + stringElement[6]);
-                Log.i(TAG, "onResponse: high: " + stringElement[4]);
-                Log.i(TAG, "onResponse: low: " + stringElement[5]);
-                Log.i(TAG, "onResponse: volum" + Integer.parseInt(stringElement[11]) * 1000);
-                Log.i(TAG, "onResponse: Date: " + stringElement[17]);
+                generateLog(stringData, stringElement);
 
                 String date = formatDateString(stringElement[17]);
                 String close = stringElement[6];
@@ -164,7 +156,6 @@ public class Splash extends BaseApplication {
                                 }
                             }
                         });
-                DataSaver.saveData(20170516,25335,25413,25228,25413, 78040000).subscribe();
             }
         }, new Response.ErrorListener() {
             @Override
@@ -173,6 +164,16 @@ public class Splash extends BaseApplication {
             }
         });
         requestQueue.add(stringRequest);
+    }
+
+    private void generateLog(String[] stringData, String[] stringElement) {
+        Log.i(TAG, "onResponse: " + stringData.length);
+        Log.i(TAG, "onResponse: open: " + stringElement[2]);
+        Log.i(TAG, "onResponse: close: " + stringElement[6]);
+        Log.i(TAG, "onResponse: high: " + stringElement[4]);
+        Log.i(TAG, "onResponse: low: " + stringElement[5]);
+        Log.i(TAG, "onResponse: volume" + Integer.parseInt(stringElement[11]) * 1000);
+        Log.i(TAG, "onResponse: Date: " + stringElement[17]);
     }
 
     private String formatDateString (String obj) {
@@ -191,5 +192,6 @@ public class Splash extends BaseApplication {
     private void gotoMain(){
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+        finish();
     }
 }

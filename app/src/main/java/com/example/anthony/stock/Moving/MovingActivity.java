@@ -14,7 +14,6 @@ import com.example.anthony.stock.RealmClasses.Model.DateData;
 import com.example.anthony.stock.RealmClasses.Model.HourData;
 
 import java.util.ArrayList;
-import java.util.StringTokenizer;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -53,8 +52,8 @@ public class MovingActivity extends AppCompatActivity {
         setupLayout();
         setupClick();
         setupTools();
-        setupDatas();
-        addHourItem();
+        setupData();
+//        addHourItem();
         countResult();
         setupListView();
         setupResult();
@@ -93,8 +92,8 @@ public class MovingActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 setupValue();
-                setupDatas();
-                addHourItem();
+                setupData();
+//                addHourItem();
                 countResult();
                 setupListView();
                 setupResult();
@@ -146,7 +145,7 @@ public class MovingActivity extends AppCompatActivity {
         movingItems = new ArrayList<>();
     }
 
-    private void setupDatas(){
+    private void setupData(){
         movingItems.clear();
         for (int i = 0; i < dateDatas.size(); i++) {
             DateData data = dateDatas.get(i);

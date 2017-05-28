@@ -176,28 +176,28 @@ public class RSIActivity extends AppCompatActivity {
             allItems.add(item);
         }
 
-        String date = hourDatas.get(0).getDate();
-        int open = 0;
-        int close = hourDatas.get(0).getClose();
-        int low = hourDatas.get(0).getLow();
-        int high = hourDatas.get(0).getHigh();
-        for (HourData hourData:hourDatas){
-            if (hourData.getDate().contains(date)){
-                open = hourData.getOpen();
-                if (low > hourData.getLow()){
-                    low = hourData.getLow();
-                }
-                if (high < hourData.getHigh()){
-                    high = hourData.getHigh();
-                }
-            }else {
-                break;
-            }
-        }
-        RSIItem item = initItme(date, open, close, low, high);
-        Log.i(TAG, "setupItems: " + item.getDay());
-        item = modifyItem(item);
-        allItems.add(item);
+//        String date = hourDatas.get(0).getDate();
+//        int open = 0;
+//        int close = hourDatas.get(0).getClose();
+//        int low = hourDatas.get(0).getLow();
+//        int high = hourDatas.get(0).getHigh();
+//        for (HourData hourData:hourDatas){
+//            if (hourData.getDate().contains(date)){
+//                open = hourData.getOpen();
+//                if (low > hourData.getLow()){
+//                    low = hourData.getLow();
+//                }
+//                if (high < hourData.getHigh()){
+//                    high = hourData.getHigh();
+//                }
+//            }else {
+//                break;
+//            }
+//        }
+//        RSIItem item = initItme(date, open, close, low, high);
+//        Log.i(TAG, "setupItems: " + item.getDay());
+//        item = modifyItem(item);
+//        allItems.add(item);
     }
 
     private RSIItem initItme (String day, int dayOpen, int dayClose, int dayLow, int dayHigh){

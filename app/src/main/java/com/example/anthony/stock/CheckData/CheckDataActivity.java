@@ -12,12 +12,17 @@ import android.widget.Toast;
 
 import com.example.anthony.stock.FirebaseModel.DateFBModel;
 import com.example.anthony.stock.R;
+import com.example.anthony.stock.RealmClasses.Model.DateData;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 public class CheckDataActivity extends AppCompatActivity {
 
@@ -31,6 +36,10 @@ public class CheckDataActivity extends AppCompatActivity {
     ListView checkDataListView;
     FirebaseDatabase database;
     DatabaseReference dateRef;
+    Realm realm;
+    RealmResults<DateData> uncheckedData;
+    ArrayList<UncheckedItem> uncheckedItems;
+    CheckAdapte adapte;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +48,7 @@ public class CheckDataActivity extends AppCompatActivity {
         setupLayout();
         setupClick();
         setupTool();
+        setupList();
     }
 
     private void setupLayout(){
@@ -70,6 +80,25 @@ public class CheckDataActivity extends AppCompatActivity {
     private void setupTool(){
         database = FirebaseDatabase.getInstance();
         dateRef = database.getReference("Date Data");
+        realm = Realm.getDefaultInstance();
+        uncheckedData = realm.where(DateData.class).equalTo("fromFirebase", false).findAll();
+        uncheckedItems = new ArrayList<>();
+    }
+
+    private void setupList(){
+        for (DateData data : uncheckedData){
+            UncheckedItem item = new UncheckedItem();
+            item.setStrDate(data.getStrDate());
+            item.setDate(data.getDate());
+            item.setOpen(data.getOpen());
+            item.setClose(data.getClose());
+            item.setLow(data.getLow());
+            item.setHigh(data.getHigh());
+            item.setVolume(data.getVolume());
+            uncheckedItems.add(item);
+        }
+        adapte = new CheckAdapte(uncheckedItems, this);
+        checkDataListView.setAdapter(adapte);
     }
 
     public void uploadData(String date, String volume, String open, String close, String low, String high){
@@ -104,5 +133,9 @@ public class CheckDataActivity extends AppCompatActivity {
         model.setHigh(highInt);
         model.setStrDate(strDate);
         dateRef.child(strDate).setValue(model);
+    }
+
+    public void removeItem (int position){
+        uncheckedItems.remove(position);
     }
 }

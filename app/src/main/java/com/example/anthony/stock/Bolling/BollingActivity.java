@@ -146,44 +146,44 @@ public class BollingActivity extends BaseApplication {
             bollingItems.add(bItem);
         }
 
-        String date = hourDatas.get(0).getDate().substring(0,10);
-        int hight = hourDatas.get(0).getHigh();
-        int low = hourDatas.get(0).getLow();
-        int open = 0;
-        int close = hourDatas.get(0).getClose();
-        Log.i(TAG, "handleResult: " + date);
-        for (HourData hourData : hourDatas){
-            if (hourData.getDate().contains(date)){
-                if (hourData.getHigh() > hight){
-                    hight = hourData.getHigh();
-                }
-                if (hourData.getLow() < low){
-                    low = hourData.getLow();
-                }
-                open = hourData.getOpen();
-            }else {
-                break;
-            }
-        }
-        typicalC.remove(0);
-        typicalC.add(findTypicalC(hight, low, close));
-        int Ma20 = findAverage(typicalC);
-        int upperDev = Ma20 + findSD(typicalC) * 2;
-        int lowerDev = Ma20 - findSD(typicalC) * 2;
-        BollingItem bItem = new BollingItem();
-        bItem.setDate(hourDatas.get(0).getDate());
-        bItem.setLower(lowerDev);
-        bItem.setUpper(upperDev);
-        bItem.setLower5Percent((int)((upperDev - lowerDev)*0.55 + lowerDev));
-        bItem.setUpper5Percent((int)((upperDev - (upperDev - lowerDev) * 0.05)));
-        bItem.setMA20(Ma20);
-        bItem.setTypicalC(typicalC.get(19));
-        bItem.setOpen(open);
-        bItem.setOpen(open);
-        bItem.setClose(close);
-        bItem.setDayHigh(hight);
-        bItem.setDayLow(low);
-        bollingItems.add(bItem);
+//        String date = hourDatas.get(0).getDate().substring(0,10);
+//        int hight = hourDatas.get(0).getHigh();
+//        int low = hourDatas.get(0).getLow();
+//        int open = 0;
+//        int close = hourDatas.get(0).getClose();
+//        Log.i(TAG, "handleResult: " + date);
+//        for (HourData hourData : hourDatas){
+//            if (hourData.getDate().contains(date)){
+//                if (hourData.getHigh() > hight){
+//                    hight = hourData.getHigh();
+//                }
+//                if (hourData.getLow() < low){
+//                    low = hourData.getLow();
+//                }
+//                open = hourData.getOpen();
+//            }else {
+//                break;
+//            }
+//        }
+//        typicalC.remove(0);
+//        typicalC.add(findTypicalC(hight, low, close));
+//        int Ma20 = findAverage(typicalC);
+//        int upperDev = Ma20 + findSD(typicalC) * 2;
+//        int lowerDev = Ma20 - findSD(typicalC) * 2;
+//        BollingItem bItem = new BollingItem();
+//        bItem.setDate(hourDatas.get(0).getDate());
+//        bItem.setLower(lowerDev);
+//        bItem.setUpper(upperDev);
+//        bItem.setLower5Percent((int)((upperDev - lowerDev)*0.55 + lowerDev));
+//        bItem.setUpper5Percent((int)((upperDev - (upperDev - lowerDev) * 0.05)));
+//        bItem.setMA20(Ma20);
+//        bItem.setTypicalC(typicalC.get(19));
+//        bItem.setOpen(open);
+//        bItem.setOpen(open);
+//        bItem.setClose(close);
+//        bItem.setDayHigh(hight);
+//        bItem.setDayLow(low);
+//        bollingItems.add(bItem);
     }
 
     double cutPercentage = 0;
