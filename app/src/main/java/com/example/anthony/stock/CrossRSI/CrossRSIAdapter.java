@@ -1,7 +1,6 @@
 package com.example.anthony.stock.CrossRSI;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,7 +59,7 @@ public class CrossRSIAdapter extends BaseAdapter {
     }
 
     private void setupLayout(CrossRSIItem item, Holder holder, View view) {
-        holder.crossRsiDateTxt.setText(item.getDay().substring(0, 10));
+        holder.crossRsiDateTxt.setText(item.getDayStr().substring(0, 10));
         holder.crossRsiShortTxt.setText(String.valueOf((int) item.getShortRsi()));
         holder.crossRsiLongTxt.setText(String.valueOf((int) item.getLongRsi()));
 

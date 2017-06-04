@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
-import android.text.LoginFilter;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -24,12 +23,7 @@ import com.example.anthony.stock.R;
 import com.example.anthony.stock.RealmClasses.DataSaver;
 import com.example.anthony.stock.RealmClasses.Model.DateData;
 import com.example.anthony.stock.RealmClasses.Model.HourData;
-import com.example.anthony.stock.Splash;
 import com.example.anthony.stock.Utility.DataHandler;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -214,7 +208,7 @@ public class BootCompletedService extends Service{
 
     private CrossRSIItem initItme (String day, int dayOpen, int dayClose, int dayLow, int dayHigh){
         CrossRSIItem item = new CrossRSIItem();
-        item.setDay(day);
+        item.setDayStr(day);
         item.setDayOpen(dayOpen);
         item.setDayClose(dayClose);
         item.setDayLow(dayLow);
@@ -412,7 +406,7 @@ public class BootCompletedService extends Service{
         CrossRSIItem lastItem;
         if (items.size() != 0) {
             lastItem = items.get(items.size() - 1);
-            info = items.get(items.size() - 1).getDay().substring(0, 19);
+            info = items.get(items.size() - 1).getDayStr().substring(0, 19);
             buy = items.get(items.size() - 1).getBuyPrice();
             sell = items.get(items.size() - 1).getSellPrice();
             winOrLost = items.get(items.size() - 1).getWinOrloss();

@@ -15,9 +15,12 @@ public class KDJItem {
     private double valueK;
     private double valueD;
     private double valueJ;
+    private double shortMA;
+    private double longMA;
     private int buyPrice;
     private int sellPrice;
     private int winOrLossValue;
+    private boolean stockOnHand;
 
     public int getDate() {
         return Date;
@@ -121,5 +124,29 @@ public class KDJItem {
 
     public void setWinOrLossValue(int winOrLossValue) {
         this.winOrLossValue = winOrLossValue;
+    }
+
+    public double getShortMA() {
+        return shortMA;
+    }
+
+    public void setShortMA(double shortMA) {
+        this.shortMA = shortMA;
+    }
+
+    public double getLongMA() {
+        return longMA;
+    }
+
+    public void setLongMA(double longMA) {
+        this.longMA = longMA;
+    }
+
+    public boolean isStockOnHand() {
+        return stockOnHand;
+    }
+
+    public void setStockOnHand(boolean stockOnHand) {
+        this.stockOnHand = stockOnHand;
     }
 }

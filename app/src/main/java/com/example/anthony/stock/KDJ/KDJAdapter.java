@@ -70,7 +70,11 @@ public class KDJAdapter extends BaseAdapter {
         holder.kdjBuyPriceTxt.setText(String.valueOf((int)item.getBuyPrice()));
         holder.kdjSellPriceTxt.setText(String.valueOf((int)item.getSellPrice()));
         holder.kdjWinOrLossPriceTxt.setText(String.valueOf(item.getWinOrLossValue()));
-        if (item.getWinOrLossValue() != 0){
+        holder.shortMATxt.setText(String.valueOf((int)item.getShortMA()));
+        holder.longMATxt.setText(String.valueOf((int)item.getLongMA()));
+        if (item.isStockOnHand()){
+            view.setBackgroundColor(ContextCompat.getColor(context, R.color.readySellBlue));
+        }else if (item.getBuyPrice() != 0 || item.getSellPrice() != 0){
             view.setBackgroundColor(ContextCompat.getColor(context, R.color.readyBuyRed));
         } else {
             view.setBackgroundColor(Color.BLACK);
@@ -98,6 +102,8 @@ public class KDJAdapter extends BaseAdapter {
         holder.kdjBuyPriceTxt = (TextView)view.findViewById(R.id.kdjBuyPriceTxt);
         holder.kdjSellPriceTxt = (TextView)view.findViewById(R.id.kdjSellPriceTxt);
         holder.kdjWinOrLossPriceTxt = (TextView)view.findViewById(R.id.kdjWinOrLossPriceTxt);
+        holder.shortMATxt = (TextView) view.findViewById(R.id.shortMATxt);
+        holder.longMATxt = (TextView) view.findViewById(R.id.longMATxt);
     }
 
     private class Holder{
@@ -108,5 +114,7 @@ public class KDJAdapter extends BaseAdapter {
         TextView kdjBuyPriceTxt;
         TextView kdjSellPriceTxt;
         TextView kdjWinOrLossPriceTxt;
+        TextView shortMATxt;
+        TextView longMATxt;
     }
 }

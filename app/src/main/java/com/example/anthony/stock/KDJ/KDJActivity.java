@@ -30,20 +30,17 @@ public class KDJActivity extends AppCompatActivity {
     EditText KDJDaysEditTxt;
     EditText KDJValidDaysEditTxt;
     EditText KDJCutlossEditTxt;
-    EditText KDJDayHighEditTxt;
-    EditText KDJLowEditTxt;
-    EditText KDJCloseEditTxt;
     EditText KDJTargetEditTxt;
-    Button KDJUpdateBtn;
+    EditText shortMADyasEditTxt;
+    EditText longMAdaysEditTxt;
     Button KDJOKBtn;
     ListView KDJListview;
     TextView KDJResultTxt;
     private int KDJValidDays;
     private int KDJDays;
+    private int shortMADays;
+    private int longMADays;
     private int cutLossValue;
-    private int persentValue;
-    private int dayHigh;
-    private int dayLow;
     private int target;
     private KDJAdapter adapter;
 
@@ -54,7 +51,7 @@ public class KDJActivity extends AppCompatActivity {
         setupLayout();
         setupClick();
         initTools();
-        initStratege();
+        initStrategy();
         initDataArray();
 //        addHourData();
         analysisData();
@@ -68,12 +65,10 @@ public class KDJActivity extends AppCompatActivity {
         KDJCutlossEditTxt = (EditText) findViewById(R.id.KDJCutlossEditTxt);
         KDJOKBtn = (Button)findViewById(R.id.KDJOKBtn);
         KDJListview = (ListView)findViewById(R.id.KDJListview);
-        KDJDayHighEditTxt = (EditText)findViewById(R.id.KDJDayHighEditTxt);
-        KDJLowEditTxt = (EditText)findViewById(R.id.KDJLowEditTxt);
-        KDJCloseEditTxt = (EditText)findViewById(R.id.KDJCloseEditTxt);
-        KDJUpdateBtn = (Button)findViewById(R.id.KDJUpdateBtn);
         KDJTargetEditTxt = (EditText)findViewById(R.id.KDJTargetEditTxt);
         KDJResultTxt = (TextView) findViewById(R.id.KDJResultTxt);
+        longMAdaysEditTxt = (EditText) findViewById(R.id.longMAdaysEditTxt);
+        shortMADyasEditTxt = (EditText) findViewById(R.id.shortMADyasEditTxt);
     }
 
     private void setupClick(){
@@ -82,20 +77,6 @@ public class KDJActivity extends AppCompatActivity {
             public void onClick(View view) {
                 setupStrategy();
                 initDataArray();
-//                addHourData();
-                analysisData();
-                initListView();
-                printResult();
-            }
-        });
-
-        KDJUpdateBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setupStrategy();
-                initDataArray();
-//                addHourData();
-                updateData();
                 analysisData();
                 initListView();
                 printResult();
@@ -115,17 +96,23 @@ public class KDJActivity extends AppCompatActivity {
         KDJValidDays = Integer.parseInt(KDJValidDaysEditTxt.getText().toString());
         cutLossValue = Integer.parseInt(KDJCutlossEditTxt.getText().toString());
         target = Integer.parseInt(KDJTargetEditTxt.getText().toString());
+        shortMADays = Integer.parseInt(shortMADyasEditTxt.getText().toString());
+        longMADays = Integer.parseInt(longMAdaysEditTxt.getText().toString());
     }
 
-    private void initStratege() {
-        KDJValidDays = 5;
-        cutLossValue = 10000;
-        target = 500;
+    private void initStrategy() {
+        KDJValidDays = 4;
+        cutLossValue = 100;
+        target = 200;
         KDJDays = 9;
+        shortMADays = 5;
+        longMADays = 20;
         KDJValidDaysEditTxt.setText(String.valueOf(KDJValidDays));
         KDJCutlossEditTxt.setText(String.valueOf(cutLossValue));
         KDJTargetEditTxt.setText(String.valueOf(target));
         KDJDaysEditTxt.setText(String.valueOf(KDJDays));
+        longMAdaysEditTxt.setText(String.valueOf(longMADays));
+        shortMADyasEditTxt.setText(String.valueOf(shortMADays));
     }
 
     private void initDataArray() {
@@ -139,48 +126,13 @@ public class KDJActivity extends AppCompatActivity {
             } else {
                 kdjItem = setKDJ(data.getHigh(), data.getLow(), data.getClose(), kdjItem);
             }
-            Log.i(TAG, "initDataArray: " + kdjItem.getValueK());
             items.add(kdjItem);
-        }
-    }
 
-    private void updateData(){
-        KDJItem lastItem = items.get(items.size() - 1);
-        int close = Integer.parseInt(KDJCloseEditTxt.getText().toString());
-        int high = Integer.parseInt(KDJDayHighEditTxt.getText().toString());
-        int low = Integer.parseInt(KDJLowEditTxt.getText().toString());
-        KDJItem item = initKDJItem(lastItem.getDate(), close, high, low, lastItem.getOpen(), lastItem.getStrDate());
-        item = setKDJ(high, low, close, item);
-        items.set(items.size() - 1, item);
-    }
-
-    private void addHourData() {
-        HourData lastItem = hourDatas.get(0);
-        int dateStamp = lastItem.getTimestamp();
-        int close = lastItem.getClose();
-        int h = lastItem.getHigh();
-        int l = lastItem.getLow();
-        int open = lastItem.getOpen();
-        String date = lastItem.getDate();
-        for (HourData hourData : hourDatas) {
-            if (hourData.getDate().contains(date.substring(0, 11))) {
-                if (hourData.getHigh() > h) {
-                    h = hourData.getHigh();
-                }
-                if (hourData.getLow() < l) {
-                    l = hourData.getLow();
-                }
-                open = hourData.getOpen();
-            } else {
-                break;
+            if (items.size() >= longMADays){
+                kdjItem.setShortMA(countMA(items, shortMADays));
+                kdjItem.setLongMA(countMA(items, longMADays));
             }
         }
-        KDJLowEditTxt.setText(String.valueOf(l));
-        KDJDayHighEditTxt.setText(String.valueOf(h));
-        KDJCloseEditTxt.setText(String.valueOf(close));
-        KDJItem item = initKDJItem(dateStamp, close, h, l, open, date);
-        item = setKDJ(h, l, close, item);
-        items.add(item);
     }
 
     private void initListView() {
@@ -226,58 +178,132 @@ public class KDJActivity extends AppCompatActivity {
     int cutLostNumb = 0;
     int winNumb = 0;
     int meetTargetNumb = 0;
-    int lossNumb = 0;
+    int lostNumb = 0;
     int tradeNumb = 0;
     private void analysisData(){
         totalWin = 0;
         cutLostNumb = 0;
         winNumb = 0;
         meetTargetNumb = 0;
-        lossNumb = 0;
+        lostNumb = 0;
         tradeNumb = 0;
-        for (int i = 1; i < items.size(); i++) {
-            KDJItem item = items.get(i);
-            KDJItem previousItem = items.get(i - 1);
-//            if ((item.getValueK() > 60 || item.getValueK() < 40)
-//                    && (item.getValueD() > 60 || item.getValueD() < 40)){
-//                if (previousItem.getValueK() < previousItem.getValueD() && item.getValueK() > item.getValueD()){
-//                    item.setBuyPrice(item.getClose());
-//                    analysisForBuy(i, item);
-//                }else if (previousItem.getValueK() > previousItem.getValueD() && item.getValueK() < item.getValueD()){
-//                    item.setSellPrice(item.getClose());
-//                    analysisForSell(i, item);
-//                }
-//            }
 
-            if (item.getValueJ() > 85){
-                if (Math.abs(item.getValueJ() - item.getValueD()) < 5 && Math.abs(item.getValueJ() - item.getValueK()) < 5){
-                    item.setSellPrice(item.getClose());
-                    analysisForSellToJ(i, item);
-                    tradeNumb += 1;
-                    Log.i(TAG, "analysisData: " + item.getDate());
-                    Log.i(TAG, "analysisData trade: " + tradeNumb);
-                }
-            }else if (item.getValueJ() < 15){
-                if (Math.abs(item.getValueJ() - item.getValueD()) < 5 && Math.abs(item.getValueJ() - item.getValueK()) < 5){
-                    item.setBuyPrice(item.getClose());
-                    analysisForBuyToJ(i, item);
-                    tradeNumb += 1;
-                    Log.i(TAG, "analysisData: " + item.getDate());
-                    Log.i(TAG, "analysisData trade: " + tradeNumb);
+        for(int i = 1; i < items.size(); i++){
+            KDJItem item = items.get(i);
+            if (item.isStockOnHand()) continue;
+            if (Math.abs(item.getShortMA() - item.getLongMA()) > item.getClose() * 0.0075 && Math.abs(item.getLow() - item.getHigh()) < 800){
+                if (item.getShortMA() > item.getLongMA()){
+                    if (item.getClose() - item.getShortMA() > item.getClose() * 0.0075) {
+                        tradeNumb += 1;
+                        item.setBuyPrice(item.getClose());
+                        movingAnalysisForBuy(i, item);
+                    }
+                }else {
+                    if (item.getShortMA() - item.getClose() > item.getClose() * 0.0075){
+                        tradeNumb += 1;
+                        item.setSellPrice(item.getClose());
+                        movingAnalysisForSell(i, item);
+                    }
                 }
             }
+        }
 
-//            if (previousItem.getValueJ() > 100 && item.getValueJ() < 100 &&
-//                    item.getValueD() < item.getValueJ() &&
-//                    item.getValueK() < item.getValueJ()) {
-//                item.setSellPrice(item.getClose());
-//                analysisForSellToJ(i, item);
-//            } else if (previousItem.getValueJ() < 0 && item.getValueJ() > 0 &&
-//                    item.getValueD() > item.getValueJ() &&
-//                    item.getValueK() > item.getValueJ()) {
-//                item.setBuyPrice(item.getClose());
-//                analysisForBuyToJ(i, item);
+//        for (int i = 1; i < items.size(); i++) {
+//            KDJItem item = items.get(i);
+//            KDJItem previousItem = items.get(i - 1);
+//
+//            if (item.getValueJ() > 85){
+//                if (Math.abs(item.getValueJ() - item.getValueD()) < 5 && Math.abs(item.getValueJ() - item.getValueK()) < 5){
+//                    item.setSellPrice(item.getClose());
+//                    analysisForSellToJ(i, item);
+//                    tradeNumb += 1;
+//                    Log.i(TAG, "analysisData: " + item.getDate());
+//                    Log.i(TAG, "analysisData trade: " + tradeNumb);
+//                }
+//            }else if (item.getValueJ() < 15){
+//                if (Math.abs(item.getValueJ() - item.getValueD()) < 5 && Math.abs(item.getValueJ() - item.getValueK()) < 5){
+//                    item.setBuyPrice(item.getClose());
+//                    analysisForBuyToJ(i, item);
+//                    tradeNumb += 1;
+//                    Log.i(TAG, "analysisData: " + item.getDate());
+//                    Log.i(TAG, "analysisData trade: " + tradeNumb);
+//                }
 //            }
+//        }
+    }
+
+    private void movingAnalysisForBuy(int position, KDJItem buyItem){
+        for (int i = position + 1; i < position + KDJValidDays; i++){
+            KDJItem sellItem;
+            try{
+                sellItem = items.get(i);
+            }catch (Exception ex){
+                return;
+            }
+            if (Math.abs(buyItem.getClose() - sellItem.getClose()) > 300)
+                Log.i(TAG, "movingAnalysisForBuy: " + buyItem.getStrDate());
+            sellItem.setStockOnHand(true);
+            if (buyItem.getClose() - sellItem.getClose() > cutLossValue){
+                sellItem.setSellPrice(sellItem.getClose());
+                sellItem.setWinOrLossValue(sellItem.getClose() - buyItem.getClose());
+                cutLostNumb += 1;
+                totalWin += sellItem.getClose() - buyItem.getClose();
+                break;
+            } else if (sellItem.getClose() - buyItem.getClose() > target){
+                sellItem.setSellPrice(sellItem.getClose());
+                sellItem.setWinOrLossValue(sellItem.getClose() - buyItem.getClose());
+                meetTargetNumb += 1;
+                totalWin += sellItem.getClose() - buyItem.getClose();
+                break;
+            }else if (i == position + KDJValidDays - 1){
+                if (sellItem.getClose() > buyItem.getClose()){
+                    winNumb += 1;
+                }else {
+                    lostNumb += 1;
+                }
+                totalWin += sellItem.getClose() - buyItem.getClose();
+                sellItem.setSellPrice(sellItem.getClose());
+                sellItem.setWinOrLossValue(sellItem.getClose() - buyItem.getClose());
+                break;
+            }
+        }
+    }
+
+    private void movingAnalysisForSell(int position, KDJItem sellItem){
+        for (int i = position + 1; i < position + KDJValidDays; i++){
+            KDJItem buyItem;
+            try{
+                buyItem= items.get(i);
+            }catch (Exception ex){
+                return;
+            }
+            if (Math.abs(buyItem.getClose() - sellItem.getClose()) > 300)
+                Log.i(TAG, "movingAnalysisForBuy: " + sellItem.getStrDate());
+            buyItem.setStockOnHand(true);
+
+            if (buyItem.getClose() - sellItem.getClose() > cutLossValue){
+                buyItem.setBuyPrice(buyItem.getClose());
+                buyItem.setWinOrLossValue(sellItem.getClose() - buyItem.getClose());
+                cutLostNumb += 1;
+                totalWin += sellItem.getClose() - buyItem.getClose();
+                break;
+            }else if (sellItem.getClose() - buyItem.getClose() > target){
+                buyItem.setBuyPrice(buyItem.getClose());
+                buyItem.setWinOrLossValue(sellItem.getClose() - buyItem.getClose());
+                meetTargetNumb += 1;
+                totalWin += sellItem.getClose() - buyItem.getClose();
+                break;
+            }else if (i == position + KDJValidDays - 1){
+                if (sellItem.getClose() > buyItem.getClose()){
+                    winNumb += 1;
+                }else {
+                    lostNumb += 1;
+                }
+                totalWin += sellItem.getClose() - buyItem.getClose();
+                buyItem.setBuyPrice(buyItem.getClose());
+                buyItem.setWinOrLossValue(sellItem.getClose() - buyItem.getClose());
+                break;
+            }
         }
     }
 
@@ -319,8 +345,8 @@ public class KDJActivity extends AppCompatActivity {
                     winNumb += 1;
                     Log.i(TAG, "analysisData win: " + winNumb);
                 } else {
-                    lossNumb +=1;
-                    Log.i(TAG, "analysisData loss: " + lossNumb);
+                    lostNumb +=1;
+                    Log.i(TAG, "analysisData loss: " + lostNumb);
                 }
                 totalWin += sellItem.getClose() - buyItem.getClose();
                 sellItem.setSellPrice(sellItem.getClose());
@@ -363,8 +389,8 @@ public class KDJActivity extends AppCompatActivity {
                     winNumb += 1;
                     Log.i(TAG, "analysisData win: " + winNumb);
                 } else {
-                    lossNumb += 1;
-                    Log.i(TAG, "analysisData loss: " + lossNumb);
+                    lostNumb += 1;
+                    Log.i(TAG, "analysisData loss: " + lostNumb);
                 }
                 totalWin += sellItem.getClose() - buyItem.getClose();
                 buyItem.setBuyPrice(buyItem.getClose());
@@ -411,7 +437,7 @@ public class KDJActivity extends AppCompatActivity {
                 if (sellItem.getClose() > buyItem.getClose()){
                     winNumb += 1;
                 }else {
-                    lossNumb += 1;
+                    lostNumb += 1;
                 }
                 totalWin += sellItem.getClose() - buyItem.getClose();
                 sellItem.setSellPrice(sellItem.getClose());
@@ -459,7 +485,7 @@ public class KDJActivity extends AppCompatActivity {
                 if (sellItem.getClose() > buyItem.getClose()){
                     winNumb += 1;
                 }else {
-                    lossNumb += 1;
+                    lostNumb += 1;
                 }
                 totalWin += sellItem.getClose() - buyItem.getClose();
                 buyItem.setBuyPrice(buyItem.getClose());
@@ -469,11 +495,21 @@ public class KDJActivity extends AppCompatActivity {
         }
     }
 
+    private int countMA(ArrayList<KDJItem> items, int days) {
+        int sum = 0;
+        for (int i = 0; i < days; i++) {
+            KDJItem item = items.get(items.size() - 1 - i);
+            sum += item.getClose();
+        }
+        int movingAverage = sum / days;
+        return movingAverage;
+    }
+
     private void printResult() {
         KDJResultTxt.setText("Total win: " + totalWin +
                 "\n" + "Cut Loss Number: " + cutLostNumb +
                 "\n" + "Meet target Number: " + meetTargetNumb +
-                "\n" + "Loss Number: " + lossNumb +
+                "\n" + "Loss Number: " + lostNumb +
                 "\n" + "Win Number: " + winNumb +
                 "\n" + "Trade Number: " + tradeNumb);
     }

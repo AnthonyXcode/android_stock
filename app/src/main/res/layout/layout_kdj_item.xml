@@ -2,50 +2,69 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:weightSum="6">
 
-    <TextView
-        android:id="@+id/kdjDateTxt"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:text="Date" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/kdjDateTxt"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="Date" />
 
-    <TextView
-        android:id="@+id/kdjKTxt"
-        android:layout_width="20dp"
-        android:layout_height="wrap_content"
-        android:text="K" />
+        <TextView
+            android:id="@+id/kdjKTxt"
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:text="K" />
 
-    <TextView
-        android:id="@+id/kdjDTxt"
-        android:layout_width="20dp"
-        android:layout_height="wrap_content"
-        android:text="D" />
+        <TextView
+            android:id="@+id/kdjDTxt"
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:text="D" />
 
-    <TextView
-        android:id="@+id/kdjJTxt"
-        android:layout_width="20dp"
-        android:layout_height="wrap_content"
-        android:text="J" />
+        <TextView
+            android:id="@+id/kdjJTxt"
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:text="J" />
 
-    <TextView
-        android:id="@+id/kdjBuyPriceTxt"
-        android:layout_width="80dp"
-        android:layout_height="wrap_content"
-        android:text="BUY" />
+        <TextView
+            android:id="@+id/shortMATxt"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:text="Short MA" />
 
-    <TextView
-        android:id="@+id/kdjSellPriceTxt"
-        android:layout_width="80dp"
-        android:layout_height="wrap_content"
-        android:text="SELL" />
+        <TextView
+            android:id="@+id/longMATxt"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="Long MA" />
+    </LinearLayout>
 
-    <TextView
-        android:id="@+id/kdjWinOrLossPriceTxt"
-        android:layout_width="50dp"
-        android:layout_height="wrap_content"
-        android:text="W / L" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/kdjBuyPriceTxt"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="BUY" />
 
+        <TextView
+            android:id="@+id/kdjSellPriceTxt"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="SELL" />
 
+        <TextView
+            android:id="@+id/kdjWinOrLossPriceTxt"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:text="W / L" />
+    </LinearLayout>
 </LinearLayout>

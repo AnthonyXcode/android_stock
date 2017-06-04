@@ -2,7 +2,6 @@ package com.example.anthony.stock.CrossRSI;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,25 +10,19 @@ import android.widget.TextView;
 
 import com.example.anthony.stock.R;
 import com.example.anthony.stock.RealmClasses.Model.DateData;
-import com.example.anthony.stock.RealmClasses.Model.HourData;
 
 import java.util.ArrayList;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
-import io.realm.Sort;
 
 public class CrossRSIActivity extends AppCompatActivity {
 
     ListView crossRsiListView;
     EditText crossValidDaysEditTxt;
-    EditText crossValidRsiEditTxt;
+    EditText crossValidRsiDiffEditTxt;
     EditText crossShortRsiDaysEditTxt;
     EditText crossLongRsiDaysEditTxt;
-    EditText crossPresentValueEditTxt;
-    EditText crossDayLowEditTxt;
-    EditText crossDayHighEditTxt;
-    Button crossUpdateOKBtn;
     Button crossRsiOKBtn;
     TextView crossRSITxt;
     int shortRsi = 7;
@@ -39,7 +32,6 @@ public class CrossRSIActivity extends AppCompatActivity {
     ArrayList<CrossRSIItem> items;
     Realm realm;
     RealmResults<DateData> dateDatas;
-    RealmResults<HourData> hourDatas;
     CrossRSIAdapter adapter;
     private String TAG = "CrossRSIActivity";
 
@@ -52,52 +44,32 @@ public class CrossRSIActivity extends AppCompatActivity {
         setupClick();
         setupTool();
         initValidData();
-        addLastItemFromHourData();
         countRsi();
         setupListView();
         analyseResult();
         printResult();
     }
 
-    private void setupLayout(){
-        crossRsiListView = (ListView)findViewById(R.id.crossRsiListView);
+    private void setupLayout() {
+        crossRsiListView = (ListView) findViewById(R.id.crossRsiListView);
         crossValidDaysEditTxt = (EditText) findViewById(R.id.crossValidDaysEditTxt);
-        crossValidRsiEditTxt = (EditText) findViewById(R.id.crossValidRsiEditTxt);
+        crossValidRsiDiffEditTxt = (EditText) findViewById(R.id.crossValidRsiEditTxt);
         crossShortRsiDaysEditTxt = (EditText) findViewById(R.id.crossShortRsiDaysEditTxt);
         crossLongRsiDaysEditTxt = (EditText) findViewById(R.id.crossLongRsiDaysEditTxt);
-        crossPresentValueEditTxt = (EditText)findViewById(R.id.crossPresentValueEditTxt);
-        crossDayLowEditTxt = (EditText)findViewById(R.id.crossDayLowEditTxt);
-        crossDayHighEditTxt = (EditText)findViewById(R.id.crossDayHighEditTxt);
-        crossUpdateOKBtn = (Button)findViewById(R.id.corssUpdateOKBtn);
-        crossRsiOKBtn = (Button)findViewById(R.id.corssRsiOKBtn);
-        crossRSITxt = (TextView)findViewById(R.id.crossRSITxt);
+        crossRsiOKBtn = (Button) findViewById(R.id.corssRsiOKBtn);
+        crossRSITxt = (TextView) findViewById(R.id.crossRSITxt);
         crossShortRsiDaysEditTxt.setText(String.valueOf(shortRsi));
         crossLongRsiDaysEditTxt.setText(String.valueOf(longRsi));
-        crossValidRsiEditTxt.setText(String.valueOf(validRsi));
+        crossValidRsiDiffEditTxt.setText(String.valueOf(validRsi));
         crossValidDaysEditTxt.setText(String.valueOf(validDays));
     }
 
-    private void setupClick(){
+    private void setupClick() {
         crossRsiOKBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 setData();
                 initValidData();
-                addLastItemFromHourData();
-                countRsi();
-                setupListView();
-                analyseResult();
-                printResult();
-            }
-        });
-
-        crossUpdateOKBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                CrossRSIItem item = getLastItem();
-                setData();
-                initValidData();
-                items.add(item);
                 countRsi();
                 setupListView();
                 analyseResult();
@@ -106,40 +78,23 @@ public class CrossRSIActivity extends AppCompatActivity {
         });
     }
 
-    private CrossRSIItem getLastItem(){
-        int close = Integer.parseInt(crossPresentValueEditTxt.getText().toString());
-        int high = Integer.parseInt(crossDayHighEditTxt.getText().toString());
-        int low = Integer.parseInt(crossDayLowEditTxt.getText().toString());
-        CrossRSIItem item = items.get(items.size() - 1);
-        item.setDayClose(close);
-        item.setDayLow(low);
-        item.setDayHigh(high);
-        return item;
-    }
-
-    private void setupTool(){
+    private void setupTool() {
         items = new ArrayList<>();
         realm = Realm.getDefaultInstance();
         dateDatas = realm.where(DateData.class).findAll().sort("Date");
-        hourDatas = realm.where(HourData.class).findAll().sort("Timestamp", Sort.DESCENDING);
     }
 
-    private void setData(){
+    private void setData() {
         shortRsi = Integer.parseInt(crossShortRsiDaysEditTxt.getText().toString());
         longRsi = Integer.parseInt(crossLongRsiDaysEditTxt.getText().toString());
-        validRsi = Integer.parseInt(crossValidRsiEditTxt.getText().toString());
+        validRsi = Integer.parseInt(crossValidRsiDiffEditTxt.getText().toString());
         validDays = Integer.parseInt(crossValidDaysEditTxt.getText().toString());
     }
 
-    private void initValidData(){
+    private void initValidData() {
         items.clear();
-        for (DateData realmItem:dateDatas){
-            CrossRSIItem item = initItme(realmItem.getStrDate(), realmItem.getOpen(), realmItem.getClose(), realmItem.getLow(), realmItem.getHigh());
-            if (realmItem.getStrDate().contains("2017/05/16")){
-                Log.i(TAG, "initValidData: 16 " + realmItem.getDate());
-            }else if (realmItem.getStrDate().contains("2017/05/17")){
-                Log.i(TAG, "initValidData: 17 " + realmItem.getDate());
-            }
+        for (DateData realmItem : dateDatas) {
+            CrossRSIItem item = initItem(realmItem.getStrDate(), realmItem.getDate(), realmItem.getOpen(), realmItem.getClose(), realmItem.getLow(), realmItem.getHigh());
             items.add(item);
         }
     }
@@ -151,51 +106,26 @@ public class CrossRSIActivity extends AppCompatActivity {
     }
 
     private void countRsi() {
-        for (int i = 0; i < items.size(); i++){
-            if (i == shortRsi -1){
+        for (int i = 0; i < items.size(); i++) {
+            if (i == shortRsi - 1) {
                 initRsi(items, shortRsi, true);
             }
-            if (i == longRsi - 1){
+            if (i == longRsi - 1) {
                 initRsi(items, longRsi, false);
             }
-            if (i > shortRsi - 1){
+            if (i > shortRsi - 1) {
                 modifyItem(i, shortRsi, true);
             }
 
-            if (i > longRsi - 1){
-                modifyItem(i , longRsi, false);
+            if (i > longRsi - 1) {
+                modifyItem(i, longRsi, false);
             }
         }
     }
 
-    private void addLastItemFromHourData() {
-        if (hourDatas.size() == 0) return;
-        String dateStr = hourDatas.get(0).getDate();
-        int open = hourDatas.get(0).getOpen();
-        int close = hourDatas.get(0).getClose();
-        int low = hourDatas.get(0).getLow();
-        int high = hourDatas.get(0).getHigh();
-        for (HourData hourData:hourDatas){
-            if (hourData.getDate().contains(dateStr.substring(0,10))){
-                if (hourData.getLow() < low){
-                    low = hourData.getLow();
-                }
-                if (hourData.getHigh() > high){
-                    high = hourData.getHigh();
-                }
-                open = hourData.getOpen();
-            }else {
-                break;
-            }
-        }
-        crossDayLowEditTxt.setText(String.valueOf(low));
-        crossDayHighEditTxt.setText(String.valueOf(high));
-        crossPresentValueEditTxt.setText(String.valueOf(close));
-        items.add(initItme(dateStr, open, close, low, high));
-    }
-
-    private CrossRSIItem initItme (String day, int dayOpen, int dayClose, int dayLow, int dayHigh){
+    private CrossRSIItem initItem(String dayStr, int day, int dayOpen, int dayClose, int dayLow, int dayHigh) {
         CrossRSIItem item = new CrossRSIItem();
+        item.setDayStr(dayStr);
         item.setDay(day);
         item.setDayOpen(dayOpen);
         item.setDayClose(dayClose);
@@ -204,13 +134,13 @@ public class CrossRSIActivity extends AppCompatActivity {
         return item;
     }
 
-    private void initRsi(ArrayList<CrossRSIItem> items, int rsiDays, boolean isShort){
+    private void initRsi(ArrayList<CrossRSIItem> items, int rsiDays, boolean isShort) {
         int totalRaise = 0;
         int totalDrop = 0;
-        for (int i = 0; i < items.size(); i++){
+        for (int i = 0; i < items.size(); i++) {
             if (i == rsiDays - 1) break;
             CrossRSIItem firstItem = items.get(i);
-            CrossRSIItem secondItem = items.get(i+1);
+            CrossRSIItem secondItem = items.get(i + 1);
             int difference = secondItem.getDayClose() - firstItem.getDayClose();
             if (difference > 0) {
                 totalRaise += difference;
@@ -220,23 +150,23 @@ public class CrossRSIActivity extends AppCompatActivity {
         }
         CrossRSIItem lastItem = items.get(rsiDays);
         int rsi = countRSI(totalRaise, totalDrop);
-        if (isShort){
-            lastItem.setRaiseShortAverage(((double) totalRaise)/rsiDays);
-            lastItem.setDropShortAverage(((double) totalDrop)/rsiDays);
+        if (isShort) {
+            lastItem.setRaiseShortAverage(((double) totalRaise) / rsiDays);
+            lastItem.setDropShortAverage(((double) totalDrop) / rsiDays);
             lastItem.setShortRsi(rsi);
-        }else {
-            lastItem.setRaiseLongAverage(((double) totalRaise)/rsiDays);
-            lastItem.setDropLongAverage(((double) totalDrop)/rsiDays);
+        } else {
+            lastItem.setRaiseLongAverage(((double) totalRaise) / rsiDays);
+            lastItem.setDropLongAverage(((double) totalDrop) / rsiDays);
             lastItem.setLongRsi(rsi);
         }
     }
 
-    private int countRSI(double totalRaise, double totalDrop){
-        int rsi = (int) ((totalRaise/(totalDrop + totalRaise)) * 100);
+    private int countRSI(double totalRaise, double totalDrop) {
+        int rsi = (int) ((totalRaise / (totalDrop + totalRaise)) * 100);
         return rsi;
     }
 
-    private void modifyItem(int position, int rsiDays, boolean isShort){
+    private void modifyItem(int position, int rsiDays, boolean isShort) {
         CrossRSIItem item = items.get(position);
         CrossRSIItem previousItme = items.get(position - 1);
         double different = item.getDayClose() - previousItme.getDayClose();
@@ -254,7 +184,7 @@ public class CrossRSIActivity extends AppCompatActivity {
             item.setRaiseShortAverage(raiseAverage);
             item.setDropShortAverage(dropAverage);
             item.setShortRsi(rsi);
-        }else {
+        } else {
             if (different > 0) {
                 raiseAverage = ((previousItme.getRaiseLongAverage() * (rsiDays - 1)) + different) / rsiDays;
                 dropAverage = previousItme.getDropLongAverage() * (rsiDays - 1) / rsiDays;
@@ -269,38 +199,38 @@ public class CrossRSIActivity extends AppCompatActivity {
         }
     }
 
+    int Sum;
     int totalWin;
+    int totalLost;
+    int totalCutLost;
     int winNumb;
-    int lossNumb;
-    int cutlose;
-    int lossbuy;
-    int losssell;
+    int lostNumb;
+    int cutLostNumb;
     int totalTrade;
-    private void analyseResult(){
-        totalWin = 0;
+
+    private void analyseResult() {
+        Sum = 0;
         winNumb = 0;
-        lossNumb = 0;
-        cutlose = 0;
-        lossbuy = 0;
-        losssell = 0;
+        lostNumb = 0;
+        cutLostNumb = 0;
         totalTrade = 0;
 
-        for(int i = 0; i < items.size(); i++) {
+        for (int i = 0; i < items.size(); i++) {
             CrossRSIItem item = items.get(i);
             CrossRSIItem previousItem;
-            try{
+            try {
                 previousItem = items.get(i - 1);
-            }catch (Exception ex){
+            } catch (Exception ex) {
                 continue;
             }
-            if (previousItem.getLongRsi() > previousItem.getShortRsi() && item.getLongRsi() < item.getShortRsi()){
-                if (Math.abs(item.getLongRsi() - item.getShortRsi()) > validRsi){
+            if (previousItem.getLongRsi() > previousItem.getShortRsi() && item.getLongRsi() < item.getShortRsi()) {
+                if (Math.abs(item.getLongRsi() - item.getShortRsi()) > validRsi) {
                     totalTrade += 1;
                     item.setBuyPrice(item.getDayClose());
                     analyseForBuy(i);
                 }
-            }else if (previousItem.getLongRsi() < previousItem.getShortRsi() && item.getLongRsi() > item.getShortRsi()){
-                if (Math.abs(item.getLongRsi() - item.getShortRsi()) > validRsi){
+            } else if (previousItem.getLongRsi() < previousItem.getShortRsi() && item.getLongRsi() > item.getShortRsi()) {
+                if (Math.abs(item.getLongRsi() - item.getShortRsi()) > validRsi) {
                     totalTrade += 1;
                     item.setSellPrice(item.getDayClose());
                     analyseForSell(i);
@@ -310,73 +240,67 @@ public class CrossRSIActivity extends AppCompatActivity {
         }
     }
 
-    private void analyseForBuy(int position){
+    private void analyseForBuy(int position) {
         CrossRSIItem buyItem = items.get(position);
-        for (int i = position + 1; i < position + validDays; i++){
+        for (int i = position + 1; i < position + validDays; i++) {
             CrossRSIItem movingItem;
             try {
                 movingItem = items.get(i);
-            }catch (Exception ex){
+            } catch (Exception ex) {
                 break;
             }
-            if (movingItem.getLongRsi() > movingItem.getShortRsi() || buyItem.getDayClose() - movingItem.getDayClose() > 150){
-                cutlose += 1;
-                if (movingItem.getDayClose() < buyItem.getDayClose()){
-                    lossNumb += 1;
-                }else {
-                    winNumb += 1;
-                }
-                totalWin += movingItem.getDayClose() - buyItem.getDayClose();
-                lossbuy += movingItem.getDayClose() - buyItem.getDayClose();
+            if (movingItem.getLongRsi() > movingItem.getShortRsi() || buyItem.getDayClose() - movingItem.getDayClose() > 150) {
+                cutLostNumb += 1;
+                totalCutLost += movingItem.getDayClose() - buyItem.getDayClose();
+                Sum += movingItem.getDayClose() - buyItem.getDayClose();
                 movingItem.setSellPrice(movingItem.getDayClose());
-                movingItem.setWinOrloss(movingItem.getDayClose()-buyItem.getDayClose());
+                movingItem.setWinOrloss(movingItem.getDayClose() - buyItem.getDayClose());
                 break;
             }
 
-            if (i == position + validDays - 1){
-                if (movingItem.getDayClose() < buyItem.getDayClose()){
-                    lossNumb += 1;
-                }else {
+            if (i == position + validDays - 1) {
+                if (movingItem.getDayClose() < buyItem.getDayClose()) {
+                    lostNumb += 1;
+                    totalLost += buyItem.getDayClose() - movingItem.getDayClose();
+                } else {
                     winNumb += 1;
+                    totalWin += movingItem.getDayClose() - buyItem.getDayClose();
                 }
-                totalWin += movingItem.getDayClose() - buyItem.getDayClose();
+                Sum += movingItem.getDayClose() - buyItem.getDayClose();
                 movingItem.setSellPrice(movingItem.getDayClose());
-                movingItem.setWinOrloss(movingItem.getDayClose()-buyItem.getDayClose());
+                movingItem.setWinOrloss(movingItem.getDayClose() - buyItem.getDayClose());
                 break;
             }
         }
     }
 
-    private void analyseForSell(int position){
+    private void analyseForSell(int position) {
         CrossRSIItem sellItem = items.get(position);
-        for (int i = position + 1; i < position + validDays; i++){
+        for (int i = position + 1; i < position + validDays; i++) {
             CrossRSIItem movingItem;
             try {
                 movingItem = items.get(i);
-            }catch (Exception ex){
+            } catch (Exception ex) {
                 break;
             }
-            if (movingItem.getLongRsi() < movingItem.getShortRsi() || movingItem.getDayClose() - sellItem.getDayClose() > 150){
-                cutlose += 1;
-                if (movingItem.getDayClose() > sellItem.getDayClose()){
-                    lossNumb += 1;
-                }else {
-                    winNumb += 1;
-                }
-                totalWin += sellItem.getDayClose() - movingItem.getDayClose();
-                losssell += sellItem.getDayClose() - movingItem.getDayClose();
+            if (movingItem.getLongRsi() < movingItem.getShortRsi() || movingItem.getDayClose() - sellItem.getDayClose() > 150) {
+                cutLostNumb += 1;
+                totalCutLost += movingItem.getDayClose() - sellItem.getDayClose();
+                Sum += sellItem.getDayClose() - movingItem.getDayClose();
                 movingItem.setBuyPrice(movingItem.getDayClose());
                 movingItem.setWinOrloss(sellItem.getDayClose() - movingItem.getDayClose());
                 break;
             }
 
-            if (i == position + validDays - 1){
-                if (movingItem.getDayClose() > sellItem.getDayClose()){
-                    lossNumb += 1;
-                }else {
+            if (i == position + validDays - 1) {
+                if (movingItem.getDayClose() > sellItem.getDayClose()) {
+                    lostNumb += 1;
+                    totalLost += movingItem.getDayClose() - sellItem.getDayClose();
+                } else {
                     winNumb += 1;
+                    totalWin += sellItem.getDayClose() - movingItem.getDayClose();
                 }
-                totalWin += sellItem.getDayClose() - movingItem.getDayClose();
+                Sum += sellItem.getDayClose() - movingItem.getDayClose();
                 movingItem.setBuyPrice(movingItem.getDayClose());
                 movingItem.setWinOrloss(sellItem.getDayClose() - movingItem.getDayClose());
                 break;
@@ -384,12 +308,18 @@ public class CrossRSIActivity extends AppCompatActivity {
         }
     }
 
-    private void printResult(){
-        crossRSITxt.setText(
-                "Total win: " + totalWin +
-                        "\n" + "Win Number: " + winNumb +
-                        "\n" + "loss Number: " + lossNumb +
-                        "\n" + "Cut loss: " + cutlose);
-        Log.i(TAG, "printResult: " + totalTrade + " " + lossbuy + " " + losssell);
+    private void printResult() {
+        crossRSITxt.setText("Sum: " + Sum +
+                "\n" + "Trade Number: " + totalTrade +
+                "\n" + "Win Number: " + winNumb +
+                "\n" + "Lost Number: " + lostNumb +
+                "\n" + "Cut loss Number: " + cutLostNumb +
+                "\n" + "Total Win: " + totalWin +
+                "\n" + "Total Lost: " + totalLost +
+                "\n" + "Total Cut Lost: " + totalCutLost +
+                "\n" + "交易規則： " +
+                "\n" + "1. 收市時，短期RSI ＋ 有效RSI > 長期RSI，則買入。反之亦然。" +
+                "\n" + "2. 如收市時虧損150點以上，則止蝕。" +
+                "\n" + "3. 在有效日期內（7 - 10日），收市時完成一次交易。");
     }
 }

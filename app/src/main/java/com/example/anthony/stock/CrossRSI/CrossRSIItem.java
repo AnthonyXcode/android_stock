@@ -5,7 +5,8 @@ package com.example.anthony.stock.CrossRSI;
  */
 
 public class CrossRSIItem {
-    private String day;
+    private String dayStr;
+    private int day;
     private int dayClose;
     private int dayOpen;
     private double longRsi;
@@ -22,11 +23,18 @@ public class CrossRSIItem {
     private int sellPrice;
     private int winOrloss;
 
-    public String getDay() {
-        return day;
+    public String getDayStr() {
+        return dayStr;
     }
 
-    public void setDay(String day) {
+    public void setDayStr(String dayStr) {
+        this.dayStr = dayStr;
+    }
+
+    public int getDay() {
+        return day;
+    }
+    public void setDay(int day) {
         this.day = day;
     }
 
