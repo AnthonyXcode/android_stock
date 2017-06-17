@@ -2,6 +2,7 @@ package com.example.anthony.stock.CrossRSI;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,12 +24,14 @@ public class CrossRSIActivity extends AppCompatActivity {
     EditText crossValidRsiDiffEditTxt;
     EditText crossShortRsiDaysEditTxt;
     EditText crossLongRsiDaysEditTxt;
+    EditText cutLostValueEditTxt;
     Button crossRsiOKBtn;
     TextView crossRSITxt;
     int shortRsi = 7;
     int longRsi = 25;
     int validRsi = 5;
     int validDays = 7;
+    int cutlostValue = 200;
     ArrayList<CrossRSIItem> items;
     Realm realm;
     RealmResults<DateData> dateDatas;
@@ -56,12 +59,14 @@ public class CrossRSIActivity extends AppCompatActivity {
         crossValidRsiDiffEditTxt = (EditText) findViewById(R.id.crossValidRsiEditTxt);
         crossShortRsiDaysEditTxt = (EditText) findViewById(R.id.crossShortRsiDaysEditTxt);
         crossLongRsiDaysEditTxt = (EditText) findViewById(R.id.crossLongRsiDaysEditTxt);
+        cutLostValueEditTxt = (EditText) findViewById(R.id.cutLostValueEditTxt);
         crossRsiOKBtn = (Button) findViewById(R.id.corssRsiOKBtn);
         crossRSITxt = (TextView) findViewById(R.id.crossRSITxt);
         crossShortRsiDaysEditTxt.setText(String.valueOf(shortRsi));
         crossLongRsiDaysEditTxt.setText(String.valueOf(longRsi));
         crossValidRsiDiffEditTxt.setText(String.valueOf(validRsi));
         crossValidDaysEditTxt.setText(String.valueOf(validDays));
+        cutLostValueEditTxt.setText(String.valueOf(cutlostValue));
     }
 
     private void setupClick() {
@@ -89,6 +94,7 @@ public class CrossRSIActivity extends AppCompatActivity {
         longRsi = Integer.parseInt(crossLongRsiDaysEditTxt.getText().toString());
         validRsi = Integer.parseInt(crossValidRsiDiffEditTxt.getText().toString());
         validDays = Integer.parseInt(crossValidDaysEditTxt.getText().toString());
+        cutlostValue = Integer.parseInt(cutLostValueEditTxt.getText().toString());
     }
 
     private void initValidData() {
@@ -214,6 +220,9 @@ public class CrossRSIActivity extends AppCompatActivity {
         lostNumb = 0;
         cutLostNumb = 0;
         totalTrade = 0;
+        totalWin = 0;
+        totalLost = 0;
+        totalCutLost = 0;
 
         for (int i = 0; i < items.size(); i++) {
             CrossRSIItem item = items.get(i);
@@ -249,7 +258,7 @@ public class CrossRSIActivity extends AppCompatActivity {
             } catch (Exception ex) {
                 break;
             }
-            if (movingItem.getLongRsi() > movingItem.getShortRsi() || buyItem.getDayClose() - movingItem.getDayClose() > 150) {
+            if (movingItem.getLongRsi() > movingItem.getShortRsi() || buyItem.getDayClose() - movingItem.getDayClose() > cutlostValue) {
                 cutLostNumb += 1;
                 totalCutLost += movingItem.getDayClose() - buyItem.getDayClose();
                 Sum += movingItem.getDayClose() - buyItem.getDayClose();
@@ -261,7 +270,7 @@ public class CrossRSIActivity extends AppCompatActivity {
             if (i == position + validDays - 1) {
                 if (movingItem.getDayClose() < buyItem.getDayClose()) {
                     lostNumb += 1;
-                    totalLost += buyItem.getDayClose() - movingItem.getDayClose();
+                    totalLost += movingItem.getDayClose() - buyItem.getDayClose();
                 } else {
                     winNumb += 1;
                     totalWin += movingItem.getDayClose() - buyItem.getDayClose();
@@ -283,9 +292,9 @@ public class CrossRSIActivity extends AppCompatActivity {
             } catch (Exception ex) {
                 break;
             }
-            if (movingItem.getLongRsi() < movingItem.getShortRsi() || movingItem.getDayClose() - sellItem.getDayClose() > 150) {
+            if (movingItem.getLongRsi() < movingItem.getShortRsi() || movingItem.getDayClose() - sellItem.getDayClose() > cutlostValue) {
                 cutLostNumb += 1;
-                totalCutLost += movingItem.getDayClose() - sellItem.getDayClose();
+                totalCutLost += sellItem.getDayClose() - movingItem.getDayClose();
                 Sum += sellItem.getDayClose() - movingItem.getDayClose();
                 movingItem.setBuyPrice(movingItem.getDayClose());
                 movingItem.setWinOrloss(sellItem.getDayClose() - movingItem.getDayClose());
@@ -295,7 +304,7 @@ public class CrossRSIActivity extends AppCompatActivity {
             if (i == position + validDays - 1) {
                 if (movingItem.getDayClose() > sellItem.getDayClose()) {
                     lostNumb += 1;
-                    totalLost += movingItem.getDayClose() - sellItem.getDayClose();
+                    totalLost += sellItem.getDayClose() - movingItem.getDayClose();
                 } else {
                     winNumb += 1;
                     totalWin += sellItem.getDayClose() - movingItem.getDayClose();
@@ -315,11 +324,11 @@ public class CrossRSIActivity extends AppCompatActivity {
                 "\n" + "Lost Number: " + lostNumb +
                 "\n" + "Cut loss Number: " + cutLostNumb +
                 "\n" + "Total Win: " + totalWin +
-                "\n" + "Total Lost: " + totalLost +
+                "\n" + "Total Lost: " + String.valueOf(totalLost) +
                 "\n" + "Total Cut Lost: " + totalCutLost +
                 "\n" + "交易規則： " +
                 "\n" + "1. 收市時，短期RSI ＋ 有效RSI > 長期RSI，則買入。反之亦然。" +
-                "\n" + "2. 如收市時虧損150點以上，則止蝕。" +
+                "\n" + "2. 如收市時虧損" + cutlostValue + "點以上，則止蝕。" +
                 "\n" + "3. 在有效日期內（7 - 10日），收市時完成一次交易。");
     }
 }

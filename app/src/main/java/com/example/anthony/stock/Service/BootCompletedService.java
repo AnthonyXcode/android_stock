@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.IBinder;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -43,8 +44,9 @@ import io.realm.Sort;
  * Created by chanyunyuen on 8/4/2017.
  */
 
-public class BootCompletedService extends Service{
+public class BootCompletedService extends Service {
     private String TAG = "BootCompletedService";
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -75,21 +77,30 @@ public class BootCompletedService extends Service{
     RequestQueue requestQueue;
     private NotificationManager manager;
 
-    private void setupTools(){
+    private void setupTools() {
         Log.i(TAG, "setupTools: ");
         scheduleTimer = new Timer();
         timerTask = new TimerTask() {
             @Override
             public void run() {
+                Observable.just("")
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnNext(new Consumer<String>() {
+                            @Override
+                            public void accept(String s) throws Exception {
+                                Toast.makeText(BootCompletedService.this, "Update Data!", Toast.LENGTH_LONG).show();
+                            }
+                        })
+                        .subscribe();
                 if (ifNeedToUpdate()) {
                     updateData();
                 }
             }
         };
-        timeInterval = 60000;
-        try{
+        timeInterval = 10000;
+        try {
             realm = Realm.getDefaultInstance();
-        }catch (Exception ex){
+        } catch (Exception ex) {
             RealmConfiguration config = new RealmConfiguration.Builder(this)
                     .deleteRealmIfMigrationNeeded()
                     .build();
@@ -102,32 +113,28 @@ public class BootCompletedService extends Service{
         scheduleTimer.schedule(timerTask, 0, timeInterval);
     }
 
-    private boolean ifNeedToUpdate(){
+    private boolean ifNeedToUpdate() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
         Log.i(TAG, "ifNeedToUpdate: " + calendar.get(Calendar.MINUTE));
         int hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
         int minute = calendar.get(Calendar.MINUTE);
         int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-        if (dayOfWeek < Calendar.MONDAY || dayOfWeek > Calendar.FRIDAY){
+        if (dayOfWeek < Calendar.MONDAY || dayOfWeek > Calendar.FRIDAY) {
             return false;
         }
         boolean need = false;
-        if (hourOfDay == 9){
-            if (minute > 30){
+        if (hourOfDay == 9 && minute > 30) {
                 need = true;
-            }
-        }else if (hourOfDay == 15){
-            if (minute > 30 ){
-                need = true;
-            }
-        }else {
+        } else if ((hourOfDay == 15 && minute > 30) || (hourOfDay == 16 && minute < 30)) {
+            need = true;
+        } else {
             need = false;
         }
         return need;
     }
 
-    private void updateData(){
+    private void updateData() {
         StringRequest updateData = new StringRequest("http://hq.sinajs.cn/list=hkHSI", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -167,7 +174,7 @@ public class BootCompletedService extends Service{
     boolean daysDataGot = false;
 
 
-    private void startCal(){
+    private void startCal() {
         calResult();
         successNotification();
     }
@@ -179,34 +186,35 @@ public class BootCompletedService extends Service{
     ArrayList<CrossRSIItem> items;
     RealmResults<DateData> dateDatas;
     RealmResults<HourData> hourDatas;
-    private void calResult(){
+
+    private void calResult() {
         items.clear();
         dateDatas = realm.where(DateData.class).findAll().sort("Date");
         hourDatas = realm.where(HourData.class).findAll().sort("Timestamp", Sort.DESCENDING);
-        for (DateData realmItem:dateDatas){
+        for (DateData realmItem : dateDatas) {
             CrossRSIItem item = initItme(realmItem.getStrDate(), realmItem.getOpen(), realmItem.getClose(), realmItem.getLow(), realmItem.getHigh());
             items.add(item);
         }
-        for (int i = 0; i < items.size(); i++){
-            if (i == shortRsi -1){
+        for (int i = 0; i < items.size(); i++) {
+            if (i == shortRsi - 1) {
                 initRsi(items, shortRsi, true);
             }
-            if (i == longRsi - 1){
+            if (i == longRsi - 1) {
                 initRsi(items, longRsi, false);
             }
-            if (i > shortRsi - 1){
+            if (i > shortRsi - 1) {
                 modifyItem(i, shortRsi, true);
             }
 
-            if (i > longRsi - 1){
-                modifyItem(i , longRsi, false);
+            if (i > longRsi - 1) {
+                modifyItem(i, longRsi, false);
             }
         }
-        
+
         analyseResult();
     }
 
-    private CrossRSIItem initItme (String day, int dayOpen, int dayClose, int dayLow, int dayHigh){
+    private CrossRSIItem initItme(String day, int dayOpen, int dayClose, int dayLow, int dayHigh) {
         CrossRSIItem item = new CrossRSIItem();
         item.setDayStr(day);
         item.setDayOpen(dayOpen);
@@ -216,13 +224,13 @@ public class BootCompletedService extends Service{
         return item;
     }
 
-    private void initRsi(ArrayList<CrossRSIItem> items, int rsiDays, boolean isShort){
+    private void initRsi(ArrayList<CrossRSIItem> items, int rsiDays, boolean isShort) {
         int totalRaise = 0;
         int totalDrop = 0;
-        for (int i = 0; i < items.size(); i++){
+        for (int i = 0; i < items.size(); i++) {
             if (i == rsiDays - 1) break;
             CrossRSIItem firstItem = items.get(i);
-            CrossRSIItem secondItem = items.get(i+1);
+            CrossRSIItem secondItem = items.get(i + 1);
             int difference = secondItem.getDayClose() - firstItem.getDayClose();
             if (difference > 0) {
                 totalRaise += difference;
@@ -232,23 +240,23 @@ public class BootCompletedService extends Service{
         }
         CrossRSIItem lastItem = items.get(rsiDays);
         int rsi = countRSI(totalRaise, totalDrop);
-        if (isShort){
-            lastItem.setRaiseShortAverage(((double) totalRaise)/rsiDays);
-            lastItem.setDropShortAverage(((double) totalDrop)/rsiDays);
+        if (isShort) {
+            lastItem.setRaiseShortAverage(((double) totalRaise) / rsiDays);
+            lastItem.setDropShortAverage(((double) totalDrop) / rsiDays);
             lastItem.setShortRsi(rsi);
-        }else {
-            lastItem.setRaiseLongAverage(((double) totalRaise)/rsiDays);
-            lastItem.setDropLongAverage(((double) totalDrop)/rsiDays);
+        } else {
+            lastItem.setRaiseLongAverage(((double) totalRaise) / rsiDays);
+            lastItem.setDropLongAverage(((double) totalDrop) / rsiDays);
             lastItem.setLongRsi(rsi);
         }
     }
 
-    private int countRSI(double totalRaise, double totalDrop){
-        int rsi = (int) ((totalRaise/(totalDrop + totalRaise)) * 100);
+    private int countRSI(double totalRaise, double totalDrop) {
+        int rsi = (int) ((totalRaise / (totalDrop + totalRaise)) * 100);
         return rsi;
     }
 
-    private void modifyItem(int position, int rsiDays, boolean isShort){
+    private void modifyItem(int position, int rsiDays, boolean isShort) {
         CrossRSIItem item = items.get(position);
         CrossRSIItem previousItme = items.get(position - 1);
         double different = item.getDayClose() - previousItme.getDayClose();
@@ -266,7 +274,7 @@ public class BootCompletedService extends Service{
             item.setRaiseShortAverage(raiseAverage);
             item.setDropShortAverage(dropAverage);
             item.setShortRsi(rsi);
-        }else {
+        } else {
             if (different > 0) {
                 raiseAverage = ((previousItme.getRaiseLongAverage() * (rsiDays - 1)) + different) / rsiDays;
                 dropAverage = previousItme.getDropLongAverage() * (rsiDays - 1) / rsiDays;
@@ -288,7 +296,8 @@ public class BootCompletedService extends Service{
     int lossbuy;
     int losssell;
     int totalTrade;
-    private void analyseResult(){
+
+    private void analyseResult() {
         totalWin = 0;
         winNumb = 0;
         lossNumb = 0;
@@ -297,22 +306,22 @@ public class BootCompletedService extends Service{
         losssell = 0;
         totalTrade = 0;
 
-        for(int i = 0; i < items.size(); i++) {
+        for (int i = 0; i < items.size(); i++) {
             CrossRSIItem item = items.get(i);
             CrossRSIItem previousItem;
-            try{
+            try {
                 previousItem = items.get(i - 1);
-            }catch (Exception ex){
+            } catch (Exception ex) {
                 continue;
             }
-            if (previousItem.getLongRsi() > previousItem.getShortRsi() && item.getLongRsi() < item.getShortRsi()){
-                if (Math.abs(item.getLongRsi() - item.getShortRsi()) > validRsi){
+            if (previousItem.getLongRsi() > previousItem.getShortRsi() && item.getLongRsi() < item.getShortRsi()) {
+                if (Math.abs(item.getLongRsi() - item.getShortRsi()) > validRsi) {
                     totalTrade += 1;
                     item.setBuyPrice(item.getDayClose());
                     analyseForBuy(i);
                 }
-            }else if (previousItem.getLongRsi() < previousItem.getShortRsi() && item.getLongRsi() > item.getShortRsi()){
-                if (Math.abs(item.getLongRsi() - item.getShortRsi()) > validRsi){
+            } else if (previousItem.getLongRsi() < previousItem.getShortRsi() && item.getLongRsi() > item.getShortRsi()) {
+                if (Math.abs(item.getLongRsi() - item.getShortRsi()) > validRsi) {
                     totalTrade += 1;
                     item.setSellPrice(item.getDayClose());
                     analyseForSell(i);
@@ -321,57 +330,58 @@ public class BootCompletedService extends Service{
 
         }
     }
-    private void analyseForBuy(int position){
+
+    private void analyseForBuy(int position) {
         CrossRSIItem buyItem = items.get(position);
-        for (int i = position + 1; i < position + validDays; i++){
+        for (int i = position + 1; i < position + validDays; i++) {
             CrossRSIItem movingItem;
             try {
                 movingItem = items.get(i);
-            }catch (Exception ex){
+            } catch (Exception ex) {
                 break;
             }
-            if (movingItem.getLongRsi() > movingItem.getShortRsi() || buyItem.getDayClose() - movingItem.getDayClose() > 150){
+            if (movingItem.getLongRsi() > movingItem.getShortRsi() || buyItem.getDayClose() - movingItem.getDayClose() > 150) {
                 cutlose += 1;
-                if (movingItem.getDayClose() < buyItem.getDayClose()){
+                if (movingItem.getDayClose() < buyItem.getDayClose()) {
                     lossNumb += 1;
-                }else {
+                } else {
                     winNumb += 1;
                 }
                 totalWin += movingItem.getDayClose() - buyItem.getDayClose();
                 lossbuy += movingItem.getDayClose() - buyItem.getDayClose();
                 movingItem.setSellPrice(movingItem.getDayClose());
-                movingItem.setWinOrloss(movingItem.getDayClose()-buyItem.getDayClose());
+                movingItem.setWinOrloss(movingItem.getDayClose() - buyItem.getDayClose());
                 break;
             }
 
-            if (i == position + validDays - 1){
-                if (movingItem.getDayClose() < buyItem.getDayClose()){
+            if (i == position + validDays - 1) {
+                if (movingItem.getDayClose() < buyItem.getDayClose()) {
                     lossNumb += 1;
-                }else {
+                } else {
                     winNumb += 1;
                 }
                 totalWin += movingItem.getDayClose() - buyItem.getDayClose();
                 movingItem.setSellPrice(movingItem.getDayClose());
-                movingItem.setWinOrloss(movingItem.getDayClose()-buyItem.getDayClose());
+                movingItem.setWinOrloss(movingItem.getDayClose() - buyItem.getDayClose());
                 break;
             }
         }
     }
 
-    private void analyseForSell(int position){
+    private void analyseForSell(int position) {
         CrossRSIItem sellItem = items.get(position);
-        for (int i = position + 1; i < position + validDays; i++){
+        for (int i = position + 1; i < position + validDays; i++) {
             CrossRSIItem movingItem;
             try {
                 movingItem = items.get(i);
-            }catch (Exception ex){
+            } catch (Exception ex) {
                 break;
             }
-            if (movingItem.getLongRsi() < movingItem.getShortRsi() || movingItem.getDayClose() - sellItem.getDayClose() > 150){
+            if (movingItem.getLongRsi() < movingItem.getShortRsi() || movingItem.getDayClose() - sellItem.getDayClose() > 150) {
                 cutlose += 1;
-                if (movingItem.getDayClose() > sellItem.getDayClose()){
+                if (movingItem.getDayClose() > sellItem.getDayClose()) {
                     lossNumb += 1;
-                }else {
+                } else {
                     winNumb += 1;
                 }
                 totalWin += sellItem.getDayClose() - movingItem.getDayClose();
@@ -381,10 +391,10 @@ public class BootCompletedService extends Service{
                 break;
             }
 
-            if (i == position + validDays - 1){
-                if (movingItem.getDayClose() > sellItem.getDayClose()){
+            if (i == position + validDays - 1) {
+                if (movingItem.getDayClose() > sellItem.getDayClose()) {
                     lossNumb += 1;
-                }else {
+                } else {
                     winNumb += 1;
                 }
                 totalWin += sellItem.getDayClose() - movingItem.getDayClose();
@@ -395,7 +405,7 @@ public class BootCompletedService extends Service{
         }
     }
 
-    private void successNotification(){
+    private void successNotification() {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
         String info;
         int buy = 0;
@@ -410,7 +420,7 @@ public class BootCompletedService extends Service{
             buy = items.get(items.size() - 1).getBuyPrice();
             sell = items.get(items.size() - 1).getSellPrice();
             winOrLost = items.get(items.size() - 1).getWinOrloss();
-        }else {
+        } else {
             info = "";
             lastItem = null;
         }
@@ -427,8 +437,8 @@ public class BootCompletedService extends Service{
             } else if (buy == 0 && sell != 0 && winOrLost != 0) {
                 title = "Liquidation. At price: " + lastItem.getDayClose() + " win or loss: " + lastItem.getWinOrloss();
             }
-            content = "Long Rsi = " + String.valueOf((int)lastItem.getLongRsi()) + " Short Rsi = " + String.valueOf((int)lastItem.getShortRsi());
-        }else {
+            content = "Long Rsi = " + String.valueOf((int) lastItem.getLongRsi()) + " Short Rsi = " + String.valueOf((int) lastItem.getShortRsi());
+        } else {
             title = "Error";
             info = "Error";
             content = "Error";
